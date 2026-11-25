@@ -5,269 +5,219 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080d18">
-<title>NOVA AI — Studio 3D</title>
+<title>NOVA AI</title>
 <style>
-:root{color-scheme:dark;--bg:#080d18;--panel:#101827;--line:#293650;--txt:#eef3ff;--muted:#91a0b8;--a:#7659ff}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,select,textarea,input{font:inherit;color:inherit}
-button{cursor:pointer}
-.app{max-width:1200px;margin:auto;display:grid;grid-template-columns:245px minmax(0,1fr);height:100dvh}
-aside{padding:18px;background:#0b1220;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:13px;min-height:0}
-.brand{font-size:21px;font-weight:850;letter-spacing:1.5px}.logo{display:inline-grid;place-items:center;background:linear-gradient(135deg,#7659ff,#20c8c8);width:34px;height:34px;border-radius:11px;margin-right:8px}
-.muted,small{color:var(--muted)}
-.btn,.select{background:#151f31;border:1px solid var(--line);border-radius:11px;padding:11px}
-.btn{text-align:left}.primary{background:linear-gradient(120deg,#7659ff,#3478ec);border:0;border-radius:11px;padding:12px;font-weight:750}
-#history{display:grid;gap:7px;overflow:auto}.bottom{margin-top:auto}
-main{min-width:0;display:flex;flex-direction:column;min-height:0}
-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
-.select{max-width:220px}#messages{flex:1;overflow:auto;padding:22px max(14px,calc((100% - 760px)/2))}
-.welcome{text-align:center;max-width:620px;margin:8vh auto}.orb{margin:0 auto 18px;width:70px;height:70px;border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);display:grid;place-items:center;font-size:32px}
+:root{color-scheme:dark;--bg:#080d18;--panel:#101827;--panel2:#131f32;--line:#293650;--txt:#eef3ff;--muted:#91a0b8;--a:#7659ff;--b:#247bc2}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:radial-gradient(ellipse at 50% -20%,#26365e 0,transparent 48%),var(--bg)}
+button,select,input,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.app{height:100dvh;max-width:1400px;margin:auto;display:grid;grid-template-columns:250px minmax(0,1fr);overflow:hidden}
+aside{padding:18px;background:#0b1220;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:13px;min-width:0}
+.brand{font-size:22px;font-weight:850;letter-spacing:1.5px}.logo{display:inline-grid;place-items:center;background:linear-gradient(135deg,var(--a),#20c8c8);width:35px;height:35px;border-radius:11px;margin-right:8px}
+.muted,small,.mutedText{color:var(--muted)}.btn,.primary,.navbtn{border-radius:12px;padding:11px 13px;border:1px solid var(--line);background:#151f31;text-align:left}
+.primary{background:linear-gradient(120deg,var(--a),#3478ec);border:0;font-weight:750;text-align:center}
+.navbtn.active{background:#28254c;border-color:#7968ff}.bottom{margin-top:auto}#history{display:grid;gap:7px;overflow:auto;max-height:40vh}
+main{min-width:0;display:flex;flex-direction:column;height:100dvh}
+header{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0b1220cc}
+.headnav{display:flex;gap:8px;align-items:center}.select{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px;max-width:200px}
+.view{display:none;min-height:0;flex:1}.view.active{display:flex;flex-direction:column}
+#messages{flex:1;overflow:auto;padding:22px max(14px,calc((100% - 780px)/2))}
+.welcome{text-align:center;max-width:650px;margin:7vh auto}.orb{margin:0 auto 18px;width:70px;height:70px;border-radius:24px;background:linear-gradient(135deg,var(--a),#20c8c8);display:grid;place-items:center;font-size:32px}
 h1{font-size:30px}.welcome p{color:var(--muted)}.prompts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.prompt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;text-align:left}
-.msg{display:flex;gap:12px;max-width:760px;margin:0 auto 20px}.avatar{width:34px;height:34px;flex:none;border-radius:11px;background:#273650;display:grid;place-items:center}
+.prompt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:left}
+.msg{display:flex;gap:12px;max-width:780px;margin:0 auto 20px}.avatar{width:34px;height:34px;flex:none;border-radius:11px;background:#273650;display:grid;place-items:center}
 .bubble{white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 0;line-height:1.55}.user .bubble{background:#17243a;border:1px solid #2c3c59;border-radius:13px;padding:12px}
-.compose{border-top:1px solid var(--line);padding:12px;background:#0b1220;padding-bottom:max(12px,env(safe-area-inset-bottom))}
-.compose form{max-width:790px;margin:auto;display:flex;gap:9px;background:var(--panel);border:1px solid #34425d;border-radius:15px;padding:8px}
-textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:var(--txt);padding:9px;min-height:42px;max-height:140px}
-.send{width:46px;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec)}
+.compose{border-top:1px solid var(--line);padding:12px max(12px,calc((100% - 800px)/2));background:#0b1220}
+.compose form{display:flex;gap:9px;background:var(--panel);border:1px solid #34425d;border-radius:15px;padding:8px}
+textarea{resize:vertical;background:transparent;border:0;outline:0;color:var(--txt);padding:9px;min-height:42px;max-height:150px;width:100%}
+.send{width:48px;flex:none;border:0;border-radius:12px;background:linear-gradient(135deg,var(--a),#3478ec)}
 .hint{text-align:center;color:#71819c;font-size:11px;margin-top:7px}
+#studioView{overflow:auto;padding:14px}.studio-grid{width:min(1250px,100%);margin:auto;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;min-width:0}
+.stage{position:relative;background:#03060c;border-radius:14px;overflow:hidden;aspect-ratio:16/9;min-height:240px;display:grid;place-items:center}
+#threeHost{position:absolute;inset:0}#threeHost canvas{display:block;width:100%;height:100%;touch-action:none}
+.load{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;background:#080d18;color:#cbd7ef;z-index:2}
+.controls{display:grid;gap:12px}.controls label{display:grid;gap:6px;color:#aebbd2;font-size:13px}
+.controls input,.controls select,.controls textarea{width:100%;background:#080f1d;color:#f2f5ff;border:1px solid #34425d;border-radius:10px;padding:11px;font:inherit}
+.controls textarea{min-height:105px}.row{display:flex;gap:8px;flex-wrap:wrap}.stbtn{background:#19263d;color:#fff;border:1px solid #354765;border-radius:11px;padding:11px 13px}
+.stbtn.main{background:linear-gradient(120deg,var(--a),#247bc2);border:0;font-weight:750}.stbtn:disabled{opacity:.45}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}.presets button{text-align:left}.presets .active{outline:2px solid #8c7cff;background:#27254a}
+.meter{height:4px;background:#202c40;border-radius:5px;overflow:hidden;margin-top:12px}.meter span{display:block;height:100%;width:0;background:#8c7cff}
+.status{font-size:13px;color:#b8c9e8;min-height:20px;margin-top:8px}.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#aab7ce;font-size:12px;margin-top:9px}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin:3px 0}
 dialog{background:#101827;color:var(--txt);border:1px solid var(--line);border-radius:16px;width:min(500px,calc(100% - 24px))}
-dialog input{width:100%;padding:12px;background:#080d18;color:white;border:1px solid var(--line);border-radius:9px}
+dialog::backdrop{background:#0009;backdrop-filter:blur(5px)}dialog input{width:100%;padding:12px;background:#080d18;color:white;border:1px solid var(--line);border-radius:9px}
 dialog label{display:block;margin:15px 0 6px;color:var(--muted)}
-.studio-launch{position:fixed;right:15px;bottom:90px;z-index:20;border:1px solid #5667a0;background:linear-gradient(135deg,#7659ff,#147fba);color:white;border-radius:16px;padding:14px 17px;font-weight:850;box-shadow:0 10px 35px #0008}
-#studio{position:fixed;inset:0;z-index:30;background:#070b14;color:#eef3ff;display:none;overflow:auto;padding-bottom:env(safe-area-inset-bottom)}
-#studio.open{display:block}
-.st-head{position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(16px);border-bottom:1px solid #293650;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.st-head b{font-size:18px;letter-spacing:1px}.st-wrap{max-width:1350px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.8fr);gap:15px}
-.st-panel{background:#101827;border:1px solid #293650;border-radius:18px;padding:15px;min-width:0}
-.st-view{position:relative;background:#03060c;border-radius:14px;overflow:hidden;aspect-ratio:16/9;min-height:240px;touch-action:pan-y}
-.st-view canvas{display:block;width:100%;height:100%}
-.st-load{position:absolute;inset:0;display:grid;place-items:center;color:#cbd7ef;background:#080d18;text-align:center;padding:20px;z-index:2}
-.st-controls{display:grid;gap:11px}.st-controls label{display:grid;gap:6px;color:#aebbd2;font-size:13px}
-.st-controls input,.st-controls select,.st-controls textarea{width:100%;background:#080f1d;color:#f2f5ff;border:1px solid #34425d;border-radius:10px;padding:11px;font:inherit}
-.st-controls textarea{min-height:100px;resize:vertical}.st-row{display:flex;gap:8px;flex-wrap:wrap}
-.st-btn{background:#19263d;color:#fff;border:1px solid #354765;border-radius:11px;padding:11px 13px;font:inherit}
-.st-btn.main{background:linear-gradient(120deg,#7659ff,#247bc2);border:0;font-weight:750}
-.st-btn:disabled{opacity:.45;cursor:not-allowed}.st-note{font-size:12px;color:#91a0b8;line-height:1.5;margin:0}
-.st-status{font-size:13px;color:#b8c9e8;min-height:20px}.st-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.st-presets button{text-align:left}.st-presets button.active{outline:2px solid #8c7cff;background:#27254a}
-.st-meter{height:5px;background:#202c40;border-radius:5px;overflow:hidden}.st-meter span{display:block;height:100%;width:0;background:#8c7cff}
-.st-below{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#aab7ce;font-size:12px;margin-top:10px}
-.st-close{font-size:20px;padding:7px 12px}
-.st-badges{display:flex;gap:7px;flex-wrap:wrap}.st-badges span{font-size:11px;color:#b8c9e8;background:#17243a;border:1px solid #2d405f;border-radius:30px;padding:5px 8px}
-@media(max-width:760px){.app{display:block}aside{display:none}main{height:100dvh}header{padding:11px}.select{max-width:135px}#messages{padding:17px 13px}.prompts{grid-template-columns:1fr}h1{font-size:27px}.st-wrap{grid-template-columns:1fr;padding:9px}.st-view{aspect-ratio:9/16;max-height:64vh;min-height:300px}.st-panel{padding:11px}.studio-launch{bottom:84px;right:10px;padding:12px 14px}}
+.mobile-bottom{display:none}
+@media(max-width:800px){
+ .app{display:block;height:100dvh}aside{display:none}main{height:100dvh}
+ header{padding:11px 12px}.headnav{gap:5px}.select{max-width:120px}
+ #messages{padding:16px 13px}.prompts{grid-template-columns:1fr}h1{font-size:26px}
+ .studio-grid{grid-template-columns:1fr}.stage{aspect-ratio:9/16;max-height:58dvh;min-height:300px}
+ #studioView{padding:9px}.panel{padding:12px}
+ .mobile-bottom{display:flex;gap:8px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));background:#0b1220;border-top:1px solid var(--line)}
+ .mobile-bottom button{flex:1;text-align:center}
+}
 </style>
 </head>
 <body>
 <div class="app">
 <aside>
- <div class="brand"><span class="logo">N</span>NOVA AI</div><small>TON ASSISTANT INTELLIGENT</small>
- <button class="primary" id="new">＋ Nouvelle conversation</button><small>HISTORIQUE</small><div id="history"></div>
- <button class="btn bottom" id="settingsSide">⚙ Connexion API</button><small id="status">API NOVA : vérification…</small>
+ <div class="brand"><span class="logo">N</span>NOVA AI</div>
+ <small>TON ASSISTANT INTELLIGENT</small>
+ <button class="primary" id="newChat">＋ Nouvelle conversation</button>
+ <button class="navbtn active" data-view="chatView">✦ Assistant</button>
+ <button class="navbtn" data-view="studioView">🎬 Studio 3D</button>
+ <small>HISTORIQUE</small><div id="history"></div>
+ <button class="btn bottom" id="settingsSide">⚙ Réglages API</button>
+ <small id="apiStatus">API intégrée · vérification…</small>
 </aside>
 <main>
- <header><div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div>
- <div><select class="select" id="model"><option value="">Modèles</option></select> <button class="btn" id="settingsTop">⚙</button></div></header>
- <section id="messages"><div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide pour coder.</p><div class="prompts">
- <button class="prompt">💡 Trouve-moi une idée de projet innovant</button><button class="prompt">🧠 Explique-moi un sujet compliqué</button><button class="prompt">💻 Aide-moi à créer une application</button><button class="prompt">✍️ Rédige un texte professionnel</button>
- </div></div></section>
- <div class="compose"><form id="form"><textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea><button class="send" id="send" aria-label="Envoyer">➤</button></form><div class="hint">Vérifie les réponses importantes : une IA peut se tromper.</div></div>
-</main></div>
-<button class="studio-launch" id="openStudio">✦ NOVA 3D STUDIO</button>
-
-<script type="module">
-const byId = id => document.getElementById(id);
-const host = byId('threeHost');
-const studio = byId('studio');
-
-let THREE = null;
-let renderer = null;
-let scene = null;
-let camera = null;
-let clock = null;
-let raf = null;
-let mixer = null;
-let horse = null;
-let horseRoot = null;
-
-let initialized = false;
-let playing = true;
-let recording = false;
-let look = 'cinematic';
-let sceneType = 'beach';
-let loadToken = 0;
-
-let objects = [];
-let clouds = [];
-let windObjects = [];
-let waterMesh = null;
-let waterMaterial = null;
-let resizeObserver = null;
-
-const clamp = (v, min, max) =>
-  Math.max(min, Math.min(max, v));
-
-const rand = (min, max) =>
-  min + Math.random() * (max - min);
-
-const status = message => {
-  const el = byId('stStatus');
-  if (el) el.textContent = message;
-};
-
-function mat(color, roughness = 0.8, metalness = 0) {
-  return new THREE.MeshStandardMaterial({
-    color,
-    roughness,
-    metalness
-  });
-}
-
-function add(object) {
-  scene.add(object);
-  objects.push(object);
-  return object;
-}
-
-function plane(width, height, material, x = 0, y = 0, z = 0) {
-  const mesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(width, height),
-    material
-  );
-
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.position.set(x, y, z);
-  mesh.receiveShadow = true;
-
-  return add(mesh);
-}
-
-function disposeObject(object) {
-  object.traverse?.(node => {
-    if (node.geometry) node.geometry.dispose();
-
-    if (node.material) {
-      const materials = Array.isArray(node.material)
-        ? node.material
-        : [node.material];
-
-      materials.forEach(material => {
-        if (material !== waterMaterial) {
-          material.dispose?.();
-        }
-      });
-    }
-  });
-}
-
-function setStudioStatus(message) {
-  status(message);
-}
-
-function stopAnimation() {
-  if (raf) {
-    cancelAnimationFrame(raf);
-    raf = null;
-  }
-}
-
-function resetCamera() {
-  if (!camera) return;
-
-  camera.position.set(11, 6.2, 15);
-  camera.lookAt(0, 1, 0);
-}
-
-function showStudio() {
-  studio.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function hideStudio() {
-  studio.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function prepareStudio() {
-  if (!host) {
-    status('Zone de rendu 3D introuvable.');
-    return;
-  }
-
-  if (!window.WebGLRenderingContext) {
-    status('Ce navigateur ne semble pas prendre en charge WebGL.');
-    return;
-  }
-
-  status('Prêt à initialiser le moteur 3D.');
-}
-
-prepareStudio();
+<header>
+ <div><b>NOVA AI</b><br><small id="subtitle">Réfléchir · créer · apprendre</small></div>
+ <div class="headnav">
+  <button class="navbtn active" data-view="chatView">Assistant</button>
+  <button class="navbtn" data-view="studioView">Studio 3D</button>
+  <select class="select" id="model" aria-label="Modèle IA"><option value="">Modèles…</option></select>
+  <button class="btn" id="settingsTop" aria-label="Réglages">⚙</button>
+ </div>
+</header>
+<section id="chatView" class="view active">
+ <section id="messages"></section>
+ <div class="compose">
+  <form id="chatForm"><textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea><button class="send" id="send" aria-label="Envoyer">➤</button></form>
+  <div class="hint">Vérifie les réponses importantes : une IA peut se tromper.</div>
+ </div>
+</section>
+<section id="studioView" class="view">
+ <div class="studio-grid">
+  <div class="panel">
+   <h2 style="margin:0 0 12px">Aperçu 3D temps réel</h2>
+   <div class="stage"><div id="threeHost"></div><div class="load" id="threeLoad">Le moteur 3D se prépare…<br><small>Ouvre le studio et attends quelques secondes</small></div></div>
+   <div class="meta"><span id="sceneName">Littoral cinématique</span><span>Scène WebGL interactive</span></div>
+   <div class="row" style="margin-top:12px">
+    <button class="stbtn" id="play3d">Ⅱ Pause</button><button class="stbtn" id="resetCamera">↻ Recentrer caméra</button><button class="stbtn main" id="exportVideo">⬇ Exporter la vidéo</button>
+   </div>
+   <div class="meter"><span id="progress"></span></div><div class="status" id="studioStatus" aria-live="polite">En attente du moteur 3D…</div>
+  </div>
+  <div class="panel controls">
+   <h2 style="margin:0">Créer ta scène</h2>
+   <label>Description détaillée<textarea id="scenePrompt">Un cheval brun au galop sur une plage au coucher du soleil, caméra cinéma qui suit le cheval de trois-quarts, crinière au vent, vagues, lumière dorée et profondeur de champ.</textarea></label>
+   <label>Décor<select id="sceneType"><option value="beach">Plage & littoral</option><option value="mountain">Montagnes</option><option value="forest">Forêt</option><option value="space">Espace</option><option value="desert">Désert</option><option value="nightcity">Ville de nuit</option></select></label>
+   <div class="presets">
+    <button class="stbtn active" data-look="cinematic">🎬 Cinéma</button><button class="stbtn" data-look="sunset">🌅 Golden hour</button><button class="stbtn" data-look="storm">⛈ Orage</button><button class="stbtn" data-look="dream">✨ Onirique</button>
+   </div>
+   <label>Format<select id="ratio"><option value="16:9">16:9 · Paysage</option><option value="9:16">9:16 · Vertical</option><option value="1:1">1:1 · Carré</option></select></label>
+   <label>Durée<select id="duration"><option value="6">6 secondes</option><option value="10" selected>10 secondes</option><option value="15">15 secondes</option><option value="20">20 secondes</option></select></label>
+   <label>Qualité<select id="quality"><option value="720">720p · fluide</option><option value="1080" selected>1080p · Full HD</option></select></label>
+   <button class="stbtn main" id="generateScene">✦ Construire / actualiser la scène</button>
+   <p class="note">Le studio produit une scène 3D temps réel avec Three.js et un modèle 3D animé lorsqu'il est disponible. Tu peux tourner autour de la scène avec le doigt. Ce n'est pas Sora : sans modèle vidéo IA externe, NOVA ne peut pas inventer photoréalistement n'importe quel sujet à partir d'une phrase. Le rendu dépend des modèles 3D chargés.</p>
+   <p class="note">L'export vidéo dépend de Safari/iOS. Laisse cette page ouverte pendant l'enregistrement. Le format exporté sera WebM si ton navigateur le permet.</p>
+  </div>
+ </div>
+</section>
+<div class="mobile-bottom"><button class="navbtn active" data-view="chatView">✦ Assistant</button><button class="navbtn" data-view="studioView">🎬 Studio 3D</button></div>
+</main>
+</div>
+<dialog id="settingsDialog">
+ <h2>Réglages de NOVA AI</h2>
+ <p class="muted">Par défaut, NOVA utilise les routes sécurisées de ton site Vercel. La clé API reste sur le serveur et n'est jamais demandée ici.</p>
+ <label for="apiBase">Adresse API personnalisée (facultatif)</label>
+ <input id="apiBase" placeholder="Laisser vide pour utiliser /api">
+ <p class="note">Exemple : https://ton-worker.workers.dev si ton Worker expose /chat et /models. Pour le backend Vercel, laisse ce champ vide.</p>
+ <p style="text-align:right"><button class="btn" id="closeSettings">Fermer</button> <button class="primary" id="saveSettings">Enregistrer</button></p>
+</dialog>
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let chats=[],chatId=null,busy=false,modelsLoaded=false;
+try{const saved=JSON.parse(localStorage.getItem('nova_chats')||'[]');if(Array.isArray(saved))chats=saved}catch{}
+const apiBase=()=>localStorage.getItem('nova_api_base')||'';
+const endpoint=path=>(apiBase().replace(/\/+$/,'')||'')+(apiBase()?'/'+path:'/api/'+path);
+const status=t=>$('#apiStatus').textContent=t;
+function persist(){try{localStorage.setItem('nova_chats',JSON.stringify(chats))}catch{status('Stockage local indisponible')}}
+function current(){return chats.find(c=>c.id===chatId)}
+function makeId(){return (crypto.randomUUID?.()||('nova-'+Date.now()+'-'+Math.random().toString(36).slice(2)))}
+function newChat(){chatId=makeId();chats.push({id:chatId,title:'Nouvelle conversation',messages:[]});persist();drawHistory();drawMessages()}
+function drawHistory(){const box=$('#history');box.replaceChildren();chats.slice().reverse().forEach(c=>{const b=document.createElement('button');b.className='btn';b.textContent=c.title||'Conversation';b.onclick=()=>{chatId=c.id;drawMessages()};box.append(b)})}
+function appendMessage(role,content){const row=document.createElement('div');row.className='msg '+role;const av=document.createElement('div');av.className='avatar';av.textContent=role==='user'?'P':'N';const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=content;row.append(av,bubble);$('#messages').append(row);return bubble}
+function drawMessages(){const box=$('#messages');box.replaceChildren();const c=current();if(!c||!c.messages.length){const w=document.createElement('div');w.className='welcome';w.innerHTML='<div class="orb">✦</div><h1>Que veux-tu créer aujourd’hui ?</h1><p>Pose une question, imagine un projet ou demande de l’aide pour coder.</p><div class="prompts"><button class="prompt">💡 Trouve-moi une idée de projet innovant</button><button class="prompt">🧠 Explique-moi un sujet compliqué</button><button class="prompt">💻 Aide-moi à créer une application</button><button class="prompt">✍️ Rédige un texte professionnel</button></div>';box.append(w);w.querySelectorAll('.prompt').forEach(b=>b.onclick=()=>{$('#input').value=b.textContent.replace(/^.{2}/,'').trim();$('#input').focus()});return}c.messages.forEach(m=>appendMessage(m.role,typeof m.content==='string'?m.content:JSON.stringify(m.content)));box.scrollTop=box.scrollHeight}
+async function loadModels(){try{status('Connexion à l’API…');const r=await fetch(endpoint('models'));if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();const list=d.data||d.models||[];$('#model').replaceChildren();list.forEach(m=>{const o=document.createElement('option');o.value=m.id;o.textContent=m.name||m.id;$('#model').append(o)});if(!list.length){const o=document.createElement('option');o.value='';o.textContent='Modèle serveur par défaut';$('#model').append(o)}modelsLoaded=true;status('API connectée · '+(list.length||'modèle par défaut'))}catch(e){status('API indisponible : '+e.message+' · vérifie le backend Vercel');$('#model').innerHTML='<option value="">Modèle serveur par défaut</option>'}}
+async function sendMessage(text){if(!text.trim()||busy)return;let c=current();if(!c){newChat();c=current()}c.messages.push({role:'user',content:text.trim()});if(c.messages.length===1)c.title=text.trim().slice(0,34);persist();drawHistory();drawMessages();$('#input').value='';busy=true;$('#send').disabled=true;const wait=appendMessage('assistant','NOVA réfléchit…');try{const payload={messages:c.messages};if($('#model').value)payload.model=$('#model').value;const r=await fetch(endpoint('chat'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||'Erreur HTTP '+r.status);const answer=d.choices?.[0]?.message?.content??d.response??d.message??'Réponse vide du serveur';const final=typeof answer==='string'?answer:JSON.stringify(answer);wait.textContent=final;c.messages.push({role:'assistant',content:final});persist()}catch(e){wait.textContent='Erreur de connexion : '+e.message+'\n\nVérifie que /api/chat est bien déployé sur Vercel.'}finally{busy=false;$('#send').disabled=false;$('#messages').scrollTop=$('#messages').scrollHeight}}
+$('#chatForm').addEventListener('submit',e=>{e.preventDefault();sendMessage($('#input').value)});
+$('#input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#chatForm').requestSubmit()}});
+$('#newChat').onclick=newChat;
+function openSettings(){$('#apiBase').value=apiBase();$('#settingsDialog').showModal()}
+$('#settingsSide').onclick=$('#settingsTop').onclick=openSettings;
+$('#closeSettings').onclick=()=>$('#settingsDialog').close();
+$('#saveSettings').onclick=()=>{const v=$('#apiBase').value.trim().replace(/\/+$/,'');if(v&&!/^https:\/\/[a-z0-9.-]+(?::\d+)?(?:\/.*)?$/i.test(v)){alert('Entre une adresse HTTPS valide.');return}localStorage.setItem('nova_api_base',v);$('#settingsDialog').close();loadModels()};
+function showView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('#subtitle').textContent=id==='studioView'?'Créer des scènes 3D · prévisualiser · exporter':'Réfléchir · créer · apprendre';if(id==='studioView')window.NOVA_STUDIO?.start()}
+$$('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+if(!chats.length)newChat();else{chatId=chats[chats.length-1].id;drawHistory();drawMessages()}
+loadModels();
+})();
 </script>
-
-function clearWorld(){for(const o of objects){o.parent?.remove(o);o.traverse?.(n=>{n.geometry?.dispose?.();if(n.material)(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m!==waterMaterial)m.dispose?.()})})}objects=[];clouds=[];windObjects=[];waterMesh=null;waterMaterial=null;horse=null;horseRoot=null;mixer=null}
-function setLook(name){look=name;document.querySelectorAll('[data-look]').forEach(b=>b.classList.toggle('active',b.dataset.look===name));if(initialized)buildScene(sceneType)}
-function makeSky(type){let color=0x9ebbd0,fog=0x9ebbd0;if(look==='sunset'){color=0xf0a078;fog=0xeaa47e}else if(look==='storm'){color=0x39495e;fog=0x53616b}else if(look==='dream'){color=0x9c91c9;fog=0xa99bc9}else if(type==='nightcity'||type==='space'){color=0x080d20;fog=0x10172b}else if(type==='desert'){color=0xd9a36f;fog=0xd9a36f}
-scene.background=new THREE.Color(color);scene.fog=new THREE.Fog(fog,35,150)}
-function addCloud(x,y,z){const g=new THREE.Group();for(let i=0;i<5;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(rand(.65,1.25),18,14),new THREE.MeshStandardMaterial({color:0xf5eee8,roughness:1,transparent:true,opacity:.78}));s.position.set((i-2)*.8,rand(-.15,.25),rand(-.25,.25));g.add(s)}g.position.set(x,y,z);add(g);clouds.push(g)}
-function makeTerrain(type){
-let groundColor=type==='beach'?0xc7a579:type==='forest'?0x294b32:type==='mountain'?0x59616b:type==='desert'?0xb98752:0x171e2d;
-const ground=mat(groundColor,1);plane(180,180,ground,0,-.18,0);
-if(type==='beach'){
-const sand=mat(0xd6b98e,1);const shore=plane(180,45,sand,0,-.05,22);
-const geo=new THREE.PlaneGeometry(180,90,100,60);
-const pos=geo.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,Math.sin(x*.09+y*.12)*.08+Math.sin(x*.025)*.12)}geo.computeVertexNormals();
-waterMaterial=new THREE.MeshStandardMaterial({color:look==='storm'?0x31596a:look==='dream'?0x558cbd:0x167f99,roughness:.22,metalness:.18,transparent:false});
-waterMesh=new THREE.Mesh(geo,waterMaterial);waterMesh.rotation.x=-Math.PI/2;waterMesh.position.set(0,.02,-38);waterMesh.receiveShadow=true;add(waterMesh);
-for(let i=0;i<7;i++){const foam=new THREE.Mesh(new THREE.TorusGeometry(18+i*1.8,.055,5,100),new THREE.MeshBasicMaterial({color:0xd8f3f1,transparent:true,opacity:.22}));foam.rotation.x=Math.PI/2;foam.scale.set(2.8,.55,1);foam.position.set(0,.11,-8-i*3);add(foam);windObjects.push(foam)}
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js';
+(()=>{
+const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let renderer,scene,camera,controls,clock,mixer,horse,raf,playing=true,look='cinematic',kind='beach',started=false,recording=false,world=[],waterMat,waterMesh,resizeObserver,horseToken=0;
+const status=t=> $('studioStatus').textContent=t;
+function material(color,roughness=.88,metalness=0){return new THREE.MeshStandardMaterial({color,roughness,metalness})}
+function add(obj){scene.add(obj);world.push(obj);return obj}
+function clearWorld(){for(const o of world){o.parent?.remove(o);o.traverse?.(n=>{n.geometry?.dispose?.();if(n.material)(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m!==waterMat)m.dispose?.()})})}world=[];horse=null;mixer=null;waterMesh=null}
+function groundPlane(w,h,mat,x=0,y=0,z=0){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.receiveShadow=true;return add(m)}
+function skyConfig(type){let c=0x9bbbd0,f=0x9bbbd0;if(look==='sunset'){c=0xf0a078;f=0xeaa47e}else if(look==='storm'){c=0x39495e;f=0x53616b}else if(look==='dream'){c=0x9c91c9;f=0xa99bc9}else if(type==='nightcity'||type==='space'){c=0x080d20;f=0x10172b}else if(type==='desert'){c=0xd9a36f;f=c}scene.background=new THREE.Color(c);scene.fog=new THREE.Fog(f,35,150)}
+function addCloud(x,y,z){const g=new THREE.Group();for(let i=0;i<5;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.8+Math.random()*.55,18,14),new THREE.MeshStandardMaterial({color:0xf6eee7,roughness:1,transparent:true,opacity:.83}));s.position.set(i*.9,Math.sin(i)*.2,Math.cos(i)*.2);g.add(s)}g.position.set(x,y,z);add(g)}
+function buildWorld(type){
+ if(!renderer)return;clearWorld();kind=type;skyConfig(type);
+ const palette={beach:0xcbb38d,desert:0xc29a68,forest:0x31523a,mountain:0x777f89,nightcity:0x111827,space:0x050817};
+ groundPlane(180,180,material(palette[type]||0x777777),0,-.12,0);
+ if(type==='beach'){
+  waterMat=new THREE.MeshStandardMaterial({color:look==='storm'?0x315c70:0x168ba4,roughness:.24,metalness:.16});
+  waterMesh=new THREE.Mesh(new THREE.PlaneGeometry(180,75,80,40),waterMat);waterMesh.rotation.x=-Math.PI/2;waterMesh.position.set(0,.025,-48);add(waterMesh);
+  for(let i=0;i<22;i++){const line=new THREE.Mesh(new THREE.TorusGeometry(28+i*2,.025,4,100),new THREE.MeshBasicMaterial({color:0xb9e5e9,transparent:true,opacity:.17}));line.rotation.x=Math.PI/2;line.scale.set(1,.28,1);line.position.set(0,.07,-15-i*2.4);add(line)}
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(2.2,32,24),new THREE.MeshBasicMaterial({color:0xffe1a0}));sun.position.set(-15,13,-55);add(sun);
+  for(let i=0;i<14;i++){const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(.25+Math.random()*.45,1),material(0x88745e));rock.position.set((Math.random()-.5)*65,.12,-8-Math.random()*50);rock.scale.y=.55;rock.castShadow=true;add(rock)}
+ }else if(type==='mountain'){
+  for(let i=0;i<22;i++){const h=9+Math.random()*20;const m=new THREE.Mesh(new THREE.ConeGeometry(4+Math.random()*8,h,7),material(i%2?0x596d7a:0x87919a));m.position.set((Math.random()-.5)*100,h/2-1,-22-Math.random()*75);m.castShadow=true;add(m);const snow=new THREE.Mesh(new THREE.ConeGeometry(2+Math.random()*3,h*.22,7),material(0xdce5e9));snow.position.set(m.position.x,m.position.y+h*.34,m.position.z);add(snow)}
+ }else if(type==='forest'){
+  for(let i=0;i<100;i++){const x=(Math.random()-.5)*90,z=(Math.random()-.5)*100-15;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.15,.3,3.5,9),material(0x59402d));trunk.position.set(x,1.6,z);trunk.castShadow=true;add(trunk);for(let j=0;j<3;j++){const crown=new THREE.Mesh(new THREE.ConeGeometry(1.8-j*.28,3.1,9),material(i%3?0x24583a:0x376b42));crown.position.set(x,2.8+j*1.25,z);crown.castShadow=true;add(crown)}}
+ }else if(type==='desert'){
+  for(let i=0;i<18;i++){const dune=new THREE.Mesh(new THREE.SphereGeometry(1,32,20),material(i%2?0xc08c53:0xd3a66a));dune.scale.set(9+Math.random()*12,1.8,6);dune.position.set((Math.random()-.5)*75,.1,-10-Math.random()*60);add(dune)}
+ }else if(type==='nightcity'){
+  for(let i=0;i<45;i++){const h=5+Math.random()*22,w=2+Math.random()*4;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,3+Math.random()*3),material(0x202b42,.68,.22));b.position.set((Math.random()-.5)*85,h/2,-12-Math.random()*60);b.castShadow=true;add(b);for(let j=0;j<12;j++){const win=new THREE.Mesh(new THREE.PlaneGeometry(.22,.3),new THREE.MeshBasicMaterial({color:Math.random()>.4?0xffcf77:0x6d9dff}));win.position.set(b.position.x-w*.3+Math.random()*w*.6,.8+Math.random()*(h-1),b.position.z+1.52);add(win)}}
+ }else if(type==='space'){
+  const geo=new THREE.BufferGeometry(),p=[];for(let i=0;i<2600;i++)p.push((Math.random()-.5)*220,(Math.random()-.5)*120,(Math.random()-.5)*180);geo.setAttribute('position',new THREE.Float32BufferAttribute(p,3));add(new THREE.Points(geo,new THREE.PointsMaterial({color:0xffffff,size:.16})));
+  const planet=new THREE.Mesh(new THREE.SphereGeometry(9,64,48),new THREE.MeshStandardMaterial({color:0x315eaa,roughness:.86}));planet.position.set(-18,5,-45);add(planet);const glow=new THREE.PointLight(0x719bff,65,110);glow.position.set(-12,15,-24);add(glow)
+ }
+ if(type!=='space'&&type!=='nightcity')for(let i=0;i<7;i++)addCloud(-35+i*12,15+Math.random()*8,-35-Math.random()*35);
+ $('sceneName').textContent=({beach:'Littoral cinématique',mountain:'Haute montagne',forest:'Forêt immersive',space:'Espace profond',desert:'Désert',nightcity:'Métropole nocturne'})[type];
+ camera.position.set(type==='space'?14:11,7,18);controls.target.set(0,1,0);controls.update();loadHorse();
 }
-if(type==='mountain'){for(let i=0;i<18;i++){const h=rand(9,27),r=rand(4,10),g=new THREE.ConeGeometry(r,h,7);const m=new THREE.Mesh(g,mat(i%3===0?0x87939b:0x596b78,1));m.position.set(rand(-75,75),h/2-1,rand(-95,-28));m.castShadow=true;add(m);const cap=new THREE.Mesh(new THREE.ConeGeometry(r*.43,h*.35,7),mat(0xd7e1e5,1));cap.position.set(m.position.x,h*.82,m.position.z);add(cap)}}
-if(type==='forest'){for(let i=0;i<95;i++){const x=rand(-70,70),z=rand(-70,40),tr=new THREE.Mesh(new THREE.CylinderGeometry(.18,.32,3.5,9),mat(0x503727));tr.position.set(x,1.65,z);tr.castShadow=true;add(tr);for(let j=0;j<3;j++){const crown=new THREE.Mesh(new THREE.ConeGeometry(rand(1.4,2.2),3.1,9),mat(i%3?0x24583a:0x386b43));crown.position.set(x,3+j*1.5,z);crown.castShadow=true;add(crown);windObjects.push(crown)}}}
-if(type==='desert'){for(let i=0;i<14;i++){const dune=new THREE.Mesh(new THREE.SphereGeometry(1,32,18),mat(i%2?0xc08c53:0xd3a66a,1));dune.scale.set(rand(8,18),rand(1.3,2.2),rand(5,11));dune.position.set(rand(-60,60),-.15,rand(-65,35));add(dune)}}}
-function makeCity(){for(let i=0;i<45;i++){const h=rand(5,25),w=rand(2,5),d=rand(2,5),b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(0x202b42,.7,.22));b.position.set(rand(-65,65),h/2,rand(-65,-12));b.castShadow=true;add(b);for(let j=0;j<12;j++){const win=new THREE.Mesh(new THREE.PlaneGeometry(.24,.3),new THREE.MeshBasicMaterial({color:Math.random()>.35?0xffc86f:0x77aaff}));win.position.set(b.position.x+rand(-w*.35,w*.35),rand(.8,h-.5),b.position.z+d/2+.01);add(win)}}}
-function makeSpace(){const g=new THREE.BufferGeometry(),a=[];for(let i=0;i<2600;i++)a.push(rand(-180,180),rand(-90,90),rand(-180,180));g.setAttribute('position',new THREE.Float32BufferAttribute(a,3));add(new THREE.Points(g,new THREE.PointsMaterial({color:0xffffff,size:.16})));const p=new THREE.Mesh(new THREE.SphereGeometry(9,64,48),new THREE.MeshStandardMaterial({color:0x345eae,roughness:.8}));p.position.set(-20,7,-48);add(p);const ring=new THREE.Mesh(new THREE.TorusGeometry(13,.22,8,120),mat(0x9eb8dc,.4,.7));ring.position.copy(p.position);ring.rotation.x=1.2;add(ring)}
-function makeSun(){if(sceneType==='nightcity'||sceneType==='space')return;const sun=new THREE.Mesh(new THREE.SphereGeometry(2.4,32,24),new THREE.MeshBasicMaterial({color:look==='storm'?0xb6c3d0:0xffe2a2}));sun.position.set(-23,23,-65);add(sun)}
-function makeFallbackHorse(){
-const root=new THREE.Group();const brown=mat(0x70452d,.68),dark=mat(0x241c1a),mane=mat(0x241b18),hoof=mat(0x181514);
-function ellipsoid(parent,scale,pos,material){const m=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),material);m.scale.set(...scale);m.position.set(...pos);m.castShadow=true;parent.add(m);return m}
-ellipsoid(root,[1.15,.55,.42],[0,1.35,0],brown);ellipsoid(root,[.45,.75,.36],[.82,1.75,0],brown);ellipsoid(root,[.48,.38,.34],[1.2,2.25,0],brown);ellipsoid(root,[.22,.18,.28],[1.53,2.12,0],dark);
-const neck=ellipsoid(root,[.3,.8,.28],[.8,1.95,0],brown);neck.rotation.z=-.48;
-const maneMesh=ellipsoid(root,[.16,.75,.31],[.57,2.25,-.02],mane);maneMesh.rotation.z=-.5;
-for(const z of [-.25,.25]){ellipsoid(root,[.07,.07,.07],[1.28,2.43,z],dark)}
-const legs=[];for(const x of [-.7,.65])for(const z of [-.23,.23]){const pivot=new THREE.Group();pivot.position.set(x,1.25,z);root.add(pivot);const upper=new THREE.Mesh(new THREE.CylinderGeometry(.11,.075,.72,12),brown);upper.position.y=-.36;upper.castShadow=true;pivot.add(upper);const lower=new THREE.Mesh(new THREE.CylinderGeometry(.065,.045,.62,12),brown);lower.position.set(0,-.98,0);lower.castShadow=true;pivot.add(lower);const foot=new THREE.Mesh(new THREE.BoxGeometry(.17,.12,.25),hoof);foot.position.set(.04,-1.3,0);pivot.add(foot);legs.push(pivot)}
-root.position.set(-1,0,0);root.scale.setScalar(1.0);add(root);horseRoot=root;horse={fallback:true,legs};return root}
-async function loadHorseModel(token){try{const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');const loader=new GLTFLoader();const gltf=await new Promise((resolve,reject)=>loader.load('https://threejs.org/examples/models/gltf/Horse.glb',resolve,undefined,reject));if(token!==loadToken||!scene)return;const old=horseRoot;if(old){old.parent?.remove(old);objects=objects.filter(o=>o!==old)}const root=new THREE.Group();root.add(gltf.scene);gltf.scene.scale.setScalar(1.15);gltf.scene.position.set(0,0,0);gltf.scene.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});root.position.set(-1,0,0);add(root);horseRoot=root;horse={fallback:false};if(gltf.animations?.length){mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(gltf.animations[0]).play()}status('Cheval 3D chargé avec animation.');}catch(e){if(!horseRoot)makeFallbackHorse();status('Modèle externe inaccessible : cheval procédural 3D activé.');}}
-function makeSceneSubject(prompt){const p=prompt.toLowerCase();if(sceneType==='beach'&&(p.includes('cheval')||p.includes('horse'))){makeFallbackHorse();loadHorseModel(loadToken);return}
-if(p.includes('voiture')||p.includes('voiture')||p.includes('car')){const g=new THREE.Group(),body=new THREE.Mesh(new THREE.BoxGeometry(3.2,.65,1.5),mat(0x9d2731,.35,.45));body.position.y=.8;g.add(body);const top=new THREE.Mesh(new THREE.BoxGeometry(1.6,.65,1.25),mat(0x253c54,.25,.3));top.position.set(-.15,1.4,0);g.add(top);for(const x of [-1,1])for(const z of [-.78,.78]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.2,24),mat(0x11151b,.8));w.rotation.x=Math.PI/2;w.position.set(x,.42,z);g.add(w)}g.position.set(0,0,0);add(g);horseRoot=g;return}
-if(p.includes('astronaute')||p.includes('personne')||p.includes('homme')||p.includes('femme')||p.includes('humain')){const g=new THREE.Group(),suit=mat(0x344b6a,.65),skin=mat(0xc99070);const body=new THREE.Mesh(new THREE.CapsuleGeometry(.34,.72,5,12),suit);body.position.y=1.35;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.24,24,18),skin);head.position.y=2.1;g.add(head);for(const x of [-.18,.18]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.09,.075,.8,12),suit);leg.position.set(x,.48,0);g.add(leg)}add(g);horseRoot=g}}
-function buildScene(type,prompt=''){
-loadToken++;const token=loadToken;clearWorld();sceneType=type;makeSky(type);
-const hemi=new THREE.HemisphereLight(0xc6dcff,0x55412f,look==='storm'?1.0:1.8);add(hemi);
-const sun=new THREE.DirectionalLight(look==='storm'?0xb9c9dc:0xffd4a0,look==='storm'?2:3.1);sun.position.set(-25,35,20);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;sun.shadow.bias=-.00015;add(sun);
-makeTerrain(type);if(type==='nightcity')makeCity();if(type==='space')makeSpace();makeSun();
-if(type!=='space'&&type!=='nightcity')for(let i=0;i<7;i++)addCloud(rand(-40,40),rand(16,27),rand(-70,-25));
-if(type==='beach')makeSceneSubject(prompt||'cheval');
-else makeSceneSubject(prompt);
-camera.position.set(type==='space'?15:11,6.2,15);camera.lookAt(0,1,0);
-byId('stSceneName').textContent=({beach:'Littoral cinématique',mountain:'Haute montagne',forest:'Forêt immersive',space:'Espace profond',desert:'Désert',nightcity:'Métropole nocturne'})[type];
-status('Scène 3D reconstruite. Ajuste le texte puis génère une nouvelle version.');
+async function loadHorse(){
+ const token=++horseToken;
+ try{const loader=new GLTFLoader();loader.load('https://threejs.org/examples/models/gltf/Horse.glb',g=>{if(token!==horseToken||!scene)return;horse=g.scene;horse.scale.setScalar(1.25);horse.position.set(0,0,1);horse.rotation.y=Math.PI;horse.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});add(horse);if(g.animations?.length){mixer=new THREE.AnimationMixer(horse);mixer.clipAction(g.animations[0]).play()}status('Modèle 3D du cheval chargé avec animation.');},undefined,()=>status('Décor 3D prêt. Le modèle de cheval externe ne répond pas sur ce réseau.'))}catch{status('Décor 3D prêt, modèle externe indisponible.')}
 }
-function resize(){if(!renderer)return;const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;const ratio=byId('stRatio').value;const ar=ratio==='9:16'?9/16:ratio==='1:1'?1:16/9;let cw=w,ch=w/ar;if(ch>h&&h>0){ch=h;cw=h*ar}renderer.setSize(Math.floor(cw),Math.floor(ch),false);renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';camera.aspect=cw/ch;camera.updateProjectionMatrix()}
-function animate(){raf=requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;if(playing){if(mixer)mixer.update(dt);if(horseRoot){horseRoot.position.x=-1+Math.sin(t*.45)*.8;horseRoot.position.z=Math.sin(t*.7)*.5;if(horse?.fallback)horse.legs.forEach((leg,i)=>{leg.rotation.z=Math.sin(t*8+(i%2)*Math.PI)*.55})}clouds.forEach((c,i)=>{c.position.x+=dt*(.12+i*.012);if(c.position.x>55)c.position.x=-55});windObjects.forEach((o,i)=>{o.position.x+=Math.sin(t+i)*dt*.08});if(waterMesh){const p=waterMesh.geometry.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);p.setZ(i,Math.sin(x*.08+t*1.4)*.12+Math.sin(y*.14+t)*.07)}p.needsUpdate=true;waterMesh.geometry.computeVertexNormals()}camera.position.x=11+Math.sin(t*.12)*1.4;camera.position.z=15+Math.cos(t*.12)*.7;camera.lookAt(0,1,0)}renderer.render(scene,camera)}
-async function init3D(){if(initialized){resize();return}try{status('Chargement de Three.js…');THREE=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');scene=new THREE.Scene();clock=new THREE.Clock();camera=new THREE.PerspectiveCamera(42,1,.1,500);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.innerHTML='';host.appendChild(renderer.domElement);initialized=true;buildScene(byId('stScene').value,byId('stPrompt').value);resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);resize();animate();status('Moteur 3D prêt. Décris ta scène et appuie sur Générer.')}catch(e){byId('threeLoad').style.display='grid';byId('threeLoad').textContent='Le moteur 3D ne peut pas démarrer : '+e.message;status('Erreur moteur 3D : '+e.message)}}
-byId('openStudio').onclick=()=>{studio.classList.add('open');document.body.style.overflow='hidden';init3D()};
-byId('closeStudio').onclick=()=>{studio.classList.remove('open');document.body.style.overflow='';};
-byId('stPlay').onclick=()=>{playing=!playing;byId('stPlay').textContent=playing?'Ⅱ Pause':'▶ Reprendre'};
-byId('stReset').onclick=()=>{if(camera){camera.position.set(11,6.2,15);camera.lookAt(0,1,0)}};
-document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>setLook(b.dataset.look));
-byId('stScene').onchange=e=>{sceneType=e.target.value;if(initialized)buildScene(sceneType,byId('stPrompt').value)};
-byId('stGenerate').onclick=()=>{const prompt=byId('stPrompt').value.trim();if(!prompt){status('Écris une description avant de générer.');return}if(!initialized){init3D().then(()=>buildScene(byId('stScene').value,prompt));return}buildScene(byId('stScene').value,prompt)};
-byId('stRatio').onchange=resize;
-byId('stExport').onclick=async()=>{if(!renderer||recording){status('Le moteur 3D doit être prêt avant l’export.');return}const canvas=renderer.domElement;if(!canvas.captureStream||!window.MediaRecorder){status('Export vidéo non pris en charge par ce navigateur.');return}
-try{recording=true;byId('stExport').disabled=true;const ratio=byId('stRatio').value,quality=Number(byId('stQuality').value),seconds=Number(byId('stDuration').value);const ar=ratio==='9:16'?9/16:ratio==='1:1'?1:16/9;const w=quality===1080?1080:720,h=Math.round(w/ar);const exportCanvas=document.createElement('canvas');exportCanvas.width=w;exportCanvas.height=h;const ctx=exportCanvas.getContext('2d');const stream=exportCanvas.captureStream(30);const mime=['video/mp4;codecs=h264','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('Aucun format MediaRecorder compatible');const chunks=[];const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:quality===1080?8000000:4500000});const draw=()=>{if(!recording)return;ctx.fillStyle='#050914';ctx.fillRect(0,0,w,h);const c=renderer.domElement;const scale=Math.min(w/c.width,h/c.height);const dw=c.width*scale,dh=c.height*scale;ctx.drawImage(c,(w-dw)/2,(h-dh)/2,dw,dh);requestAnimationFrame(draw)};draw();rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};rec.onstop=()=>{const blob=new Blob(chunks,{type:mime});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='NOVA-STUDIO-'+Date.now()+(mime.includes('mp4')?'.mp4':'.webm');document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000);stream.getTracks().forEach(t=>t.stop());recording=false;byId('stExport').disabled=false;byId('stProgress').style.width='100%';status('Export terminé. Sur iPhone, si le fichier ne s’ouvre pas, passe par Partager puis Enregistrer dans Fichiers.')};rec.start(300);const start=performance.now();const update=()=>{if(!recording)return;const pct=clamp((performance.now()-start)/(seconds*1000)*100,0,100);byId('stProgress').style.width=pct+'%';if(pct>=100)rec.stop();else setTimeout(update,100)};status('Export en cours — garde Safari ouvert au premier plan.');update()}catch(e){recording=false;byId('stExport').disabled=false;status('Export impossible : '+e.message)}};
-window.addEventListener('resize',resize);
-window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);resizeObserver?.disconnect();renderer?.dispose()});
+function resize(){if(!renderer)return;const host=$('threeHost'),w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+function animate(){raf=requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;if(playing){if(mixer)mixer.update(dt);if(waterMesh){waterMesh.position.z=-48+Math.sin(t*.25)*.25;waterMesh.rotation.z=Math.sin(t*.12)*.002}if(horse){horse.position.x=Math.sin(t*.28)*1.3;horse.position.z=1+Math.sin(t*1.1)*.45}if(kind==='space'){world.forEach(o=>{if(o.isPoints)o.rotation.y=t*.008})}}controls.update();renderer.render(scene,camera)}
+async function start(){if(started)return;started=true;try{status('Initialisation WebGL…');renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;$('threeHost').append(renderer.domElement);scene=new THREE.Scene();clock=new THREE.Clock();camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(11,7,18);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.06;controls.maxPolarAngle=Math.PI*.48;controls.minDistance=4;controls.maxDistance=55;
+ const hemi=new THREE.HemisphereLight(0xc5ddff,0x67503a,2);scene.add(hemi);const sun=new THREE.DirectionalLight(0xffd6a5,3.1);sun.position.set(-12,20,10);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;scene.add(sun);
+ buildWorld($('sceneType').value);$('threeLoad').style.display='none';resizeObserver=new ResizeObserver(resize);resizeObserver.observe($('threeHost'));resize();animate();status('Moteur 3D prêt. Fais glisser ton doigt sur l’image pour tourner la caméra.')}catch(e){started=false;$('threeLoad').textContent='WebGL indisponible : '+e.message;status('Erreur moteur 3D : '+e.message)}}
+function setLook(v){look=v;document.querySelectorAll('[data-look]').forEach(b=>b.classList.toggle('active',b.dataset.look===v));if(started)buildWorld($('sceneType').value)}
+document.querySelectorAll('[data-look]').forEach(b=>b.addEventListener('click',()=>setLook(b.dataset.look)));
+$('sceneType').addEventListener('change',()=>{if(started)buildWorld($('sceneType').value)});
+$('generateScene').addEventListener('click',()=>{const p=$('scenePrompt').value.trim();if(!p){status('Décris la scène avant de lancer la construction.');return}if(!started)start();else buildWorld($('sceneType').value);status('Scène reconstruite. Le texte guide le choix du décor ; les objets dépendent des modèles 3D disponibles.')});
+$('play3d').onclick=()=>{playing=!playing;$('play3d').textContent=playing?'Ⅱ Pause':'▶ Reprendre'};
+$('resetCamera').onclick=()=>{if(camera&&controls){camera.position.set(11,7,18);controls.target.set(0,1,0);controls.update()}};
+$('ratio').onchange=()=>{const stage=$('threeHost').parentElement;const v=$('ratio').value;stage.style.aspectRatio=v==='9:16'?'9/16':v==='1:1'?'1/1':'16/9';resize()};
+$('exportVideo').onclick=async()=>{if(!renderer||recording){if(!renderer)status('Attends que le moteur 3D soit prêt.');return}const canvas=renderer.domElement;if(!canvas.captureStream||!window.MediaRecorder){status('Safari sur cet iPhone ne permet pas cet export vidéo. Essaie depuis un navigateur compatible ou enregistre l’écran.');return}try{recording=true;$('exportVideo').disabled=true;$('progress').style.width='0%';const seconds=Number($('duration').value),quality=Number($('quality').value),stream=canvas.captureStream(30),types=['video/mp4;codecs=h264','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'],mime=types.find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw Error('Aucun format vidéo compatible détecté.');const chunks=[],rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:quality===1080?8000000:4000000});rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onerror=()=>{recording=false;$('exportVideo').disabled=false;status('Erreur pendant l’enregistrement.');stream.getTracks().forEach(t=>t.stop())};rec.onstop=()=>{const blob=new Blob(chunks,{type:mime}),u=URL.createObjectURL(blob),a=document.createElement('a'),ext=mime.includes('mp4')?'mp4':'webm';a.href=u;a.download='NOVA-3D-'+Date.now()+'.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);stream.getTracks().forEach(t=>t.stop());recording=false;$('exportVideo').disabled=false;$('progress').style.width='100%';status('Export terminé. Si Safari ne télécharge pas automatiquement, utilise Partager > Enregistrer dans Fichiers.');};rec.start(250);const begin=performance.now();const tick=()=>{if(!recording)return;const pct=clamp((performance.now()-begin)/(seconds*1000)*100,0,100);$('progress').style.width=pct+'%';if(pct>=100)rec.stop();else setTimeout(tick,100)};status('Enregistrement… garde NOVA ouvert au premier plan.');tick()}catch(e){recording=false;$('exportVideo').disabled=false;status('Export impossible : '+e.message)}};
+window.NOVA_STUDIO={start};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&recording)status('Garde cette page ouverte au premier plan pour terminer l’export.')});
+})();
 </script>
 </body>
 </html>
