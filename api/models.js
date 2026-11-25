@@ -1,56 +1,37 @@
-module.exports = async (req, res) => {
-  res.setHeader("Cache-Control", "no-store");
-
+module.exports = async function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({
-      error: "Méthode non autorisée"
-    });
+    res.setHeader("Allow", "GET");
+    return res.status(405).json({ error: "Méthode non autorisée." });
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-
-  if (!apiKey) {
-    return res.status(500).json({
-      error: "Clé OpenRouter manquante sur Vercel"
-    });
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) {
+    return res.status(500).json({ error: "Clé OpenRouter absente dans Vercel." });
   }
 
   try {
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/models",
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`
-        }
-      }
-    );
+    const response = await fetch("https://openrouter.ai/api/v1/models", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${key}` }
+    });
+    const result = await response.json();
 
     if (!response.ok) {
-      const error = await response.text();
       return res.status(response.status).json({
-        error: error
+        error: (result.error && result.error.message) || "Erreur OpenRouter."
       });
     }
 
-    const result = await response.json();
+    const data = (result.data || [])
+      .filter(item => item && typeof item.id === "string" &&
+        (item.id.endsWith(":free") || item.id === "openrouter/free"))
+      .map(item => ({ id: item.id, name: item.name || item.id }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-    const models = (result.data || [])
-      .filter(model =>
-        model.id.endsWith(":free") ||
-        model.id === "openrouter/free"
-      )
-      .map(model => ({
-        id: model.id,
-        name: model.name || model.id
-      }));
-
-    return res.status(200).json({
-      models
-    });
-
+    return res.status(200).json({ data });
   } catch (error) {
-    return res.status(500).json({
-      error: error.message
+    return res.status(502).json({
+      error: error.message || "Impossible de joindre OpenRouter."
     });
   }
 };
