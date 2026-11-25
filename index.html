@@ -214,6 +214,45 @@ textarea {
   form {border-radius:16px}
   .send {height:48px;width:50px}
   .hint {font-size:10px}
+}#imagePreview {
+  max-width:900px;
+  margin:8px auto 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.preview-image {
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid var(--line);
+}
+
+.image-preview-item {
+  position:relative;
+}
+
+.remove-image {
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  border:0;
+  background:#d93650;
+  color:white;
+  border-radius:50%;
+  width:22px;
+  height:22px;
+}
+
+.attached-image {
+  max-width:220px;
+  max-height:220px;
+  object-fit:contain;
+  border-radius:12px;
+  display:block;
+  margin-top:8px;
 }
 </style>
 </head>
@@ -265,6 +304,12 @@ textarea {
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <form id="form">
+  <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+  <button type="button" class="tiny" id="attach" aria-label="Ajouter une photo">📎</button>
+  <textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…" required></textarea>
+  <button class="send" id="send" type="submit" aria-label="Envoyer">➤</button>
+</form>
+<div id="imagePreview"></div>
     <textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…" required></textarea>
     <button class="send" id="send" type="submit" aria-label="Envoyer">➤</button>
   </form>
@@ -280,7 +325,67 @@ let messages = [];
 let busy = false;
 let threads = [];
 let threadId = null;
+let pendingImages = [];
 
+$("attach").onclick = () => $("imageInput").click();
+
+$("imageInput").addEventListener("change", async event => {
+  const files = Array.from(event.target.files || []);
+
+  for (const file of files) {
+    if (!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+      alert("Format accepté : JPG, PNG ou WEBP.");
+      continue;
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Chaque image doit faire 3 Mo maximum.");
+      continue;
+    }
+
+    if (pendingImages.length >= 3) {
+      alert("Maximum 3 images en attente.");
+      break;
+    }
+
+    const data = await new Promise((resolve,reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    pendingImages.push(data);
+  }
+
+  event.target.value = "";
+  renderImagePreview();
+});
+
+function renderImagePreview() {
+  const area = $("imagePreview");
+  area.innerHTML = "";
+
+  pendingImages.forEach((src,index) => {
+    const item = document.createElement("div");
+    item.className = "image-preview-item";
+
+    const img = document.createElement("img");
+    img.src = src;
+    img.className = "preview-image";
+
+    const remove = document.createElement("button");
+    remove.className = "remove-image";
+    remove.textContent = "×";
+    remove.onclick = () => {
+      pendingImages.splice(index,1);
+      renderImagePreview();
+    };
+
+    item.append(img,remove);
+    area.append(item);
+  });
+}
 function welcome() {
   return `<div class="welcome" id="welcome">
     <div class="orb">✦</div>
