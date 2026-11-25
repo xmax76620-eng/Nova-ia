@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
 <title>NOVA AI</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080d18;color:#eef3ff;font-family:Arial,sans-serif}
@@ -18,160 +20,243 @@ button,select{cursor:pointer;color:white}
 small{color:#91a0b8}
 #history{margin-top:12px}
 main{display:flex;flex-direction:column;min-width:0}
-header{padding:16px 20px;border-bottom:1px solid #293650;display:flex;justify-content:space-between;align-items:center}
-select{background:#101827;border:1px solid #293650;border-radius:9px;padding:10px;max-width:55%}
+header{padding:16px 20px;border-bottom:1px solid #293650;display:flex;justify-content:space-between;align-items:center;gap:10px}
+select{background:#101827;border:1px solid #293650;border-radius:9px;padding:10px;max-width:55%;min-width:0}
 #messages{flex:1;overflow-y:auto;padding:25px 15px}
 .welcome{text-align:center;margin:10vh auto;max-width:600px}
 .orb{margin:auto;width:75px;height:75px;border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);display:grid;place-items:center;font-size:35px}
 .welcome h1{font-size:30px}
 .welcome p{color:#91a0b8}
 .msg{display:flex;gap:12px;max-width:780px;margin:0 auto 22px}
-.avatar{background:#263650;border-radius:10px;padding:10px;height:36px}
+.avatar{background:#263650;border-radius:10px;padding:10px;height:36px;min-width:36px}
 .bubble{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;padding:5px 0}
 .user .bubble{background:#17243a;border:1px solid #293650;border-radius:12px;padding:12px}
 .compose{padding:14px;border-top:1px solid #293650;background:#0b1220}
 form{max-width:800px;margin:auto;display:flex;gap:10px;background:#101827;border:1px solid #34425d;border-radius:15px;padding:9px}
-textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;font:16px Arial;min-height:45px}
-.send{width:50px;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec);font-size:22px}
-.send:disabled{opacity:.5}
+textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;font:16px Arial;min-height:45px;min-width:0}
+.send{width:50px;flex-shrink:0;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec);font-size:22px}
+.send:disabled{opacity:.5;cursor:wait}
 .hint{text-align:center;color:#71819c;font-size:11px;margin-top:8px}
-@media(max-width:700px){.app{display:block}aside{display:none}main{height:100dvh}header{padding:12px}#messages{padding:15px 12px}.welcome{margin:9vh auto}}
+.status{max-width:780px;margin:0 auto 18px;color:#91a0b8;font-size:13px}
+@media(max-width:700px){
+ .app{display:block}
+ aside{display:none}
+ main{height:100dvh}
+ header{padding:12px}
+ #messages{padding:15px 12px}
+ .welcome{margin:9vh auto}
+ .welcome h1{font-size:30px}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <aside>
-<div class="brand"><span class="logo">N</span>NOVA AI</div>
-<small>TON ASSISTANT INTELLIGENT</small>
-<br><br>
-<button class="primary" id="new">＋ Nouvelle conversation</button>
-<br><br>
-<small>HISTORIQUE</small>
-<div id="history"></div>
+ <div class="brand"><span class="logo">N</span>NOVA AI</div>
+ <small>TON ASSISTANT INTELLIGENT</small>
+ <br><br>
+ <button class="primary" id="new">＋ Nouvelle conversation</button>
+ <br><br>
+ <small>HISTORIQUE</small>
+ <div id="history"></div>
 </aside>
 
 <main>
 <header>
-<div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div>
-<select id="model"><option>Chargement des modèles...</option></select>
+ <div>
+  <b>NOVA AI</b><br>
+  <small>Réfléchir · créer · apprendre</small>
+ </div>
+ <select id="model" aria-label="Choisir un modèle">
+  <option value="">Chargement des modèles...</option>
+ </select>
 </header>
 
 <section id="messages">
-<div class="welcome" id="welcome">
-<div class="orb">✦</div>
-<h1>Que veux-tu créer aujourd'hui ?</h1>
-<p>Pose une question, imagine un projet ou demande de l'aide.</p>
-</div>
+ <div class="welcome" id="welcome">
+  <div class="orb">✦</div>
+  <h1>Que veux-tu créer aujourd'hui ?</h1>
+  <p>Pose une question, imagine un projet ou demande de l'aide.</p>
+ </div>
 </section>
 
 <div class="compose">
-<form id="form">
-<textarea id="input" placeholder="Écris ton message à NOVA AI..." required></textarea>
-<button class="send" id="send" type="submit">➤</button>
-</form>
-<div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
+ <form id="form">
+  <textarea id="input" placeholder="Écris ton message à NOVA AI..." required></textarea>
+  <button class="send" id="send" type="submit">➤</button>
+ </form>
+ <div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
 </div>
 </main>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-let messages=[];
-let busy=false;
+const $ = id => document.getElementById(id);
 
-function addMessage(role,content){
- const row=document.createElement("div");
- row.className="msg "+(role==="user"?"user":"assistant");
- const avatar=document.createElement("div");
- avatar.className="avatar";
- avatar.textContent=role==="user"?"P":"N";
- const bubble=document.createElement("div");
- bubble.className="bubble";
- bubble.textContent=content;
- row.append(avatar,bubble);
+let messages = [];
+let busy = false;
+
+function addMessage(role, content) {
+ const row = document.createElement("div");
+ row.className = "msg " + (role === "user" ? "user" : "assistant");
+
+ const avatar = document.createElement("div");
+ avatar.className = "avatar";
+ avatar.textContent = role === "user" ? "P" : "N";
+
+ const bubble = document.createElement("div");
+ bubble.className = "bubble";
+ bubble.textContent = content;
+
+ row.append(avatar, bubble);
  $("messages").appendChild(row);
- $("messages").scrollTop=$("messages").scrollHeight;
+ $("messages").scrollTop = $("messages").scrollHeight;
+
  return bubble;
 }
 
-async function loadModels(){
- const select=$("model");
- select.innerHTML="<option>Chargement...</option>";
- try{
-  const response=await fetch("/api/models");
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error||"Erreur de chargement");
-  select.innerHTML="";
-  if(!data.data||!data.data.length)throw new Error("Aucun modèle gratuit disponible");
-  data.data.forEach(model=>{
-   const option=document.createElement("option");
-   option.value=model.id;
-   option.textContent=model.name||model.id;
+function showWelcome() {
+ $("messages").innerHTML = `
+ <div class="welcome" id="welcome">
+  <div class="orb">✦</div>
+  <h1>Que veux-tu créer aujourd'hui ?</h1>
+  <p>Pose une question, imagine un projet ou demande de l'aide.</p>
+ </div>`;
+}
+
+async function loadModels() {
+ const select = $("model");
+ select.innerHTML = "<option value=''>Chargement des modèles...</option>";
+
+ try {
+  const response = await fetch("/api/models", {
+   method: "GET",
+   headers: {"Accept": "application/json"},
+   cache: "no-store"
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+   throw new Error(data.error || "Erreur de chargement");
+  }
+
+  // CORRECTION : ton API renvoie data.models
+  // On accepte aussi data.data pour compatibilité.
+  let models = data.models || data.data || [];
+
+  if (!Array.isArray(models) || models.length === 0) {
+   throw new Error("Aucun modèle reçu par NOVA AI");
+  }
+
+  select.innerHTML = "";
+
+  models.forEach(model => {
+   if (!model || !model.id) return;
+
+   const option = document.createElement("option");
+   option.value = model.id;
+   option.textContent = model.name || model.id;
    select.appendChild(option);
   });
- }catch(error){
-  select.innerHTML="<option>Modèles indisponibles</option>";
-  addMessage("assistant","Impossible de charger les modèles : "+error.message);
+
+  if (select.options.length === 0) {
+   throw new Error("La liste des modèles est vide");
+  }
+
+  select.selectedIndex = 0;
+
+ } catch (error) {
+  select.innerHTML = "<option value=''>Modèles indisponibles</option>";
+  addMessage("assistant", "Impossible de charger les modèles : " + error.message);
  }
 }
 
-async function sendMessage(text){
- if(!text.trim()||busy)return;
- const model=$("model").value;
- if(!model||model==="Modèles indisponibles"){
-  addMessage("assistant","Les modèles ne sont pas disponibles. Recharge la page.");
+async function sendMessage(text) {
+ if (!text.trim() || busy) return;
+
+ const model = $("model").value;
+
+ if (!model) {
+  addMessage("assistant", "Aucun modèle sélectionné. Vérifie le chargement des modèles.");
   return;
  }
 
- messages.push({role:"user",content:text});
- $("welcome")?.remove();
- addMessage("user",text);
- $("input").value="";
- busy=true;
- $("send").disabled=true;
- const answer=addMessage("assistant","NOVA réfléchit...");
+ const userMessage = {role: "user", content: text};
+ messages.push(userMessage);
 
- try{
-  const response=await fetch("/api/chat",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({model,messages})
+ $("welcome")?.remove();
+ addMessage("user", text);
+ $("input").value = "";
+
+ busy = true;
+ $("send").disabled = true;
+
+ const answer = addMessage("assistant", "NOVA réfléchit...");
+
+ try {
+  const response = await fetch("/api/chat", {
+   method: "POST",
+   headers: {"Content-Type": "application/json"},
+   body: JSON.stringify({
+    model: model,
+    messages: messages
+   })
   });
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error||"Erreur API");
-  const content=data.choices?.[0]?.message?.content;
-  if(!content)throw new Error("Réponse vide");
-  answer.textContent=content;
-  messages.push({role:"assistant",content});
- }catch(error){
-  answer.textContent="Erreur : "+error.message;
- }finally{
-  busy=false;
-  $("send").disabled=false;
+
+  const data = await response.json();
+
+  if (!response.ok) {
+   throw new Error(
+    data.error?.message ||
+    data.error ||
+    data.message ||
+    "Erreur API"
+   );
+  }
+
+  let content = data.choices?.[0]?.message?.content;
+
+  if (Array.isArray(content)) {
+   content = content.map(part => part.text || "").join("");
+  }
+
+  if (!content) {
+   throw new Error("Réponse vide du modèle");
+  }
+
+  answer.textContent = content;
+  messages.push({role: "assistant", content: content});
+
+ } catch (error) {
+  answer.textContent = "Erreur : " + error.message;
+  messages.pop();
+ } finally {
+  busy = false;
+  $("send").disabled = false;
   $("input").focus();
+  $("messages").scrollTop = $("messages").scrollHeight;
  }
 }
 
-$("form").addEventListener("submit",event=>{
+$("form").addEventListener("submit", event => {
  event.preventDefault();
  sendMessage($("input").value);
 });
 
-$("input").addEventListener("keydown",event=>{
- if(event.key==="Enter"&&!event.shiftKey){
+$("input").addEventListener("keydown", event => {
+ if (event.key === "Enter" && !event.shiftKey) {
   event.preventDefault();
   $("form").requestSubmit();
  }
 });
 
-$("new").onclick=()=>{
- messages=[];
- $("messages").innerHTML=`
- <div class="welcome" id="welcome">
- <div class="orb">✦</div>
- <h1>Que veux-tu créer aujourd'hui ?</h1>
- <p>Pose une question, imagine un projet ou demande de l'aide.</p>
- </div>`;
+$("new").onclick = () => {
+ if (busy) return;
+ messages = [];
+ showWelcome();
 };
 
 loadModels();
