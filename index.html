@@ -1,783 +1,102 @@
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080d18">
-<title>NOVA AI</title>
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d18"><title>NOVA AI</title>
 <style>
-:root{--bg:#080d18;--panel:#0d1525;--panel2:#111c30;--line:#273650;--text:#edf3ff;--muted:#91a0b8;--a:#7659ff;--b:#3478ec}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-button,select,textarea,input{font:inherit;color:inherit}
-button{cursor:pointer}
-.app{height:100dvh;display:grid;grid-template-columns:260px minmax(0,1fr);overflow:hidden}
-aside{background:#0b1220;border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;min-height:0}
-.brand{font-size:23px;font-weight:800;margin:5px 0 24px}
-.logo{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--a),#20c8c8);margin-right:8px}
-.primary,.send,.gradient{border:0;background:linear-gradient(120deg,var(--a),var(--b));font-weight:700;border-radius:12px;padding:12px}
-.primary{width:100%}
-.side-label{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:23px 0 9px}
-#history{overflow:auto;display:grid;gap:7px}
-.history-entry{display:flex;gap:5px}
-.history-item{flex:1;min-width:0;border:1px solid transparent;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#bdc9dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.history-item.active,.history-item:hover{background:var(--panel2);border-color:var(--line)}
-.delete-thread{border:0;background:transparent;color:var(--muted);padding:5px}
-.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6}
-main{display:flex;flex-direction:column;min-width:0;min-height:0}
-header{height:68px;flex-shrink:0;padding:10px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.head-left{display:flex;align-items:center;gap:10px}
-.head-title{font-weight:800}
-.head-sub{color:var(--muted);font-size:12px;margin-top:3px}
-select{max-width:min(58%,430px);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
-#messages{flex:1;overflow:auto;padding:25px 16px}
-.welcome{max-width:700px;margin:9vh auto;text-align:center}
-.orb{width:72px;height:72px;margin:auto;border-radius:24px;background:linear-gradient(135deg,var(--a),#20c8c8);display:grid;place-items:center;font-size:34px}
-.welcome h1{font-size:clamp(25px,4vw,36px);margin:24px 0 10px}
-.welcome p{color:var(--muted)}
-.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:24px}
-.suggestions button,.tiny,.secondary{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:#c7d2e5}
-.msg{display:flex;gap:12px;max-width:900px;margin:0 auto 23px;align-items:flex-start}
-.avatar{width:35px;height:35px;flex:0 0 35px;border-radius:10px;background:#263650;display:grid;place-items:center;font-weight:700}
-.assistant .avatar{background:linear-gradient(135deg,#5844c9,#1e9da5)}
-.message-content{min-width:0;flex:1}
-.bubble{overflow-wrap:anywhere;line-height:1.7;padding:5px 0}
-.user .bubble{background:#17243a;border:1px solid #2c3e5c;border-radius:13px;padding:12px 14px}
-.bubble p{margin:0 0 12px}
-.bubble strong{color:white}
-.code-wrap{margin:12px 0;background:#080e1a;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.code-head{display:flex;justify-content:space-between;padding:8px 12px;background:#111c30;color:var(--muted);font-size:12px}
-pre{overflow:auto;margin:0;padding:14px;white-space:pre;line-height:1.5;font-size:13px}
-.msg-actions{display:flex;gap:7px;margin-top:8px}
-.msg-actions button,.code-head button{background:transparent;border:1px solid var(--line);border-radius:7px;padding:6px 9px;color:var(--muted);font-size:11px}
-.compose{padding:12px max(12px,calc((100% - 900px)/2));border-top:1px solid var(--line);background:#0b1220}
-.toolbar{max-width:900px;margin:0 auto 9px;display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
-.tiny{font-size:12px}
-.status{max-width:900px;margin:0 auto 10px;color:var(--muted);font-size:12px}
-form{max-width:900px;margin:auto;display:flex;gap:9px;align-items:flex-end;background:#101827;border:1px solid #34425d;border-radius:16px;padding:9px}
-textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;line-height:1.5;min-height:45px;max-height:150px;min-width:0}
-.send{width:50px;height:48px;font-size:21px}
-.hint{text-align:center;color:#71819c;font-size:11px;margin:8px 0 0}
-.mobile-menu{display:none}
-#overlay{display:none}
-#studio,#timePanel{display:none;position:fixed;z-index:40;inset:0;background:#03070ff2;backdrop-filter:blur(14px);overflow:auto;padding:12px}
-#studio.open,#timePanel.open{display:block}
-.modal-shell{max-width:1080px;margin:0 auto;border:1px solid #34425d;border-radius:20px;background:linear-gradient(145deg,#101a2c,#080e19);padding:clamp(13px,3vw,25px)}
-.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
-.modal-title{font-size:clamp(20px,4vw,27px);font-weight:900}
-.modal-title span{background:linear-gradient(90deg,#a48cff,#45d8d1);background-clip:text;color:transparent}
-.close{border:1px solid var(--line);background:#17243a;border-radius:9px;padding:9px 12px}
-.intro{color:var(--muted);line-height:1.55;font-size:13px}
-.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.panel{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}
-.panel h3{margin:0 0 12px;font-size:15px}
-.mode-switch,.two,.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mode-switch button,.actions button{border:1px solid var(--line);background:#142139;border-radius:9px;padding:10px}
-.mode-switch button.active{background:#282052;border-color:#8069ff}
-.field{display:grid;gap:6px;margin:12px 0}
-.field label{font-size:12px;color:#bdc9dc;font-weight:700}
-.field textarea,.field input,.field select{width:100%;max-width:none;background:#111c30;border:1px solid #34425d;border-radius:9px;color:white;padding:10px}
-.field textarea{min-height:95px}
-.field small,.note{font-size:11px;color:var(--muted);line-height:1.5}
-.studio-primary{width:100%;margin-top:8px}
-.preview{background:#050912;border:1px solid #33435e;border-radius:12px;overflow:hidden;position:relative;display:grid;place-items:center;min-height:220px}
-#videoCanvas{display:block;width:100%;height:auto;max-height:440px}
-.placeholder{position:absolute;text-align:center;color:#8797b1;pointer-events:none}
-.placeholder b{display:block;font-size:35px;color:#b4a5ff}
-.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:9px 0}
-.actions{margin-top:10px}
-.actions button:disabled{opacity:.4}
-#studioStatus,#timeStatus{min-height:20px;color:#b7aaff;font-size:12px;margin-top:9px}
-.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.time-card{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:16px}
-.time-big{font-size:clamp(22px,5vw,34px);font-weight:850;margin:8px 0}
-.time-muted{color:var(--muted);font-size:12px;line-height:1.6}
-.date-result{padding:12px;border:1px solid var(--line);border-radius:10px;background:#111c30;margin-top:10px;line-height:1.6}
-.status-good{color:#73e2b9}
-.status-future{color:#9f91ff}
-.status-past{color:#ffc17e}
-@media(max-width:760px){
-.app{display:block}
-aside{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(290px,85vw);transform:translateX(-105%);transition:.2s}
-aside.open{transform:translateX(0)}
-#overlay{display:block;position:fixed;inset:0;background:#0009;z-index:19;opacity:0;pointer-events:none}
-#overlay.visible{opacity:1;pointer-events:auto}
-main{height:100dvh}
-header{height:65px;padding:9px 11px}
-.mobile-menu{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-select{max-width:54%;font-size:11px;padding:9px}
-#messages{padding:16px 12px}
-.msg{gap:8px}
-.compose{padding:9px 10px calc(9px + env(safe-area-inset-bottom))}
-.studio-grid,.time-grid{grid-template-columns:1fr}
-.preview{min-height:170px}
-.modal-shell{padding:12px;border-radius:14px}
-.two{grid-template-columns:1fr 1fr}
-}
-</style>
-</head>
-<body>
-<div id="overlay"></div>
-<div class="app">
-<aside id="sidebar">
-<div class="brand"><span class="logo">N</span>NOVA AI</div>
-<button class="primary" id="new">＋ Nouvelle conversation</button>
-<div class="side-label">HISTORIQUE</div>
-<div id="history"></div>
-<div class="side-bottom">NOVA AI<br>Réfléchir · créer · apprendre<br><br>Historique enregistré sur cet appareil.</div>
-</aside>
-<main>
-<header>
-<div class="head-left">
-<button class="mobile-menu" id="menu">☰</button>
-<div><div class="head-title">NOVA AI</div><div class="head-sub">Votre espace intelligent</div></div>
-</div>
-<select id="model"><option value="">Chargement des modèles…</option></select>
-</header>
-<section id="messages">
-<div class="welcome" id="welcome">
-<div class="orb">✦</div>
-<h1>Que veux-tu créer aujourd'hui ?</h1>
-<p>Pose une question, imagine un projet ou demande de l'aide.</p>
-<div class="suggestions">
-<button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
-<button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
-<button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
-</div>
-</div>
-</section>
-<div class="compose">
-<div class="toolbar">
-<button class="tiny" id="openTime">📍 Localisation & temps</button>
-<button class="tiny" id="openStudio">✦ NOVA VIDEO STUDIO</button>
-<button class="tiny" id="clear">Effacer la conversation</button>
-</div>
-<div class="status" id="status"></div>
-<form id="form">
-<input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
-<button type="button" class="tiny" id="attach">📎</button>
-<textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea>
-<button class="send" id="send" type="submit">➤</button>
-</form>
-<div id="imagePreview"></div>
-<div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
-</div>
-</main>
-</div>
+:root{color-scheme:dark;--bg:#080d18;--panel:#101827;--line:#293650;--txt:#eef3ff;--muted:#91a0b8;--a:#7659ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#26365e,transparent 48%),var(--bg);color:var(--txt);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:1100px;margin:auto;display:grid;grid-template-columns:250px 1fr;height:100dvh}aside{padding:18px;background:#0b1220;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px}.brand{font-size:22px;font-weight:800;letter-spacing:2px}.logo{display:inline-grid;place-items:center;background:linear-gradient(135deg,#7659ff,#20c8c8);width:34px;height:34px;border-radius:11px;margin-right:8px}.muted,small{color:var(--muted)}button,select{font:inherit;color:inherit;cursor:pointer}.btn{background:#151f31;border:1px solid var(--line);border-radius:11px;padding:11px;text-align:left}.primary{background:linear-gradient(120deg,#7659ff,#3478ec);border:0;border-radius:11px;padding:12px;font-weight:700}#history{display:grid;gap:7px}.bottom{margin-top:auto}main{min-width:0;display:flex;flex-direction:column}header{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.select{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px;max-width:210px}#messages{flex:1;overflow:auto;padding:25px max(15px,calc((100% - 760px)/2))}.welcome{text-align:center;max-width:620px;margin:8vh auto}.orb{margin:auto auto 18px;width:70px;height:70px;border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);display:grid;place-items:center;font-size:32px}h1{font-size:32px}.welcome p{color:var(--muted)}.prompts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.prompt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;text-align:left}.msg{display:flex;gap:12px;max-width:760px;margin:0 auto 20px}.avatar{width:34px;height:34px;flex:none;border-radius:11px;background:#273650;display:grid;place-items:center}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 0}.user .bubble{background:#17243a;border:1px solid #2c3c59;border-radius:13px;padding:12px}.compose{border-top:1px solid var(--line);padding:14px;background:#0b1220}.compose form{max-width:790px;margin:auto;display:flex;gap:10px;background:var(--panel);border:1px solid #34425d;border-radius:15px;padding:9px}textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:var(--txt);padding:9px;min-height:42px;max-height:140px}.send{width:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec)}.hint{text-align:center;color:#71819c;font-size:11px;margin-top:7px}dialog{background:#101827;color:var(--txt);border:1px solid var(--line);border-radius:16px;width:min(500px,calc(100% - 24px))}dialog input{width:100%;padding:12px;background:#080d18;color:white;border:1px solid var(--line);border-radius:9px}dialog label{display:block;margin:15px 0 6px;color:var(--muted)}@media(max-width:700px){.app{display:block}aside{display:none}main{height:100dvh}header{padding:12px}.select{max-width:140px}#messages{padding:18px 13px}.prompts{grid-template-columns:1fr}h1{font-size:28px}}
 
-<section id="studio">
-<div class="modal-shell">
-<div class="modal-top">
-<div>
-<div class="modal-title">✦ <span>NOVA VIDEO STUDIO</span></div>
-<div class="head-sub">Moteur de scènes animées · 0 €</div>
-</div>
-<button class="close" id="closeStudio">✕ Fermer</button>
-</div>
-<p class="intro">Décris une scène : NOVA détecte le décor, le sujet, l'action et l'ambiance pour construire une animation dans ton navigateur. Aucun service vidéo payant. Ce moteur crée des illustrations animées, pas une vidéo photoréaliste générée par IA.</p>
+/* NOVA 3D STUDIO */
+.studio-launch{position:fixed;right:16px;bottom:94px;z-index:20;border:1px solid #5667a0;background:linear-gradient(135deg,#7659ff,#147fba);color:white;border-radius:16px;padding:13px 17px;font-weight:800;box-shadow:0 10px 35px #0008}
+#studio{position:fixed;inset:0;z-index:30;background:#070b14;color:#eef3ff;display:none;overflow:auto;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#studio.open{display:block}.st-head{position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(16px);border-bottom:1px solid #293650;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.st-head b{font-size:18px;letter-spacing:1px}.st-wrap{max-width:1250px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:16px}.st-panel{background:#101827;border:1px solid #293650;border-radius:18px;padding:16px;min-width:0}.st-view{position:relative;background:#03060c;border-radius:14px;overflow:hidden;aspect-ratio:16/9;min-height:220px;touch-action:pan-y}.st-view canvas{display:block;width:100%;height:100%;outline:0}.st-load{position:absolute;inset:0;display:grid;place-items:center;color:#cbd7ef;background:#080d18;text-align:center;padding:20px}.st-controls{display:grid;gap:12px}.st-controls label{display:grid;gap:6px;color:#aebbd2;font-size:13px}.st-controls input,.st-controls select,.st-controls textarea{width:100%;background:#080f1d;color:#f2f5ff;border:1px solid #34425d;border-radius:10px;padding:11px;font:inherit}.st-controls textarea{min-height:90px;resize:vertical}.st-row{display:flex;gap:8px;flex-wrap:wrap}.st-btn{background:#19263d;color:#fff;border:1px solid #354765;border-radius:11px;padding:11px 13px;font:inherit}.st-btn.main{background:linear-gradient(120deg,#7659ff,#247bc2);border:0;font-weight:700}.st-btn:disabled{opacity:.45}.st-note{font-size:12px;color:#91a0b8;line-height:1.5}.st-status{font-size:13px;color:#b8c9e8;min-height:20px}.st-preset{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.st-preset button{text-align:left}.st-preset button.active{outline:2px solid #8c7cff;background:#27254a}.st-meter{height:4px;background:#202c40;border-radius:5px;overflow:hidden}.st-meter span{display:block;height:100%;width:0;background:#8c7cff;transition:width .2s}.st-close{font-size:20px;padding:7px 12px}.st-below{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#aab7ce;font-size:12px;margin-top:10px}
+@media(max-width:800px){.st-wrap{grid-template-columns:1fr;padding:10px}.st-view{aspect-ratio:9/16;max-height:62vh}.st-panel{padding:12px}.studio-launch{bottom:85px;right:12px}}
 
-<div class="studio-grid">
-<div class="panel">
-<h3>1. Création de la scène</h3>
-<div class="mode-switch">
-<button id="autoMode" class="active">✦ Automatique</button>
-<button id="expertMode">⚙ Expert</button>
-</div>
-<div class="field">
-<label for="videoPrompt">Décris ta vidéo</label>
-<textarea id="videoPrompt" placeholder="Exemple : Un homme fait du poney sur une plage au coucher du soleil, les vagues arrivent sur le sable, caméra cinématique…"></textarea>
-</div>
-<div class="field">
-<label for="videoStyle">Style visuel</label>
-<select id="videoStyle">
-<option value="cinema">Cinématique</option>
-<option value="neon">Néon futuriste</option>
-<option value="nature">Nature onirique</option>
-<option value="space">Espace</option>
-<option value="fantasy">Fantaisie magique</option>
-<option value="minimal">Minimaliste</option>
-<option value="abstract">Abstrait</option>
-</select>
-</div>
-<div class="two">
-<div class="field">
-<label for="videoRatio">Format</label>
-<select id="videoRatio">
-<option value="9:16">Vertical 9:16</option>
-<option value="16:9" selected>Paysage 16:9</option>
-<option value="1:1">Carré 1:1</option>
-</select>
-</div>
-<div class="field">
-<label for="videoDuration">Durée</label>
-<select id="videoDuration"><option>6</option><option selected>10</option><option>15</option><option>20</option></select>
-</div>
-</div>
-<div id="expertFields" hidden>
-<div class="two">
-<div class="field">
-<label for="videoSpeed">Mouvement</label>
-<select id="videoSpeed"><option value=".6">Lent</option><option value="1" selected>Normal</option><option value="1.5">Rapide</option></select>
-</div>
-<div class="field">
-<label for="videoDensity">Effets</label>
-<select id="videoDensity"><option value="35">Légers</option><option value="75" selected>Normaux</option><option value="130">Intenses</option></select>
-</div>
-</div>
-<div class="field">
-<label for="videoQuality">Export</label>
-<select id="videoQuality"><option value="720">HD 720p</option><option value="1080">Full HD 1080p</option></select>
-</div>
-</div>
-<button class="gradient studio-primary" id="generateVideo">✦ Créer ma scène animée</button>
-<div id="studioStatus">Prêt à créer.</div>
-</div>
+</style></head><body>
+<div class="app"><aside><div class="brand"><span class="logo">N</span>NOVA AI</div><small>TON ASSISTANT INTELLIGENT</small><button class="primary" id="new">＋ Nouvelle conversation</button><small>HISTORIQUE</small><div id="history"></div><button class="btn bottom" id="settingsSide">⚙ Connexion API</button><small id="status">Worker non configuré</small></aside>
+<main><header><div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div><div><select class="select" id="model"><option value="">Modèles</option></select> <button class="btn" id="settingsTop">⚙</button></div></header>
+<section id="messages"><div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide pour coder.</p><div class="prompts"><button class="prompt">💡 Trouve-moi
 
-<div class="panel">
-<h3>2. Aperçu et export</h3>
-<div class="preview">
-<canvas id="videoCanvas" width="1280" height="720"></canvas>
-<div class="placeholder" id="previewPlaceholder"><b>✦</b>L'aperçu apparaîtra ici</div>
-</div>
-<div class="meta">
-<span id="previewFormat">16:9 · Paysage</span>
-<span id="previewDuration">10 secondes</span>
-</div>
-<div class="actions">
-<button id="playPreview" disabled>▶ Lire</button>
-<button id="stopPreview" disabled>■ Arrêter</button>
-<button id="exportVideo" disabled>⬇ Exporter</button>
-<button id="resetStudio">↺ Réinitialiser</button>
-</div>
-<p class="note">L'export enregistre l'animation et l'ambiance sonore synthétique si le navigateur le permet. Sur iPhone, le format et le téléchargement dépendent de Safari.</p>
-</div>
-</div>
-</div>
+  
+ une idée de projet innovant</button><button class="prompt">🧠 Explique-moi un sujet compliqué</button><button class="prompt">💻 Aide-moi à créer une application</button><button class="prompt">✍️ Rédige un texte professionnel</button></div></div></section>
+<div class="compose"><form id="form"><textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea><button class="send" id="send">➤</button></form><div class="hint">Vérifie les réponses importantes : une IA peut se tromper.</div></div></main></div>
+
+<button class="studio-launch" id="openStudio">✦ NOVA 3D STUDIO</button>
+<section id="studio" aria-label="Studio vidéo 3D">
+ <div class="st-head"><div><b>✦ NOVA 3D STUDIO</b><div class="st-note">Moteur de scènes 3D cinématiques</div></div><button class="st-btn st-close" id="closeStudio" aria-label="Fermer">✕</button></div>
+ <div class="st-wrap">
+  <div class="st-panel">
+   <h2 style="margin:0 0 12px">Aperçu 3D en temps réel</h2>
+   <div class="st-view" id="threeHost"><div class="st-load" id="threeLoad">Chargement du moteur 3D…<br><small>Connexion aux ressources 3D</small></div></div>
+   <div class="st-below"><span id="stSceneName">Littoral cinématique</span><span id="stRenderInfo">Rendu 3D temps réel</span></div>
+   <div class="st-row" style="margin-top:13px"><button class="st-btn" id="stPlay">Ⅱ Pause</button><button class="st-btn" id="stReset">↻ Recentrer caméra</button><button class="st-btn main" id="stExport">⬇ Exporter la vidéo</button></div>
+   <div class="st-meter" style="margin-top:12px"><span id="stProgress"></span></div><div class="st-status" id="stStatus" aria-live="polite">Initialisation…</div>
+  </div>
+  <div class="st-panel st-controls">
+   <h2 style="margin:0">Créer une scène</h2>
+   <label>Décris précisément ta vidéo<textarea id="stPrompt">Un cheval brun au galop sur une plage au coucher du soleil, caméra cinéma qui suit le cheval de trois-quarts, crinière au vent, vagues réalistes, lumière dorée.</textarea></label>
+   <label>Univers visuel<select id="stScene"><option value="beach">Plage & littoral</option><option value="mountain">Montagnes</option><option value="forest">Forêt</option><option value="space">Espace</option><option value="desert">Désert</option><option value="nightcity">Ville de nuit</option></select></label>
+   <div class="st-preset"><button class="st-btn active" data-look="cinematic">🎬 Cinéma réaliste</button><button class="st-btn" data-look="sunset">🌅 Golden hour</button><button class="st-btn" data-look="storm">⛈ Orage dramatique</button><button class="st-btn" data-look="dream">✨ Onirique</button></div>
+   <label>Format vidéo<select id="stRatio"><option value="16:9">16:9 · Paysage</option><option value="9:16">9:16 · Vertical</option><option value="1:1">1:1 · Carré</option></select></label>
+   <label>Durée<select id="stDuration"><option value="6">6 secondes</option><option value="10" selected>10 secondes</option><option value="15">15 secondes</option><option value="20">20 secondes</option></select></label>
+   <label>Qualité de rendu<select id="stQuality"><option value="720">HD · 720p (plus fluide sur iPhone)</option><option value="1080" selected>Full HD · 1080p</option></select></label>
+   <button class="st-btn main" id="stGenerate">✦ Générer / actualiser la scène 3D</button>
+   <p class="st-note">Le moteur construit une scène 3D WebGL avec éclairage, matériaux, profondeur, caméra animée et éléments procéduraux. Le modèle de cheval 3D est chargé depuis une ressource publique si le réseau l'autorise. Ce n'est pas une génération vidéo neuronale comme Sora : le rendu dépend des objets 3D disponibles et du navigateur.</p>
+   <p class="st-note">Export : WebM lorsque MediaRecorder est pris en charge. Sur iPhone, Safari peut limiter l'enregistrement, la résolution ou l'enregistrement en arrière-plan. Garde la page ouverte pendant l'export.</p>
+  </div>
+ </div>
 </section>
 
-<section id="timePanel">
-<div class="modal-shell">
-<div class="modal-top">
-<div>
-<div class="modal-title">📍 NOVA <span>GEO & TEMPS</span></div>
-<div class="head-sub">Position de l'appareil, horloge et explorateur de dates</div>
-</div>
-<button class="close" id="closeTime">✕ Fermer</button>
-</div>
-<p class="intro">La date et l'heure actuelles sont lues sur ton appareil. La localisation n'est demandée que si tu appuies sur le bouton ci-dessous.</p>
-<div class="time-grid">
-<div class="time-card">
-<div class="side-label">DATE ET HEURE LOCALES</div>
-<div class="time-big" id="nowDate">—</div>
-<div id="nowClock" class="time-big">—</div>
-<div class="time-muted" id="zoneInfo">Fuseau horaire : —</div>
-<div class="time-muted" id="deviceInfo"></div>
-</div>
-<div class="time-card">
-<div class="side-label">GÉOLOCALISATION</div>
-<div class="time-big" style="font-size:22px">Ta position</div>
-<div class="time-muted" id="geoResult">Aucune position demandée.</div>
-<button class="gradient" id="getLocation" style="margin-top:14px;width:100%">📍 Autoriser ma localisation</button>
-<div class="note">La position est affichée dans cette fenêtre et n'est pas envoyée au serveur par ce module.</div>
-</div>
-</div>
-<div class="time-card" style="margin-top:15px">
-<div class="side-label">DÉTECTEUR DE DATE — PASSÉ / PRÉSENT / FUTUR</div>
-<div class="field">
-<label for="dateExplorer">Choisis une date à examiner</label>
-<input id="dateExplorer" type="date">
-</div>
-<div class="date-result" id="dateResult">Sélectionne une date pour l'examiner.</div>
-<div class="two" style="margin-top:10px">
-<button class="secondary" id="chooseYesterday">← Hier</button>
-<button class="secondary" id="chooseTomorrow">Demain →</button>
-</div>
-</div>
-<div id="timeStatus"></div>
-</div>
-</section>
-
+<dialog id="dlg"><h2>Connexion de NOVA AI</h2><p class="muted">Colle l'adresse HTTPS de ton Worker Cloudflare. La clé API reste côté serveur.</p><label>URL du Worker</label><input id="worker" placeholder="https://ton-worker.workers.dev"><p style="text-align:right"><button class="btn" id="cancel">Annuler</button> <button class="primary" id="save">Enregistrer</button></p></dialog>
 <script>
-const $=id=>document.getElementById(id);
-const STORAGE_KEY="nova_threads";
-let messages=[],busy=false,threads=[],threadId=null,pendingImages=[];
+const $=s=>document.querySelector(s);let chats=JSON.parse(localStorage.nova_chats||'[]'),id=null,busy=false;const url=()=>localStorage.nova_worker_url||'';
+function status(t){$('#status').textContent=t}function cur(){return chats.find(c=>c.id===id)}function save(){localStorage.nova_chats=JSON.stringify(chats)}
+function newChat(){id=crypto.randomUUID();chats.push({id,title:'Nouvelle conversation',messages:[]});save();history();render()}
+function history(){let h=$('#history');h.innerHTML='';chats.slice().reverse().forEach(c=>{let b=document.createElement('button');b.className='btn';b.textContent=c.title;b.onclick=()=>{id=c.id;render()};h.append(b)})}
+function render(){let a=$('#messages');a.innerHTML='';let c=cur();if(!c||!c.messages.length){let w=$('#welcome').cloneNode(true);w.id='';a.append(w);w.querySelectorAll('.prompt').forEach(b=>b.onclick=()=>{$('#input').value=b.textContent.replace(/^.{2}\s/,'');$('#input').focus()});return}c.messages.forEach(m=>add(m.role,m.content,false))}
+function add(role,text,scroll=true){let r=document.createElement('div');r.className='msg '+role;let av=document.createElement('div');av.className='avatar';av.textContent=role==='user'?'P':'N';let b=document.createElement('div');b.className='bubble';b.textContent=text;r.append(av,b);$('#messages').append(r);if(scroll)$('#messages').scrollTop=$('#messages').scrollHeight;return b}
+function settings(){$('#worker').value=url();$('#dlg').showModal()}
+async function models(){if(!url()){status('Worker non configuré');return}try{let r=await fetch(url().replace(/\/$/,'')+'/models');let d=await r.json();if(!r.ok)throw Error(d.error||r.status);$('#model').innerHTML='';(d.data||[]).forEach(m=>{let o=document.createElement('option');o.value=m.id;o.textContent=m.name||m.id;$('#model').append(o)});status('Connecté · '+(d.data||[]).length+' modèles')}catch(e){status('Erreur connexion : '+e.message)}}
+async function send(t){if(!t.trim()||busy)return;if(!url()){settings();return}if(!id)newChat();let c=cur();c.messages.push({role:'user',content:t});if(c.messages.length===1)c.title=t.slice(0,35);save();history();render();$('#input').value='';busy=true;$('#send').disabled=true;let b=add('assistant','NOVA réfléchit…');try{let r=await fetch(url().replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:$('#model').value,messages:c.messages})});let d=await r.json();if(!r.ok)throw Error(d.error||'Erreur '+r.status);let answer=d.choices?.[0]?.message?.content||d.response||'Réponse vide';b.textContent=answer;c.messages.push({role:'assistant',content:answer});save()}catch(e){b.textContent='Erreur : '+e.message}finally{busy=false;$('#send').disabled=false}}
+$('#form').onsubmi
 
-function welcome(){
-return `<div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide.</p><div class="suggestions"><button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button><button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button><button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button></div></div>`;
-}
-function esc(s){
-return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function markdown(src){
-let blocks=[];
-let s=String(src??"").replace(/\r\n/g,"\n").replace(/```([\w-]*)\n([\s\S]*?)```/g,(_,l,c)=>{blocks.push({l:l||"Code",c});return `\n%%C${blocks.length-1}%%\n`;});
-s=esc(s).replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>").replace(/`([^`\n]+)`/g,"<code>$1</code>");
-let out="",list="";
-const close=()=>{if(list){out+=`</${list}>`;list="";}};
-for(const line of s.split("\n")){
-let m=line.match(/^\s*[-•] (.+)$/),n=line.match(/^\s*\d+[.)] (.+)$/);
-if(m||n){let type=m?"ul":"ol";if(list!==type){close();list=type;out+=`<${type}>`;}out+=`<li>${(m||n)[1]}</li>`;}
-else{close();let c=line.match(/^%%C(\d+)%%$/);if(c){let b=blocks[+c[1]];out+=`<div class="code-wrap"><div class="code-head"><span>${esc(b.l)}</span><button data-copy-code="${+c[1]}">Copier</button></div><pre><code>${esc(b.c)}</code></pre></div>`;}else if(/^<h[1-3]>/.test(line))out+=line;else if(line.trim())out+=`<p>${line}</p>`;}
-}
-close();
-return out;
-}
-async function copyText(t,b){
-try{await navigator.clipboard.writeText(t);b.textContent="Copié ✓";}
-catch(e){$("status").textContent="Copie impossible.";}
-}
-function addMessage(role,content){
-let row=document.createElement("div");row.className="msg "+role;
-let av=document.createElement("div");av.className="avatar";av.textContent=role==="user"?"P":"N";
-let area=document.createElement("div");area.className="message-content";
-let bubble=document.createElement("div");bubble.className="bubble";
-bubble.innerHTML=role==="assistant"?markdown(content):esc(content);
-area.append(bubble);
-if(role==="assistant"&&content!=="NOVA réfléchit…"){
-let a=document.createElement("div");a.className="msg-actions";
-let b=document.createElement("button");b.textContent="Copier la réponse";b.onclick=()=>copyText(content,b);a.append(b);area.append(a);
-}
-row.append(av,area);$("messages").append(row);$("messages").scrollTop=$("messages").scrollHeight;return bubble;
-}
-function stored(){
-return messages.map(m=>({role:m.role,content:Array.isArray(m.content)?m.content.map(p=>p.type==="text"?p:{type:"text",text:"[Photo envoyée — non conservée]"}):m.content}));
-}
-function save(){
-if(!messages.length||!threadId)return;
-let t=threads.find(x=>x.id===threadId);
-if(!t){let f=messages.find(x=>x.role==="user"),title=typeof f?.content==="string"?f.content:"Nouvelle conversation";t={id:threadId,title:title.slice(0,45)||"Nouvelle conversation",messages:[]};threads.unshift(t);}
-t.messages=stored();t.updatedAt=Date.now();threads.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));threads=threads.slice(0,50);
-try{localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));}catch(e){$("status").textContent="Stockage local plein.";}
-renderHistory();
-}
-function renderHistory(){
-$("history").innerHTML="";
-threads.forEach(t=>{
-let e=document.createElement("div");e.className="history-entry";
-let b=document.createElement("button");b.className="history-item"+(t.id===threadId?" active":"");b.textContent=t.title||"Conversation";b.onclick=()=>openThread(t.id);
-let d=document.createElement("button");d.className="delete-thread";d.textContent="×";
-d.onclick=()=>{threads=threads.filter(x=>x.id!==t.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));if(threadId===t.id)newThread();renderHistory();};
-e.append(b,d);$("history").append(e);
-});
-}
-function openThread(id){
-if(busy)return;
-let t=threads.find(x=>x.id===id);if(!t)return;
-threadId=id;messages=t.messages.slice();$("messages").innerHTML="";
-messages.forEach(m=>addMessage(m.role,typeof m.content==="string"?m.content:"[Photo envoyée]"));
-$("status").textContent="Conversation restaurée. Les photos précédentes ne sont pas conservées.";renderHistory();closeSidebar();
-}
-function newThread(){
-if(busy)return;
-messages=[];pendingImages=[];renderImagePreview();threadId=null;$("messages").innerHTML=welcome();$("status").textContent="";renderHistory();
-}
-function closeSidebar(){
-$("sidebar").classList.remove("open");$("overlay").classList.remove("visible");
-}
-function renderImagePreview(){
-$("imagePreview").innerHTML="";
-pendingImages.forEach((src,i)=>{
-let w=document.createElement("span"),im=document.createElement("img");im.src=src;im.style.cssText="width:60px;height:60px;object-fit:cover;border-radius:8px";
-let x=document.createElement("button");x.textContent="×";x.onclick=()=>{pendingImages.splice(i,1);renderImagePreview();};
-w.append(im,x);$("imagePreview").append(w);
-});
-}
-$("attach").onclick=()=>$("imageInput").click();
-$("imageInput").onchange=async e=>{
-for(const f of [...e.target.files||[]]){
-if(!["image/jpeg","image/png","image/webp"].includes(f.type)){alert("Formats JPG, PNG ou WEBP uniquement.");continue;}
-if(f.size>1024*1024){alert("1 Mo maximum par image pour cette version.");continue;}
-if(pendingImages.length>=3){alert("3 images maximum.");break;}
-let data=await new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});
-pendingImages.push(data);
-}
-e.target.value="";renderImagePreview();
-};
-async function loadModels(){
-try{
-let r=await fetch("/api/models",{cache:"no-store"}),d=await r.json();
-if(!r.ok)throw Error(d.error||"Chargement impossible");
-if(!d.models?.length)throw Error("Aucun modèle gratuit disponible");
-$("model").innerHTML="";
-d.models.forEach(m=>{let o=document.createElement("option");o.value=m.id;o.textContent=m.name||m.id;$("model").append(o);});
-$("status").textContent=d.models.length+" modèles gratuits disponibles";
-}catch(e){$("model").innerHTML="<option value=''>Modèles indisponibles</option>";$("status").textContent="Erreur modèles : "+e.message;}
-}
-async function sendMessage(text){
-if((!text.trim()&&!pendingImages.length)||busy)return;
-let model=$("model").value;if(!model){$("status").textContent="Aucun modèle disponible.";return;}
-if(!threadId)threadId=String(Date.now());
-let userText=text.trim(),imgs=pendingImages.slice(),parts=[];
-if(userText)parts.push({type:"text",text:userText});
-imgs.forEach(url=>parts.push({type:"image_url",image_url:{url}}));
-let content=imgs.length?parts:userText;
-$("welcome")?.remove();
-let bubble=addMessage("user",userText||"Regarde cette image.");
-imgs.forEach(src=>{let im=document.createElement("img");im.src=src;im.style.cssText="display:block;max-width:220px;max-height:220px;border-radius:10px;margin-top:8px";bubble.append(im);});
-messages.push({role:"user",content});pendingImages=[];renderImagePreview();$("input").value="";
-busy=true;$("send").disabled=true;$("attach").disabled=true;$("status").textContent="NOVA analyse ton message…";
-let answer=addMessage("assistant","NOVA réfléchit…");
-try{
-let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,messages})}),d=await r.json();
-if(!r.ok)throw Error(d.error?.message||d.error||"Erreur API");
-let result=d.choices?.[0]?.message?.content;
-if(Array.isArray(result))result=result.map(p=>p.text||"").join("");
-if(typeof result!=="string"||!result.trim())throw Error("Réponse vide.");
-answer.innerHTML=markdown(result);messages.push({role:"assistant",content:result});save();
-$("status").textContent=d.nova_fallback?"Modèle de secours : "+(d.nova_model_used||"autre modèle"):"Réponse générée par "+(d.nova_model_used||model);
-}catch(e){answer.textContent="Erreur : "+e.message;messages.pop();$("status").textContent="Échec : "+e.message;}
-finally{busy=false;$("send").disabled=false;$("attach").disabled=false;}
-}
-$("form").onsubmit=e=>{e.preventDefault();sendMessage($("input").value);};
-$("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit();}};
-$("new").onclick=newThread;$("clear").onclick=newThread;
-$("menu").onclick=()=>{$("sidebar").classList.add("open");$("overlay").classList.add("visible");};
-$("overlay").onclick=closeSidebar;
-$("messages").onclick=e=>{
-let p=e.target.closest("[data-prompt]");
-if(p){$("input").value=p.dataset.prompt;$("form").requestSubmit();}
-let c=e.target.closest("[data-copy-code]");
-if(c){let v=c.closest(".code-wrap").querySelector("code").textContent;copyText(v,c);}
-};
-try{let saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(saved))threads=saved;}catch(e){}
-renderHistory();loadModels();
-
-/* NOVA VIDEO STUDIO — MOTEUR DE SCÈNES */
-const canvas=$("videoCanvas"),ctx=canvas.getContext("2d");
-const palettes={
-cinema:["#080d22","#34216c","#ff9b70","#7fe5e0"],
-neon:["#07051c","#25105c","#f51caa","#24e8ff"],
-nature:["#071b1a","#145b50","#9de6a5","#f3d98a"],
-space:["#050817","#15285d","#8b73ff","#58d8ef"],
-minimal:["#111827","#334155","#e7edf8","#9aaac2"],
-fantasy:["#160b2d","#52266f","#ffb7dc","#83f4e4"],
-abstract:["#160c25","#5b1c67","#ff6f91","#f9d66b"]
-};
-let mode="auto",scene=null,particles=[],playing=false,raf=0,recording=false,audioCtx=null,audioNodes=[],audioDestination=null;
-
-function videoMode(m){
-mode=m;$("autoMode").classList.toggle("active",m==="auto");$("expertMode").classList.toggle("active",m==="expert");$("expertFields").hidden=m!=="expert";
-}
-$("autoMode").onclick=()=>videoMode("auto");
-$("expertMode").onclick=()=>videoMode("expert");
-
-function sizeCanvas(){
-let ratio=$("videoRatio").value,q=mode==="expert"?+$("videoQuality").value:720,w,h;
-if(ratio==="9:16"){w=Math.round(q*9/16);h=q;}
-else if(ratio==="1:1"){w=q;h=q;}
-else{w=q*16/9;h=q;}
-canvas.width=w;canvas.height=h;
-$("previewFormat").textContent=ratio+" · "+({"9:16":"Vertical","16:9":"Paysage","1:1":"Carré"}[ratio]);
-$("previewDuration").textContent=$("videoDuration").value+" secondes";
-}
-function seed(s){
-let h=2166136261;
-for(let c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}
-return()=>{
-h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);
-return((t^t>>>14)>>>0)/4294967296;
-};
-}
-function detectScene(text){
-let s=text.toLowerCase(),has=(...w)=>w.some(x=>s.includes(x));
-let place=has("plage","mer","océan","ocean","sable","vague")?"beach":
-has("forêt","foret","bois","jungle","arbre")?"forest":
-has("ville","immeuble","gratte-ciel","rue","urbain")?"city":
-has("espace","galaxie","planète","planete","astronaute","étoile","etoile")?"space":
-has("montagne","neige","sommet","ski")?"mountain":
-has("désert","desert","dune")?"desert":
-has("maison","château","chateau","village")?"village":"cinema";
-let subject=has("poney","cheval","cavalier","jument","étalon","etalon")?"horse":
-has("chien","chiot")?"dog":
-has("chat","chaton")?"cat":
-has("voiture","auto","automobile","course","camion")?"car":
-has("homme","femme","personne","garçon","garcon","fille","cavalier")?"person":"none";
-let action=has("court","courir","galope","galop","avance","traverse","marche","roule","vole","saute","fait du poney","chevauche","monte")?"move":
-has("danse","danser")?"dance":"idle";
-let day=has("nuit","nocturne","étoiles","etoiles")?"night":
-has("coucher","crépuscule","crepuscule","soir","golden hour")?"sunset":
-has("aube","matin","lever du soleil")?"dawn":"day";
-return{place,subject,action,day};
-}
-function makeScene(){
-let prompt=$("videoPrompt").value.trim();
-if(!prompt){$("studioStatus").textContent="Écris d'abord une idée.";return false;}
-sizeCanvas();
-let style=$("videoStyle").value,rand=seed(prompt+style),count=mode==="expert"?+$("videoDensity").value:90;
-particles=Array.from({length:count},()=>({x:rand()*canvas.width,y:rand()*canvas.height,r:1+rand()*3,vx:(rand()-.5)*.45,vy:(rand()-.5)*.4,p:rand()*6.28}));
-scene={prompt,p:palettes[style],speed:mode==="expert"?+$("videoSpeed").value:1,...detectScene(prompt),rand};
-$("previewPlaceholder").style.display="none";draw(0);
-$("playPreview").disabled=false;$("exportVideo").disabled=false;
-$("studioStatus").textContent=`Scène détectée : ${scene.place} · ${scene.subject==="none"?"décor animé":scene.subject} · ${scene.action==="move"?"mouvement":"animation douce"}. Aperçu prêt.`;
-return true;
-}
-function path(points,color){
-ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
-points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();
-}
-function cloud(x,y,s){
-ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle="rgba(255,255,255,.65)";
-ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.arc(22,-9,28,0,Math.PI*2);ctx.arc(48,0,20,0,Math.PI*2);ctx.fill();ctx.restore();
-}
-function drawPerson(x,y,scale,t,color="#26334b"){
-ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
-let swing=Math.sin(t*5)*9;
-ctx.strokeStyle="#172033";ctx.lineWidth=9;ctx.lineCap="round";ctx.beginPath();
-ctx.moveTo(0,-28);ctx.lineTo(-8+swing,-2);ctx.moveTo(0,-28);ctx.lineTo(9-swing,-2);ctx.stroke();
-ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(-12,-65);ctx.lineTo(12,-65);ctx.lineTo(10,-28);ctx.lineTo(-10,-28);ctx.fill();
-ctx.strokeStyle="#d9a27c";ctx.lineWidth=7;ctx.beginPath();
-ctx.moveTo(-9,-58);ctx.lineTo(-20+Math.sin(t*4)*5,-38);ctx.moveTo(9,-58);ctx.lineTo(18-Math.sin(t*4)*5,-40);ctx.stroke();
-ctx.fillStyle="#d9a27c";ctx.beginPath();ctx.arc(0,-77,10,0,Math.PI*2);ctx.fill();
-ctx.fillStyle="#172033";ctx.beginPath();ctx.arc(0,-85,10,Math.PI,0);ctx.fill();
-ctx.restore();
-}
-function drawHorse(x,y,scale,t){
-ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);let gallop=Math.sin(t*7)*12;
-ctx.strokeStyle="#38241e";ctx.lineWidth=7;ctx.lineCap="round";ctx.beginPath();
-ctx.moveTo(-22,-24);ctx.lineTo(-30+gallop,-2);ctx.moveTo(12,-24);ctx.lineTo(22-gallop,-2);
-ctx.moveTo(-8,-24);ctx.lineTo(-2-gallop,-2);ctx.moveTo(25,-25);ctx.lineTo(34+gallop,-2);ctx.stroke();
-ctx.fillStyle="#8b5134";ctx.beginPath();ctx.ellipse(0,-43,39,19,-.05,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.moveTo(22,-52);ctx.quadraticCurveTo(35,-80,43,-77);ctx.lineTo(53,-51);ctx.lineTo(34,-37);ctx.fill();
-ctx.fillStyle="#5d3428";ctx.beginPath();ctx.moveTo(39,-76);ctx.lineTo(34,-90);ctx.lineTo(45,-80);ctx.fill();
-ctx.strokeStyle="#3c241f";ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(-34,-48);ctx.quadraticCurveTo(-58,-58,-55+Math.sin(t*4)*7,-32);ctx.stroke();
-ctx.fillStyle="#201a18";ctx.beginPath();ctx.arc(47,-65,2.5,0,Math.PI*2);ctx.fill();ctx.restore();
-}
-function drawBeach(w,h,t){
-let horizon=h*.53,sky=ctx.createLinearGradient(0,0,0,horizon);
-sky.addColorStop(0,scene.day==="night"?"#101b43":scene.day==="sunset"?"#f18b73":"#62b9e9");
-sky.addColorStop(1,scene.day==="night"?"#334d78":scene.day==="sunset"?"#ffd19a":"#d5eefa");
-ctx.fillStyle=sky;ctx.fillRect(0,0,w,horizon);
-let sunY=scene.day==="sunset"?h*.36:h*.2;
-ctx.fillStyle=scene.day==="night"?"#f4f0d5":"#ffe5a0";ctx.beginPath();ctx.arc(w*.76,sunY,Math.min(w,h)*.07,0,Math.PI*2);ctx.fill();
-cloud(w*.18,h*.18,.8);cloud(w*.48,h*.27,.55);
-ctx.fillStyle="#2b9bb5";ctx.fillRect(0,horizon,w,h*.19);
-for(let i=0;i<8;i++){
-let yy=horizon+((i*23+t*18)%(h*.19));ctx.strokeStyle="rgba(255,255,255,.45)";ctx.lineWidth=Math.max(1,h*.002);
-ctx.beginPath();ctx.moveTo(w*.05,yy);ctx.quadraticCurveTo(w*.3,yy-5,w*.55,yy);ctx.quadraticCurveTo(w*.78,yy+5,w,yy-2);ctx.stroke();
-}
-ctx.fillStyle="#e9c58e";ctx.beginPath();ctx.moveTo(0,h*.7);ctx.quadraticCurveTo(w*.45,h*.62,w,h*.73);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.fill();
-for(let i=0;i<35;i++){let x=(i*97)%w,y=h*.74+((i*47)%(h*.24));ctx.fillStyle=i%2?"#fff3d3":"#b99164";ctx.globalAlpha=.25;ctx.fillRect(x,y,2,2);}
-ctx.globalAlpha=1;
-}
-function drawForest(w,h,t){
-let g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,"#9ac7b1");g.addColorStop(1,"#173e36");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-ctx.fillStyle="#8c7650";ctx.fillRect(0,h*.72,w,h*.28);
-for(let i=0;i<12;i++){
-let x=i*w/11,hh=h*(.28+(i%4)*.08);ctx.fillStyle="#493d2d";ctx.fillRect(x-w*.012,h*.45,w*.025,h*.45);
-ctx.fillStyle=i%2?"#1e674a":"#2d8052";ctx.beginPath();ctx.arc(x,h*.45-hh*.25,w*.09,0,Math.PI*2);ctx.fill();
-}
-ctx.fillStyle="#d9e9bb";ctx.globalAlpha=.15;for(let i=0;i<6;i++)ctx.fillRect(i*w/6,0,w*.018,h);ctx.globalAlpha=1;
-}
-function drawCity(w,h,t){
-let g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,scene.day==="night"?"#101b40":"#8bc4e9");g.addColorStop(1,scene.day==="sunset"?"#ed9b80":"#e6d6bd");
-ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.fillStyle="#303b56";
-for(let i=0;i<13;i++){
-let bw=w*(.045+(i%3)*.018),x=i*w/12-bw/2,bh=h*(.2+(i*37%43)/100);
-ctx.fillRect(x,h*.72-bh,bw,bh);ctx.fillStyle="#f8d88a";
-for(let yy=h*.74-bh;yy<h*.7;yy+=h*.045)for(let xx=x+bw*.2;xx<x+bw*.8;xx+=bw*.35)ctx.fillRect(xx,yy,bw*.12,h*.018);
-ctx.fillStyle="#303b56";
-}
-ctx.fillStyle="#202a3e";ctx.fillRect(0,h*.72,w,h*.28);
-}
-function drawBackground(w,h,t){
-if(scene.place==="beach")return drawBeach(w,h,t);
-if(scene.place==="forest")return drawForest(w,h,t);
-if(scene.place==="city")return drawCity(w,h,t);
-let p=scene.p,g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,p[0]);g.addColorStop(.6,p[1]);g.addColorStop(1,"#07101d");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-if(scene.place==="space"){
-ctx.fillStyle="#fff";particles.forEach(q=>{ctx.globalAlpha=.4+.6*Math.sin(t+q.p)**2;ctx.fillRect(q.x,q.y,q.r*1.5,q.r*1.5);});
-ctx.globalAlpha=1;ctx.fillStyle="#7564bd";ctx.beginPath();ctx.arc(w*.72,h*.38,h*.16,0,Math.PI*2);ctx.fill();
-}else if(scene.place==="mountain"||scene.place==="desert"){
-path([[0,h*.68],[w*.2,h*.3],[w*.38,h*.66],[w*.65,h*.22],[w,h*.7],[w,h],[0,h]],scene.place==="desert"?"#c99a62":"#647b91");
-ctx.fillStyle=scene.place==="desert"?"#e7bc7f":"#d5e4ed";ctx.fillRect(0,h*.72,w,h*.28);
-}else{
-ctx.fillStyle="#152b45";ctx.fillRect(0,h*.68,w,h*.32);
-}
-}
-function drawSubject(w,h,t){
-let x=w*(.48+Math.sin(t*.45)*.13),ground=h*(scene.place==="beach"?.79:.76),scale=Math.min(w,h)/500;
-if(scene.subject==="horse"){
-drawHorse(x,ground,scale*1.45,t);
-if(scene.prompt.toLowerCase().includes("cavalier")||scene.prompt.toLowerCase().includes("homme"))drawPerson(x,ground-h*.055,scale*.85,t,"#273b59");
-}else if(scene.subject==="person")drawPerson(x,ground,scale*1.25,t);
-else if(scene.subject==="car"){
-ctx.save();ctx.translate(x+Math.sin(t*.7)*w*.12,ground);ctx.fillStyle="#c83d43";ctx.beginPath();ctx.roundRect(-w*.11,-h*.1,w*.22,h*.09,12);ctx.fill();
-ctx.fillStyle="#8bd4e8";ctx.fillRect(-w*.055,-h*.15,w*.11,h*.06);ctx.fillStyle="#151b28";
-[-.065,.065].forEach(a=>{ctx.beginPath();ctx.arc(w*a,0,h*.035,0,Math.PI*2);ctx.fill();});ctx.restore();
-}else if(scene.subject==="dog"||scene.subject==="cat"){
-ctx.fillStyle=scene.subject==="dog"?"#b77a45":"#777b8c";ctx.beginPath();ctx.ellipse(x,ground-h*.07,h*.12,h*.07,0,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(x+h*.1,ground-h*.15,h*.055,0,Math.PI*2);ctx.fill();
-ctx.strokeStyle="#47362b";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x-h*.08,ground-h*.04);ctx.lineTo(x-h*.1,ground);ctx.moveTo(x+h*.04,ground-h*.04);ctx.lineTo(x+h*.05,ground);ctx.stroke();
-}else if(scene.subject==="none"){
-let glow=ctx.createRadialGradient(x,ground-h*.35,1,x,ground-h*.35,h*.3);glow.addColorStop(0,scene.p[2]);glow.addColorStop(1,"transparent");ctx.fillStyle=glow;ctx.fillRect(x-h*.3,ground-h*.7,h*.6,h*.7);
-}
-}
-function draw(ms){
-if(!scene)return;
-let w=canvas.width,h=canvas.height,t=ms/1000*scene.speed;ctx.save();
-let cam=Math.sin(t*.22)*w*.012;ctx.translate(-cam,0);drawBackground(w,h,t);drawSubject(w,h,t);
-if(scene.place==="beach"){
-ctx.fillStyle="rgba(255,255,255,.45)";
-for(let i=0;i<5;i++){let x=(i*w/4+(t*25)%w)%w;ctx.beginPath();ctx.ellipse(x,h*.72+Math.sin(t+i)*4,w*.07,h*.006,0,0,Math.PI*2);ctx.fill();}
-}
-particles.forEach((q,i)=>{
-if(scene.place==="space"||scene.day==="night"){
-ctx.globalAlpha=.25+.65*(.5+.5*Math.sin(t*1.7+q.p));ctx.fillStyle="#fff";ctx.beginPath();ctx.arc((q.x+t*q.vx*15+w)%w,q.y,q.r,0,Math.PI*2);ctx.fill();
-}
-});
-ctx.globalAlpha=1;ctx.restore();
-let words=scene.prompt.split(/\s+/),lines=[],line="",max=Math.max(20,Math.floor(w/19));
-words.forEach(word=>{if((line+" "+word).trim().length>max){lines.push(line);line=word;}else line=(line+" "+word).trim();});
-if(line)lines.push(line);lines=lines.slice(0,3);
-let fs=Math.max(16,Math.min(w*.027,34));ctx.textAlign="center";ctx.font=`700 ${fs}px Arial`;ctx.shadowColor="#000";ctx.shadowBlur=8;ctx.fillStyle="#fff";
-let base=h*.91-(lines.length-1)*fs*.65;lines.forEach((l,i)=>ctx.fillText(l,w/2,base+i*fs*1.2,w*.88));
-ctx.shadowBlur=0;ctx.font=`600 ${Math.max(10,fs*.32)}px Arial`;ctx.fillStyle="#ffffffbb";ctx.fillText("NOVA AI · SCENE ENGINE",w/2,h*.975);
-}
-
-/* AUDIO SYNTHÉTIQUE */
-function startSound(){
-try{
-if(!audioCtx){
-audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-audioDestination=audioCtx.createMediaStreamDestination();
-let master=audioCtx.createGain();master.gain.value=.22;master.connect(audioCtx.destination);master.connect(audioDestination);
-let buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*2,audioCtx.sampleRate),data=buffer.getChannelData(0);
-for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.22;
-let noise=audioCtx.createBufferSource();noise.buffer=buffer;noise.loop=true;
-let filter=audioCtx.createBiquadFilter();filter.type="lowpass";filter.frequency.value=scene?.place==="beach"?520:scene?.place==="forest"?850:260;
-let gain=audioCtx.createGain();gain.gain.value=scene?.place==="beach"?.16:.055;
-noise.connect(filter);filter.connect(gain);gain.connect(master);noise.start();
-let osc=audioCtx.createOscillator(),tone=audioCtx.createGain();osc.type="sine";osc.frequency.value=scene?.place==="beach"?92:scene?.place==="forest"?145:65;tone.gain.value=.018;osc.connect(tone);tone.connect(master);osc.start();
-audioNodes=[noise,osc,master];
-}
-if(audioCtx.state==="suspended")audioCtx.resume();
-}catch(e){$("studioStatus").textContent="Animation prête ; audio indisponible sur ce navigateur.";}
-}
-function stopSound(){
-if(audioCtx&&audioCtx.state==="running"){
-try{audioNodes.forEach(n=>{if(n.stop)n.stop();});}catch(e){}
-audioNodes=[];audioCtx.close().catch(()=>{});audioCtx=null;audioDestination=null;
-}
-}
-function stop(){
-playing=false;if(raf)cancelAnimationFrame(raf);raf=0;
-$("playPreview").disabled=!scene;$("stopPreview").disabled=true;stopSound();
-}
-function play(){
-if(!scene&&!makeScene())return;
-stop();startSound();playing=true;$("playPreview").disabled=true;$("stopPreview").disabled=false;
-let start=performance.now(),duration=+$("videoDuration").value*1000;
-function tick(now){
-if(!playing)return;let elapsed=now-start;draw(elapsed);
-if(elapsed>=duration){stop();draw(duration);return;}
-raf=requestAnimationFrame(tick);
-}
-raf=requestAnimationFrame(tick);
-}
-function mimeType(){
-if(!window.MediaRecorder)return"";
-return["video/mp4;codecs=h264","video/mp4","video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(x=>MediaRecorder.isTypeSupported?.(x))||"";
-}
-async function exportVideo(){
-if(recording)return;
-if(!scene&&!makeScene())return;
-if(!canvas.captureStream||!window.MediaRecorder){$("studioStatus").textContent="Enregistrement non pris en charge par ce navigateur. Essaie Safari à jour.";return;}
-let mime=mimeType();if(!mime){$("studioStatus").textContent="Aucun format vidéo compatible détecté.";return;}
-stop();startSound();
-let stream=canvas.captureStream(30),chunks=[];
-if(audioDestination)audioDestination.stream.getAudioTracks().forEach(track=>stream.addTrack(track));
-try{
-let rec=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:mode==="expert"&&+$("videoQuality").value===1080?5500000:3000000});
-recording=true;$("generateVideo").disabled=true;$("exportVideo").disabled=true;
-$("studioStatus").textContent="Export en cours avec ambiance sonore… garde NOVA ouvert.";
-rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data);};
-rec.onerror=()=>{$("studioStatus").textContent="Erreur d'enregistrement.";recording=false;$("generateVideo").disabled=false;};
-rec.onstop=()=>{
-stream.getTracks().forEach(t=>t.stop());recording=false;stopSound();
-$("generateVideo").disabled=false;$("exportVideo").disabled=false;
-let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement("a");
-a.href=url;a.download="nova-video-"+Date.now()+"."+(mime.includes("mp4")?"mp4":"webm");
-document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-$("studioStatus").textContent="Export terminé. Vérifie les téléchargements de ton navigateur.";
-};
-rec.start(200);
-let start=performance.now(),duration=+$("videoDuration").value*1000;
-function frame(now){let elapsed=now-start;draw(elapsed);if(elapsed>=duration){rec.stop();return;}requestAnimationFrame(frame);}
-requestAnimationFrame(frame);
-}catch(e){
-stream.getTracks().forEach(t=>t.stop());recording=false;stopSound();$("generateVideo").disabled=false;
-$("studioStatus").textContent="Export impossible : "+e.message;
-}
-}
-$("openStudio").onclick=()=>{$("studio").classList.add("open");sizeCanvas();};
-$("closeStudio").onclick=()=>{stop();$("studio").classList.remove("open");};
-$("generateVideo").onclick=()=>{if(makeScene())play();};
-$("playPreview").onclick=play;
-$("stopPreview").onclick=()=>{stop();if(scene)draw(0);};
-$("exportVideo").onclick=exportVideo;
-$("resetStudio").onclick=()=>{
-stop();scene=null;ctx.clearRect(0,0,canvas.width,canvas.height);$("previewPlaceholder").style.display="block";
-$("playPreview").disabled=$("stopPreview").disabled=$("exportVideo").disabled=true;$("studioStatus").textContent="Prêt pour une nouvelle création.";
-};
-["videoRatio","videoDuration","videoQuality"].forEach(id=>$(id).onchange=()=>{
-sizeCanvas();
-if(scene){scene=null;$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("exportVideo").disabled=true;}
-});
-
-/* GÉOLOCALISATION ET EXPLORATEUR DE DATES */
-let clockTimer=null;
-function updateClock(){
-let now=new Date();
-$("nowDate").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(now);
-$("nowClock").textContent=new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(now);
-let zone=Intl.DateTimeFormat().resolvedOptions().timeZone||"Fuseau inconnu";
-$("zoneInfo").textContent="Fuseau horaire : "+zone+" · "+(-now.getTimezoneOffset()/60)+" h UTC";
-$("deviceInfo").textContent="Date lue sur l'appareil · "+navigator.language;
-}
-function localISODate(d){
-let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
-return `${y}-${m}-${day}`;
-}
-function examineDate(value){
-if(!value){$("dateResult").textContent="Choisis une date.";return;}
-let [y,m,d]=value.split("-").map(Number),chosen=new Date(y,m-1,d),now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-let diff=Math.round((chosen-today)/86400000),label,cls,detail;
-if(diff===0){label="AUJOURD'HUI — PRÉSENT";cls="status-good";detail="Cette date correspond à la date locale actuelle.";}
-else if(diff<0){label="PASSÉ";cls="status-past";detail=`Cette date est passée depuis ${Math.abs(diff)} jour(s).`;}
-else{label="FUTUR";cls="status-future";detail=`Cette date arrivera dans ${diff} jour(s).`;}
-$("dateResult").innerHTML=`<strong class="${cls}">${label}</strong><br>${new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(chosen)}<br>${detail}`;
-}
-function openTimePanel(){
-$("timePanel").classList.add("open");updateClock();
-if(clockTimer)clearInterval(clockTimer);
-clockTimer=setInterval(updateClock,1000);
-let today=new Date();$("dateExplorer").value=localISODate(today);examineDate($("dateExplorer").value);
-}
-function closeTimePanel(){
-$("timePanel").classList.remove("open");if(clockTimer)clearInterval(clockTimer);clockTimer=null;
-}
-$("openTime").onclick=openTimePanel;
-$("closeTime").onclick=closeTimePanel;
-$("dateExplorer").onchange=e=>examineDate(e.target.value);
-$("chooseYesterday").onclick=()=>{
-let d=new Date();d.setDate(d.getDate()-1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value);
-};
-$("chooseTomorrow").onclick=()=>{
-let d=new Date();d.setDate(d.getDate()+1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value);
-};
-$("getLocation").onclick=()=>{
-let out=$("geoResult");
-if(!navigator.geolocation){out.textContent="La géolocalisation n'est pas prise en charge par ce navigateur.";return;}
-out.textContent="Demande de position en cours…";
-navigator.geolocation.getCurrentPosition(pos=>{
-let c=pos.coords;
-out.innerHTML=`<span class="status-good">Position obtenue</span><br>Latitude : ${c.latitude.toFixed(5)}<br>Longitude : ${c.longitude.toFixed(5)}<br>Précision : environ ${Math.round(c.accuracy)} m<br><span class="time-muted">Position ponctuelle · relevée ${new Date(pos.timestamp).toLocaleTimeString("fr-FR")}</span>`;
-$("timeStatus").textContent="La position est affichée uniquement dans cette fenêtre. Elle n'est pas envoyée à NOVA AI ni à son serveur.";
-},err=>{
-out.textContent=({1:"Autorisation refusée. Tu peux l'activer dans les réglages du navigateur.",2:"Position indisponible. Vérifie le GPS et la connexion.",3:"Délai dépassé. Réessaie."}[err.code]||"Impossible d'obtenir la position.");
-},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-};
+t=e=>{e.preventDefault();let t=$('#input').value;send(t)};$('#input').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#form').requestSubmit()}};$('#new').onclick=newChat;$('#settingsSide').onclick=$('#settingsTop').onclick=settings;$('#cancel').onclick=()=>$('#dlg').close();$('#save').onclick=()=>{let u=$('#worker').value.trim().replace(/\/$/,'');if(u&&!u.startsWith('https://')){alert('Il faut une URL HTTPS.');return}localStorage.nova_worker_url=u;$('#dlg').close();models()};if(!chats.length)newChat();else{id=chats[chats.length-1].id;history();render()}if(url())models();else settings();
 </script>
-</body>
-</html>
+<script type="module">
+const $3=id=>document.getElementById(id);
+const host=$3('threeHost'), overlay=$3('studio');let THREE,renderer,scene,camera,clock,raf,mixer,horse,playing=true,look='cinematic',sceneType='beach',recording=false,resizeObs,objects=[];
+const setStatus=t=>$3('stStatus').textContent=t;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+$3('openStudio').onclick=()=>{overlay.classList.add('open');document.body.style.overflow='hidden';init3D()};
+$3('closeStudio').onclick=()=>{overlay.classList.remove('open');document.body.style.overflow='';};
+$3('stPlay').onclick=()=>{playing=!playing;$3('stPlay').textContent=playing?'Ⅱ Pause':'▶ Reprendre'};
+$3('stReset').onclick=()=>{if(camera){camera.position.set(10,6,13);camera.lookAt(0,1,0)}};
+document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{look=b.dataset.look;document.querySelectorAll('[data-look]').forEach(x=>x.classList.toggle('active',x===b));buildScene(sceneType)});
+$3('stScene').onchange=e=>{sceneType=e.target.value;buildScene(sceneType)};
+$3('stGenerate').onclick=()=>{const p=$3('stPrompt').value.trim();if(!p){setStatus('Ajoute une description pour guider la scène.');return}sceneType=$3('stScene').value;buildScene(sceneType);setStatus('Scène actualisée : '+p.slice(0,100))};
+async function init3D(){if(renderer)return;try{setStatus('Chargement de Three.js…');const mod=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');THREE=mod;scene=new THREE.Scene();clock=new THREE.Clock();camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(10,6,13);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.innerHTML='';host.appendChild(renderer.domElement);const hemi=new THREE.HemisphereLight(0xb9d9ff,0x69503a,2.0);scene.add(hemi);const sun=new THREE.DirectionalLight(0xffd5a1,3.2);sun.position.set(-8,14,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-18;sun.shadow.camera.right=18;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;scene.add(sun);window.__novaSun=sun;buildScene(sceneType);resizeObs=new ResizeObserver(resize);resizeObs.observe(host);resize();animate();setStatus('Moteur 3D prêt. Tu peux changer de décor ou lancer un export.');}catch(e){$3('threeLoad').style.display='grid';$3('threeLoad').textContent='Impossible de charger le moteur 3D. Vérifie la connexion internet puis recharge NOVA. Détail : '+e.message;setStatus('Erreur moteur 3D : '+e.message)}}
+function clearScene(){for(const o of objects){scene.remove(o);o.traverse?.(x=>{x.geometry?.dispose?.();if(x.material){(Array.isArray(x.material)?x.material:[x.material]).forEach(m=>m.dispose?.())}})}objects=[];if(horse){scene.remove(horse);horse=null}mixer=null}
+function add(o){scene.add(o);objects.push(o);return o}
+function mat(color,rough=.8,metal=0){return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal})}
+function plane(w,h,m,x=0,y=0,z=0){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);o.rotation.x=-Math.PI/2;o.position.set(x,y,z);o.receiveShadow=true;return add(o)}
+function buildScene(type){if(!renderer)return;clearScene();sceneType=type;let sky=0xf4a77d,ground=0xc9a477,water=0x168ba4;if(look==='storm'){sky=0x26394e;water=0x315c70}else if(look==='dream'){sky=0x9c8ad6;water=0x558cbd}else if(look==='sunset'){sky=0xf29a68}
+scene.background=new THREE.Color(type==='space'?0x050817:sky);scene.fog=new THREE.Fog(type==='space'?0x050817:sky,22,85);
+const groundMat=mat(type==='beach'?ground:type==='desert'?0xb98a55:type==='forest'?0x345d39:type==='mountain'?0x78818c:0x161b28,.95);plane(160,160,groundMat,0,-.1,0);
+if(type==='beach'){const sea=plane(160,65,new THREE.MeshStandardMaterial({color:water,roughness:.23,metalness:.18}),0,.02,-34);sea.material.side=THREE.DoubleSide;for(let i=0;i<8;i++){const wave=new THREE.Mesh(new THREE.BoxGeometry(145,.035,.055),new THREE.MeshStandardMaterial({color:0xbceaf0,transparent:true,opacity:.34}));wave.position.set(0,.12,-8-i*3);add(wave)}const sun=new THREE.Mesh(new THREE.SphereGeometry(2.1,32,24),new THREE.MeshBasicMaterial({color:0xffe4a0}));sun.position.set(-12,10,-30);add(sun);for(let i=0;i<12;i++){const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(.3+Math.random()*.5,1),mat(0x92785c));rock.position.set((Math.random()-.5)*60,.15,-5-Math.random()*45);rock.scale.y=.4;rock.castShadow=true;add(rock)}}
+if(type==='mountain'){for(let i=0;i<14;i++){const h=5+Math.random()*14;const m=new THREE.Mesh(new THREE.ConeGeometry(3+Math.random()*5,h,6),mat(i%2?0x596d7a:0x71828a));m.position.set((Math.random()-.5)*70,h/2-1,-18-Math.random()*45);m.castShadow=true;add(m)}}
+if(type==='forest'){for(let i=0;i<65;i++){const x=(Math.random()-.5)*65,z=(Math.random()-.5)*65-8;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.28,2.5,8),mat(0x59402d));trunk.position.set(x,1.2,z);trunk.castShadow=true;add(trunk);for(let j=0;j<3;j++){const crown=new THREE.Mesh(new THREE.ConeGeometry(1.5-j*.25,2.8,8),mat(i%3?0x24583a:0x376b42));crown.position.set(x,2.3+j*1.15,z);crown.castShadow=true;add(crown)}}}
+if(type==='desert'){for(let i=0;i<12;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),mat(i%2?0xc08c53:0xd3a66a));d.scale.set(8+Math.random()*9,1.2,5);d.position.set((Math.random()-.5)*55,.1,-10-Math.random()*38);add(d)}}
+if(type==='nightcity'){scene.background.set(0x080d20);scene.fog.color.set(0x10172b);for(let i=0;i<32;i++){const h=3+Math.random()*17;const b=new THREE.Mesh(new THREE.BoxGeometry(2+Math.random()*3,h,2+Math.random()*3),mat(0x202b42,.7,.25));b.position.set((Math.random()-.5)*55,h/2,-10-Math.random()*35);add(b);for(let j=0;j<8;j++){const win=new THREE.Mesh(new THREE.BoxGeometry(.16,.22,.03),new THREE.MeshBasicMaterial({color:Math.random()>.4?0xffcf77:0x6d9dff}));win.position.set(b.position.x-0.6+Math.random()*1.2,.4+Math.random()*(h-1),b.position.z+1.02);add(win)}}}
+if(type==='space'){scene.fog=new THREE.Fog(0x050817,60,180);const stars=new THREE.BufferGeometry(),arr=[];for(let i=0;i<1800;i++)arr.push((Math.random()-.5)*180,(Math.random()-.5)*100,(Math.random()-. 
+
+5)*160);stars.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));add(new THREE.Points(stars,new THREE.PointsMaterial({color:0xffffff,size:.13})));const planet=new THREE.Mesh(new THREE.SphereGeometry(7,48,40),new THREE.MeshStandardMaterial({color:0x345eae,roughness:.85,metalness:.05}));planet.position.set(-13,3,-28);add(planet);const glow=new THREE.PointLight(0x719bff,45,90);glow.position.set(-10,10,-15);add(glow)}
+if(type!=='space'&&type!=='nightcity'){for(let i=0;i<5;i++){const cloud=new THREE.Group();for(let j=0;j<5;j++){const c=new THREE.Mesh(new THREE.SphereGeometry(1.1+Math.random()*.45,16,12),new THREE.MeshStandardMaterial({color:0xfff1e6,roughness:1,transparent:true,opacity:.8}));c.position.set(j*1.25,Math.random()*.45,0);cloud.add(c)}cloud.position.set(-20+i*10,12+Math.random()*7,-25-Math.random()*20);add(cloud)}}
+// Heroine/horse proxy remains fully volumetric if external animated horse is unavailable.
+const rider=new THREE.Group();const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.72,5,10),mat(0x253d59));torso.position.y=1.7;rider.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.23,20,16),mat(0xc98e69));head.position.set(0,2.25,0);rider.add(head);const legs=mat(0x1b2434);for(let x of [-.16,.16]){const l=new THREE.Mesh(new THREE.CylinderGeometry(.07,.09,.8,10),legs);l.position.set(x,1.05,0);rider.add(l)}rider.position.set(0,.15,0);add(rider);$3('stSceneName').textContent=({beach:'Littoral cinématique',mountain:'Haute montagne',forest:'Forêt immersive',space:'Espace profond',desert:'Désert',nightcity:'Métropole nocturne'})[type];camera.position.set(type==='space'?12:10,6,13);camera.lookAt(0,1,0);loadHorse();}
+async function loadHorse(){try{const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');const loader=new GLTFLoader();loader.load('https://threejs.org/examples/models/gltf/Horse.glb',g=>{if(!scene)return;horse=g.scene;horse.scale.setScalar(1.35);horse.position.set(-1,0,1);horse.rotation.y=Math.PI/2;horse.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});add(horse);if(g.animations?.length){mixer=new THREE.AnimationMixer(horse);mixer.clipAction(g.animations[0]).play()}setStatus('Modèle 3D du cheval chargé avec animation.');},undefined,()=>setStatus('Décor 3D prêt. Modèle externe indisponible : affichage de la scène sans cheval détaillé.'));}catch(e){setStatus('Scène 3D active ; modèle détaillé non disponible sur ce réseau.')}}
+function resize(){if(!renderer)return;const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;const ratio=$3('stRatio').value;let ar=ratio==='9:16'?9/16:ratio==='1:1'?1:16/9;let cw=w,ch=w/ar;if(ch>h&&h>0){ch=h;cw=h*ar}renderer.setSize(cw,ch,false);renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';camera.aspect=cw/ch;camera.updateProjectionMatrix()}
+function animate(){raf=requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;if(playing){if(mixer)mixer.update(dt);if(horse){horse.position.z=1+Math.sin(t*1.2)*.5;horse.position.x=-1+Math.sin(t*.45)*1.3}camera.position.x=10+Math.sin(t*.12)*1.4;camera.position.z=13+Math.cos(t*.12)*.8;camera.lookAt(0,1,0);objects.forEach(o=>{if(o.geometry?.type==='BoxGeometry'&&o.position.y===.12)o.position.x=Math.sin(t*.6+o.position.z)*.5})}renderer.render(scene,camera)}
+$3('stRatio').onchange=resize;
+$3('stExport').onclick=async()=>{if(!renderer||recording)return;const canvas=renderer.domElement;if(!canvas.captureStream||!window.MediaRecorder){setStatus('Cet iPhone/navigateur ne prend pas en charge l’export vidéo ici. Essaie avec un navigateur compatible.');return}try{recording=true;$3('stExport').disabled=true;const seconds=Number($3('stDuration').value),quality=Number($3('stQuality').value);const stream=canvas.captureStream(30);let mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('Format vidéo MediaRecorder non pris en charge par ce navigateur.');const chunks=[];const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:quality===1080?8500000:4500000});rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onstop=()=>{const blob=new Blob(chunks,{type:mime});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='NOVA-3D-'+Date.now()+'.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);stream.getTracks().forEach(t=>t.stop());setStatus('Export terminé. Si Safari ne lance pas le téléchargement, ouvre le fichier depuis le partage.');recording=false;$3('stExport').disabled=false;$3('stProgress').style.width='100%'};rec.start(250);let start=performance.now();const tick=()=>{if(!recording)return;let pct=clamp((performance.now()-start)/(seconds*1000)*100,0,100);$3('stProgress').style.width=pct+'%';if(pct>=100)rec.stop();else setTimeout(tick,100)};setStatus('Enregistrement en cours : garde NOVA au premier plan…');tick();}catch(e){recording=false;$3('stExport').disabled=false;setStatus('Export impossible : '+e.message)}};
+window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);resizeObs?.disconnect();renderer?.dispose()});
+</script>
+
+</body></html>
