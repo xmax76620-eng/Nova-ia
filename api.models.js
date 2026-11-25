@@ -1,15 +1,21 @@
-export default async function handler(req, res) {
+
+module.exports = async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+
+  // Vérification de la méthode
   if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
     return res.status(405).json({
-      error: "Méthode non autorisée"
+      error: "Méthode non autorisée."
     });
   }
 
+  // Récupération de la clé OpenRouter
   const key = process.env.OPENROUTER_API_KEY;
 
   if (!key) {
     return res.status(500).json({
-      error: "Clé OpenRouter absente dans Vercel"
+      error: "Clé OPENROUTER_API_KEY absente dans Vercel."
     });
   }
 
@@ -17,39 +23,56 @@ export default async function handler(req, res) {
     const response = await fetch(
       "https://openrouter.ai/api/v1/models",
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${key}`
         }
       }
     );
 
-    const result = await response.json();
+    let result = {};
+
+    try {
+      result = await response.json();
+    } catch (_) {}
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: result.error?.message || "Erreur OpenRouter"
+        error: result.error?.message || "Erreur OpenRouter."
       });
     }
 
+    // Récupération des modèles gratuits
     const models = (result.data || [])
       .filter(model =>
-        typeof model.id === "string" &&
-        model.id.endsWith(":free")
+        model?.id &&
+        (
+          model.id.endsWith(":free") ||
+          model.id === "openrouter/free"
+        )
       )
       .map(model => ({
         id: model.id,
         name: model.name || model.id
       }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+    if (!models.length) {
+      return res.status(502).json({
+        error: "OpenRouter n'a renvoyé aucun modèle gratuit."
+      });
+    }
 
     return res.status(200).json({
-      data: models
+      models
     });
 
   } catch (error) {
-    return res.status(500).json({
-      error: error.message
+    return res.status(502).json({
+      error:
+        error.message ||
+        "OpenRouter inaccessible."
     });
   }
-}
+};
