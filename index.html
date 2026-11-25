@@ -3,632 +3,178 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080d18">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NOVA AI</title>
-
 <style>
-:root {
-  color-scheme: dark;
-  --bg: #080d18;
-  --panel: #101827;
-  --line: #293650;
-  --txt: #eef3ff;
-  --muted: #91a0b8;
-  --accent: #7659ff;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background:
-    radial-gradient(ellipse at 50% -20%, #26365e, transparent 48%),
-    var(--bg);
-  color: var(--txt);
-  font-family: -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-}
-
-.app {
-  max-width: 1100px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  height: 100dvh;
-}
-
-aside {
-  padding: 18px;
-  background: #0b1220;
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.brand {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.logo {
-  display: inline-grid;
-  place-items: center;
-  background: linear-gradient(135deg, #7659ff, #20c8c8);
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  margin-right: 8px;
-}
-
-.muted, small {
-  color: var(--muted);
-}
-
-button, select {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.btn {
-  background: #151f31;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  padding: 11px;
-  text-align: left;
-}
-
-.primary {
-  background: linear-gradient(120deg, #7659ff, #3478ec);
-  border: 0;
-  border-radius: 11px;
-  padding: 12px;
-  font-weight: 700;
-}
-
-#history {
-  display: grid;
-  gap: 7px;
-}
-
-.bottom {
-  margin-top: auto;
-}
-
-main {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.select {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 9px;
-  max-width: 260px;
-}
-
-#messages {
-  flex: 1;
-  overflow: auto;
-  padding: 25px max(15px, calc((100% - 760px) / 2));
-}
-
-.welcome {
-  text-align: center;
-  max-width: 620px;
-  margin: 8vh auto;
-}
-
-.orb {
-  margin: auto auto 18px;
-  width: 70px;
-  height: 70px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, #7659ff, #20c8c8);
-  display: grid;
-  place-items: center;
-  font-size: 32px;
-}
-
-h1 {
-  font-size: 32px;
-}
-
-.welcome p {
-  color: var(--muted);
-}
-
-.prompts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.prompt {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 13px;
-  text-align: left;
-}
-
-.msg {
-  display: flex;
-  gap: 12px;
-  max-width: 760px;
-  margin: 0 auto 20px;
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  flex: none;
-  border-radius: 11px;
-  background: #273650;
-  display: grid;
-  place-items: center;
-}
-
-.bubble {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  padding: 5px 0;
-}
-
-.user .bubble {
-  background: #17243a;
-  border: 1px solid #2c3c59;
-  border-radius: 13px;
-  padding: 12px;
-}
-
-.compose {
-  border-top: 1px solid var(--line);
-  padding: 14px;
-  background: #0b1220;
-}
-
-.compose form {
-  max-width: 790px;
-  margin: auto;
-  display: flex;
-  gap: 10px;
-  background: var(--panel);
-  border: 1px solid #34425d;
-  border-radius: 15px;
-  padding: 9px;
-}
-
-textarea {
-  flex: 1;
-  resize: none;
-  background: transparent;
-  border: 0;
-  outline: 0;
-  color: var(--txt);
-  padding: 9px;
-  min-height: 42px;
-  max-height: 140px;
-}
-
-.send {
-  width: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7659ff, #3478ec);
-}
-
-.hint {
-  text-align: center;
-  color: #71819c;
-  font-size: 11px;
-  margin-top: 7px;
-}
-
-@media(max-width:700px) {
-  .app {
-    display: block;
-  }
-
-  aside {
-    display: none;
-  }
-
-  main {
-    height: 100dvh;
-  }
-
-  header {
-    padding: 12px;
-  }
-
-  .select {
-    max-width: 180px;
-  }
-
-  #messages {
-    padding: 18px 13px;
-  }
-
-  .prompts {
-    grid-template-columns: 1fr;
-  }
-
-  h1 {
-    font-size: 28px;
-  }
-}
+*{box-sizing:border-box}
+body{margin:0;background:#080d18;color:#eef3ff;font-family:Arial,sans-serif}
+.app{display:grid;grid-template-columns:240px 1fr;height:100dvh}
+aside{background:#0b1220;padding:18px;border-right:1px solid #293650}
+.brand{font-size:25px;font-weight:bold;margin-bottom:25px}
+.logo{background:linear-gradient(135deg,#7659ff,#20c8c8);padding:9px;border-radius:10px;margin-right:8px}
+button,select{cursor:pointer;color:white}
+.primary{background:linear-gradient(120deg,#7659ff,#3478ec);border:0;border-radius:10px;padding:13px;width:100%;font-weight:bold}
+.secondary{background:#151f31;border:1px solid #293650;border-radius:10px;padding:12px;width:100%;margin:5px 0;text-align:left}
+small{color:#91a0b8}
+#history{margin-top:12px}
+main{display:flex;flex-direction:column;min-width:0}
+header{padding:16px 20px;border-bottom:1px solid #293650;display:flex;justify-content:space-between;align-items:center}
+select{background:#101827;border:1px solid #293650;border-radius:9px;padding:10px;max-width:55%}
+#messages{flex:1;overflow-y:auto;padding:25px 15px}
+.welcome{text-align:center;margin:10vh auto;max-width:600px}
+.orb{margin:auto;width:75px;height:75px;border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);display:grid;place-items:center;font-size:35px}
+.welcome h1{font-size:30px}
+.welcome p{color:#91a0b8}
+.msg{display:flex;gap:12px;max-width:780px;margin:0 auto 22px}
+.avatar{background:#263650;border-radius:10px;padding:10px;height:36px}
+.bubble{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;padding:5px 0}
+.user .bubble{background:#17243a;border:1px solid #293650;border-radius:12px;padding:12px}
+.compose{padding:14px;border-top:1px solid #293650;background:#0b1220}
+form{max-width:800px;margin:auto;display:flex;gap:10px;background:#101827;border:1px solid #34425d;border-radius:15px;padding:9px}
+textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;font:16px Arial;min-height:45px}
+.send{width:50px;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec);font-size:22px}
+.send:disabled{opacity:.5}
+.hint{text-align:center;color:#71819c;font-size:11px;margin-top:8px}
+@media(max-width:700px){.app{display:block}aside{display:none}main{height:100dvh}header{padding:12px}#messages{padding:15px 12px}.welcome{margin:9vh auto}}
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
 <aside>
-  <div class="brand">
-    <span class="logo">N</span>NOVA AI
-  </div>
-
-  <small>TON ASSISTANT INTELLIGENT</small>
-
-  <button class="primary" id="new">
-    ＋ Nouvelle conversation
-  </button>
-
-  <small>HISTORIQUE</small>
-
-  <div id="history"></div>
-
-  <button class="btn bottom" id="refresh">
-    ↻ Actualiser les modèles
-  </button>
-
-  <small id="status">Connexion à NOVA AI…</small>
+<div class="brand"><span class="logo">N</span>NOVA AI</div>
+<small>TON ASSISTANT INTELLIGENT</small>
+<br><br>
+<button class="primary" id="new">＋ Nouvelle conversation</button>
+<br><br>
+<small>HISTORIQUE</small>
+<div id="history"></div>
 </aside>
 
 <main>
-
 <header>
-  <div>
-    <b>NOVA AI</b><br>
-    <small>Réfléchir · créer · apprendre</small>
-  </div>
-
-  <select class="select" id="model">
-    <option value="">Chargement des modèles gratuits…</option>
-  </select>
+<div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div>
+<select id="model"><option>Chargement des modèles...</option></select>
 </header>
 
 <section id="messages">
-
-  <div class="welcome" id="welcome">
-
-    <div class="orb">✦</div>
-
-    <h1>Que veux-tu créer aujourd'hui ?</h1>
-
-    <p>
-      Pose une question, imagine un projet
-      ou demande de l'aide pour coder.
-    </p>
-
-    <div class="prompts">
-
-      <button class="prompt">
-        💡 Trouve-moi une idée de projet innovant
-      </button>
-
-      <button class="prompt">
-        🧠 Explique-moi un sujet compliqué
-      </button>
-
-      <button class="prompt">
-        💻 Aide-moi à créer une application
-      </button>
-
-      <button class="prompt">
-        ✍️ Rédige un texte professionnel
-      </button>
-
-    </div>
-  </div>
-
+<div class="welcome" id="welcome">
+<div class="orb">✦</div>
+<h1>Que veux-tu créer aujourd'hui ?</h1>
+<p>Pose une question, imagine un projet ou demande de l'aide.</p>
+</div>
 </section>
 
 <div class="compose">
-
-  <form id="form">
-
-    <textarea
-      id="input"
-      rows="1"
-      placeholder="Écris ton message à NOVA AI…"
-    ></textarea>
-
-    <button
-      class="send"
-      id="send"
-      aria-label="Envoyer"
-    >➤</button>
-
-  </form>
-
-  <div class="hint">
-    Modèles gratuits uniquement · Une IA peut se tromper.
-  </div>
-
+<form id="form">
+<textarea id="input" placeholder="Écris ton message à NOVA AI..." required></textarea>
+<button class="send" id="send" type="submit">➤</button>
+</form>
+<div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
 </div>
-
 </main>
 </div>
 
 <script>
-const $ = s => document.querySelector(s);
+const $=id=>document.getElementById(id);
+let messages=[];
+let busy=false;
 
-let chats = JSON.parse(
-  localStorage.nova_chats || "[]"
-);
-
-let id = null;
-let busy = false;
-
-function status(text) {
-  $("#status").textContent = text;
+function addMessage(role,content){
+ const row=document.createElement("div");
+ row.className="msg "+(role==="user"?"user":"assistant");
+ const avatar=document.createElement("div");
+ avatar.className="avatar";
+ avatar.textContent=role==="user"?"P":"N";
+ const bubble=document.createElement("div");
+ bubble.className="bubble";
+ bubble.textContent=content;
+ row.append(avatar,bubble);
+ $("messages").appendChild(row);
+ $("messages").scrollTop=$("messages").scrollHeight;
+ return bubble;
 }
 
-function cur() {
-  return chats.find(c => c.id === id);
-}
-
-function save() {
-  localStorage.nova_chats = JSON.stringify(chats);
-}
-
-function newChat() {
-  id = crypto.randomUUID();
-
-  chats.push({
-    id,
-    title: "Nouvelle conversation",
-    messages: []
+async function loadModels(){
+ const select=$("model");
+ select.innerHTML="<option>Chargement...</option>";
+ try{
+  const response=await fetch("/api/models");
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||"Erreur de chargement");
+  select.innerHTML="";
+  if(!data.data||!data.data.length)throw new Error("Aucun modèle gratuit disponible");
+  data.data.forEach(model=>{
+   const option=document.createElement("option");
+   option.value=model.id;
+   option.textContent=model.name||model.id;
+   select.appendChild(option);
   });
-
-  save();
-  history();
-  render();
+ }catch(error){
+  select.innerHTML="<option>Modèles indisponibles</option>";
+  addMessage("assistant","Impossible de charger les modèles : "+error.message);
+ }
 }
 
-function history() {
-  const h = $("#history");
-  h.innerHTML = "";
+async function sendMessage(text){
+ if(!text.trim()||busy)return;
+ const model=$("model").value;
+ if(!model||model==="Modèles indisponibles"){
+  addMessage("assistant","Les modèles ne sont pas disponibles. Recharge la page.");
+  return;
+ }
 
-  chats.slice().reverse().forEach(c => {
-    const b = document.createElement("button");
+ messages.push({role:"user",content:text});
+ $("welcome")?.remove();
+ addMessage("user",text);
+ $("input").value="";
+ busy=true;
+ $("send").disabled=true;
+ const answer=addMessage("assistant","NOVA réfléchit...");
 
-    b.className = "btn";
-    b.textContent = c.title;
-
-    b.onclick = () => {
-      id = c.id;
-      render();
-    };
-
-    h.append(b);
+ try{
+  const response=await fetch("/api/chat",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({model,messages})
   });
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||"Erreur API");
+  const content=data.choices?.[0]?.message?.content;
+  if(!content)throw new Error("Réponse vide");
+  answer.textContent=content;
+  messages.push({role:"assistant",content});
+ }catch(error){
+  answer.textContent="Erreur : "+error.message;
+ }finally{
+  busy=false;
+  $("send").disabled=false;
+  $("input").focus();
+ }
 }
 
-function render() {
-  const area = $("#messages");
-  area.innerHTML = "";
+$("form").addEventListener("submit",event=>{
+ event.preventDefault();
+ sendMessage($("input").value);
+});
 
-  const c = cur();
-
-  if (!c || !c.messages.length) {
-    const welcome = $("#welcome").cloneNode(true);
-    welcome.id = "";
-
-    area.append(welcome);
-
-    welcome.querySelectorAll(".prompt").forEach(b => {
-      b.onclick = () => {
-        $("#input").value =
-          b.textContent.replace(/^.{2}\s/, "");
-
-        $("#input").focus();
-      };
-    });
-
-    return;
-  }
-
-  c.messages.forEach(m => {
-    add(m.role, m.content, false);
-  });
-}
-
-function add(role, text, scroll = true) {
-  const row = document.createElement("div");
-  row.className = "msg " + role;
-
-  const avatar = document.createElement("div");
-  avatar.className = "avatar";
-  avatar.textContent = role === "user" ? "P" : "N";
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = text;
-
-  row.append(avatar, bubble);
-  $("#messages").append(row);
-
-  if (scroll) {
-    $("#messages").scrollTop =
-      $("#messages").scrollHeight;
-  }
-
-  return bubble;
-}
-
-async function models() {
-  status("Chargement des modèles gratuits…");
-
-  try {
-    const response = await fetch("/api/models");
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw Error(data.error || "Erreur " + response.status);
-    }
-
-    const select = $("#model");
-    select.innerHTML = "";
-
-    (data.data || []).forEach(model => {
-      const option = document.createElement("option");
-
-      option.value = model.id;
-      option.textContent = model.name || model.id;
-
-      select.append(option);
-    });
-
-    if (!select.options.length) {
-      throw Error("Aucun modèle gratuit disponible.");
-    }
-
-    status(
-      "Connecté · " +
-      select.options.length +
-      " modèles gratuits"
-    );
-
-  } catch (error) {
-    status("Connexion impossible : " + error.message);
-
-    $("#model").innerHTML =
-      '<option value="">Modèles indisponibles</option>';
-  }
-}
-
-async function send(text) {
-  if (!text.trim() || busy) return;
-
-  if (!$("#model").value) {
-    status("Choisis un modèle gratuit disponible.");
-    return;
-  }
-
-  if (!id) newChat();
-
-  const chat = cur();
-
-  chat.messages.push({
-    role: "user",
-    content: text
-  });
-
-  if (chat.messages.length === 1) {
-    chat.title = text.slice(0, 35);
-  }
-
-  save();
-  history();
-  render();
-
-  $("#input").value = "";
-
-  busy = true;
-  $("#send").disabled = true;
-
-  const bubble = add(
-    "assistant",
-    "NOVA réfléchit…"
-  );
-
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        model: $("#model").value,
-        messages: chat.messages
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw Error(data.error || "Erreur " + response.status);
-    }
-
-    const answer =
-      data.choices?.[0]?.message?.content ||
-      "Réponse vide";
-
-    bubble.textContent = answer;
-
-    chat.messages.push({
-      role: "assistant",
-      content: answer
-    });
-
-    save();
-
-  } catch (error) {
-    bubble.textContent = "Erreur : " + error.message;
-
-  } finally {
-    busy = false;
-    $("#send").disabled = false;
-  }
-}
-
-$("#form").onsubmit = event => {
+$("input").addEventListener("keydown",event=>{
+ if(event.key==="Enter"&&!event.shiftKey){
   event.preventDefault();
-  send($("#input").value);
+  $("form").requestSubmit();
+ }
+});
+
+$("new").onclick=()=>{
+ messages=[];
+ $("messages").innerHTML=`
+ <div class="welcome" id="welcome">
+ <div class="orb">✦</div>
+ <h1>Que veux-tu créer aujourd'hui ?</h1>
+ <p>Pose une question, imagine un projet ou demande de l'aide.</p>
+ </div>`;
 };
 
-$("#input").onkeydown = event => {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    $("#form").requestSubmit();
-  }
-};
-
-$("#new").onclick = newChat;
-$("#refresh").onclick = models;
-
-if (!chats.length) {
-  newChat();
-} else {
-  id = chats[chats.length - 1].id;
-  history();
-  render();
-}
-
-models();
+loadModels();
 </script>
-
 </body>
 </html>
