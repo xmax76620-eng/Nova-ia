@@ -1,125 +1,783 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080d18">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d18">
 <title>NOVA AI</title>
 <style>
 :root{--bg:#080d18;--panel:#0d1525;--panel2:#111c30;--line:#273650;--text:#edf3ff;--muted:#91a0b8;--a:#7659ff;--b:#3478ec}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,select,textarea,input{font:inherit;color:inherit}button{cursor:pointer}
-.app{height:100dvh;display:grid;grid-template-columns:260px minmax(0,1fr);overflow:hidden}aside{background:#0b1220;border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;min-height:0}.brand{font-size:23px;font-weight:800;margin:5px 0 24px}.logo{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--a),#20c8c8);margin-right:8px}.primary,.send,.gradient{border:0;background:linear-gradient(120deg,var(--a),var(--b));font-weight:700;border-radius:12px;padding:12px}.primary{width:100%}.side-label{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:23px 0 9px}#history{overflow:auto;display:grid;gap:7px}.history-entry{display:flex;gap:5px}.history-item{flex:1;min-width:0;border:1px solid transparent;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#bdc9dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-item.active,.history-item:hover{background:var(--panel2);border-color:var(--line)}.delete-thread{border:0;background:transparent;color:var(--muted);padding:5px}.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6}main{display:flex;flex-direction:column;min-width:0;min-height:0}header{height:68px;flex-shrink:0;padding:10px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.head-left{display:flex;align-items:center;gap:10px}.head-title{font-weight:800}.head-sub{color:var(--muted);font-size:12px;margin-top:3px}select{max-width:min(58%,430px);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}#messages{flex:1;overflow:auto;padding:25px 16px}.welcome{max-width:700px;margin:9vh auto;text-align:center}.orb{width:72px;height:72px;margin:auto;border-radius:24px;background:linear-gradient(135deg,var(--a),#20c8c8);display:grid;place-items:center;font-size:34px}.welcome h1{font-size:clamp(25px,4vw,36px);margin:24px 0 10px}.welcome p{color:var(--muted)}.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:24px}.suggestions button,.tiny,.secondary{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:#c7d2e5}.msg{display:flex;gap:12px;max-width:900px;margin:0 auto 23px;align-items:flex-start}.avatar{width:35px;height:35px;flex:0 0 35px;border-radius:10px;background:#263650;display:grid;place-items:center;font-weight:700}.assistant .avatar{background:linear-gradient(135deg,#5844c9,#1e9da5)}.message-content{min-width:0;flex:1}.bubble{overflow-wrap:anywhere;line-height:1.7;padding:5px 0}.user .bubble{background:#17243a;border:1px solid #2c3e5c;border-radius:13px;padding:12px 14px}.bubble p{margin:0 0 12px}.bubble strong{color:white}.code-wrap{margin:12px 0;background:#080e1a;border:1px solid var(--line);border-radius:10px;overflow:hidden}.code-head{display:flex;justify-content:space-between;padding:8px 12px;background:#111c30;color:var(--muted);font-size:12px}pre{overflow:auto;margin:0;padding:14px;white-space:pre;line-height:1.5;font-size:13px}.msg-actions{display:flex;gap:7px;margin-top:8px}.msg-actions button,.code-head button{background:transparent;border:1px solid var(--line);border-radius:7px;padding:6px 9px;color:var(--muted);font-size:11px}.compose{padding:12px max(12px,calc((100% - 900px)/2));border-top:1px solid var(--line);background:#0b1220}.toolbar{max-width:900px;margin:0 auto 9px;display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}.tiny{font-size:12px}.status{max-width:900px;margin:0 auto 10px;color:var(--muted);font-size:12px}form{max-width:900px;margin:auto;display:flex;gap:9px;align-items:flex-end;background:#101827;border:1px solid #34425d;border-radius:16px;padding:9px}textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;line-height:1.5;min-height:45px;max-height:150px;min-width:0}.send{width:50px;height:48px;font-size:21px}.hint{text-align:center;color:#71819c;font-size:11px;margin:8px 0 0}.mobile-menu{display:none}#overlay{display:none}
-#studio,#timePanel{display:none;position:fixed;z-index:40;inset:0;background:#03070ff2;backdrop-filter:blur(14px);overflow:auto;padding:12px}#studio.open,#timePanel.open{display:block}.modal-shell{max-width:1080px;margin:0 auto;border:1px solid #34425d;border-radius:20px;background:linear-gradient(145deg,#101a2c,#080e19);padding:clamp(13px,3vw,25px)}.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.modal-title{font-size:clamp(20px,4vw,27px);font-weight:900}.modal-title span{background:linear-gradient(90deg,#a48cff,#45d8d1);background-clip:text;color:transparent}.close{border:1px solid var(--line);background:#17243a;border-radius:9px;padding:9px 12px}.intro{color:var(--muted);line-height:1.55;font-size:13px}.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.panel{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}.panel h3{margin:0 0 12px;font-size:15px}.mode-switch,.two,.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mode-switch button,.actions button{border:1px solid var(--line);background:#142139;border-radius:9px;padding:10px}.mode-switch button.active{background:#282052;border-color:#8069ff}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;color:#bdc9dc;font-weight:700}.field textarea,.field input,.field select{width:100%;max-width:none;background:#111c30;border:1px solid #34425d;border-radius:9px;color:white;padding:10px}.field textarea{min-height:95px}.field small,.note{font-size:11px;color:var(--muted);line-height:1.5}.studio-primary{width:100%;margin-top:8px}.preview{background:#050912;border:1px solid #33435e;border-radius:12px;overflow:hidden;position:relative;display:grid;place-items:center;min-height:220px}#videoCanvas{display:block;width:100%;height:auto;max-height:440px}.placeholder{position:absolute;text-align:center;color:#8797b1;pointer-events:none}.placeholder b{display:block;font-size:35px;color:#b4a5ff}.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:9px 0}.actions{margin-top:10px}.actions button:disabled{opacity:.4}#studioStatus,#timeStatus{min-height:20px;color:#b7aaff;font-size:12px;margin-top:9px}
-.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.time-card{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:16px}.time-big{font-size:clamp(22px,5vw,34px);font-weight:850;margin:8px 0}.time-muted{color:var(--muted);font-size:12px;line-height:1.6}.date-result{padding:12px;border:1px solid var(--line);border-radius:10px;background:#111c30;margin-top:10px;line-height:1.6}.status-good{color:#73e2b9}.status-future{color:#9f91ff}.status-past{color:#ffc17e}
-@media(max-width:760px){.app{display:block}aside{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(290px,85vw);transform:translateX(-105%);transition:.2s}aside.open{transform:translateX(0)}#overlay{display:block;position:fixed;inset:0;background:#0009;z-index:19;opacity:0;pointer-events:none}#overlay.visible{opacity:1;pointer-events:auto}main{height:100dvh}header{height:65px;padding:9px 11px}.mobile-menu{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}select{max-width:54%;font-size:11px;padding:9px}#messages{padding:16px 12px}.msg{gap:8px}.compose{padding:9px 10px calc(9px + env(safe-area-inset-bottom))}.studio-grid,.time-grid{grid-template-columns:1fr}.preview{min-height:170px}.modal-shell{padding:12px;border-radius:14px}.two{grid-template-columns:1fr 1fr}}
-</style></head>
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+button,select,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{height:100dvh;display:grid;grid-template-columns:260px minmax(0,1fr);overflow:hidden}
+aside{background:#0b1220;border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;min-height:0}
+.brand{font-size:23px;font-weight:800;margin:5px 0 24px}
+.logo{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--a),#20c8c8);margin-right:8px}
+.primary,.send,.gradient{border:0;background:linear-gradient(120deg,var(--a),var(--b));font-weight:700;border-radius:12px;padding:12px}
+.primary{width:100%}
+.side-label{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:23px 0 9px}
+#history{overflow:auto;display:grid;gap:7px}
+.history-entry{display:flex;gap:5px}
+.history-item{flex:1;min-width:0;border:1px solid transparent;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#bdc9dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item.active,.history-item:hover{background:var(--panel2);border-color:var(--line)}
+.delete-thread{border:0;background:transparent;color:var(--muted);padding:5px}
+.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6}
+main{display:flex;flex-direction:column;min-width:0;min-height:0}
+header{height:68px;flex-shrink:0;padding:10px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.head-left{display:flex;align-items:center;gap:10px}
+.head-title{font-weight:800}
+.head-sub{color:var(--muted);font-size:12px;margin-top:3px}
+select{max-width:min(58%,430px);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
+#messages{flex:1;overflow:auto;padding:25px 16px}
+.welcome{max-width:700px;margin:9vh auto;text-align:center}
+.orb{width:72px;height:72px;margin:auto;border-radius:24px;background:linear-gradient(135deg,var(--a),#20c8c8);display:grid;place-items:center;font-size:34px}
+.welcome h1{font-size:clamp(25px,4vw,36px);margin:24px 0 10px}
+.welcome p{color:var(--muted)}
+.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:24px}
+.suggestions button,.tiny,.secondary{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:#c7d2e5}
+.msg{display:flex;gap:12px;max-width:900px;margin:0 auto 23px;align-items:flex-start}
+.avatar{width:35px;height:35px;flex:0 0 35px;border-radius:10px;background:#263650;display:grid;place-items:center;font-weight:700}
+.assistant .avatar{background:linear-gradient(135deg,#5844c9,#1e9da5)}
+.message-content{min-width:0;flex:1}
+.bubble{overflow-wrap:anywhere;line-height:1.7;padding:5px 0}
+.user .bubble{background:#17243a;border:1px solid #2c3e5c;border-radius:13px;padding:12px 14px}
+.bubble p{margin:0 0 12px}
+.bubble strong{color:white}
+.code-wrap{margin:12px 0;background:#080e1a;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.code-head{display:flex;justify-content:space-between;padding:8px 12px;background:#111c30;color:var(--muted);font-size:12px}
+pre{overflow:auto;margin:0;padding:14px;white-space:pre;line-height:1.5;font-size:13px}
+.msg-actions{display:flex;gap:7px;margin-top:8px}
+.msg-actions button,.code-head button{background:transparent;border:1px solid var(--line);border-radius:7px;padding:6px 9px;color:var(--muted);font-size:11px}
+.compose{padding:12px max(12px,calc((100% - 900px)/2));border-top:1px solid var(--line);background:#0b1220}
+.toolbar{max-width:900px;margin:0 auto 9px;display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.tiny{font-size:12px}
+.status{max-width:900px;margin:0 auto 10px;color:var(--muted);font-size:12px}
+form{max-width:900px;margin:auto;display:flex;gap:9px;align-items:flex-end;background:#101827;border:1px solid #34425d;border-radius:16px;padding:9px}
+textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:10px;line-height:1.5;min-height:45px;max-height:150px;min-width:0}
+.send{width:50px;height:48px;font-size:21px}
+.hint{text-align:center;color:#71819c;font-size:11px;margin:8px 0 0}
+.mobile-menu{display:none}
+#overlay{display:none}
+#studio,#timePanel{display:none;position:fixed;z-index:40;inset:0;background:#03070ff2;backdrop-filter:blur(14px);overflow:auto;padding:12px}
+#studio.open,#timePanel.open{display:block}
+.modal-shell{max-width:1080px;margin:0 auto;border:1px solid #34425d;border-radius:20px;background:linear-gradient(145deg,#101a2c,#080e19);padding:clamp(13px,3vw,25px)}
+.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.modal-title{font-size:clamp(20px,4vw,27px);font-weight:900}
+.modal-title span{background:linear-gradient(90deg,#a48cff,#45d8d1);background-clip:text;color:transparent}
+.close{border:1px solid var(--line);background:#17243a;border-radius:9px;padding:9px 12px}
+.intro{color:var(--muted);line-height:1.55;font-size:13px}
+.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.panel{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}
+.panel h3{margin:0 0 12px;font-size:15px}
+.mode-switch,.two,.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode-switch button,.actions button{border:1px solid var(--line);background:#142139;border-radius:9px;padding:10px}
+.mode-switch button.active{background:#282052;border-color:#8069ff}
+.field{display:grid;gap:6px;margin:12px 0}
+.field label{font-size:12px;color:#bdc9dc;font-weight:700}
+.field textarea,.field input,.field select{width:100%;max-width:none;background:#111c30;border:1px solid #34425d;border-radius:9px;color:white;padding:10px}
+.field textarea{min-height:95px}
+.field small,.note{font-size:11px;color:var(--muted);line-height:1.5}
+.studio-primary{width:100%;margin-top:8px}
+.preview{background:#050912;border:1px solid #33435e;border-radius:12px;overflow:hidden;position:relative;display:grid;place-items:center;min-height:220px}
+#videoCanvas{display:block;width:100%;height:auto;max-height:440px}
+.placeholder{position:absolute;text-align:center;color:#8797b1;pointer-events:none}
+.placeholder b{display:block;font-size:35px;color:#b4a5ff}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:9px 0}
+.actions{margin-top:10px}
+.actions button:disabled{opacity:.4}
+#studioStatus,#timeStatus{min-height:20px;color:#b7aaff;font-size:12px;margin-top:9px}
+.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.time-card{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:16px}
+.time-big{font-size:clamp(22px,5vw,34px);font-weight:850;margin:8px 0}
+.time-muted{color:var(--muted);font-size:12px;line-height:1.6}
+.date-result{padding:12px;border:1px solid var(--line);border-radius:10px;background:#111c30;margin-top:10px;line-height:1.6}
+.status-good{color:#73e2b9}
+.status-future{color:#9f91ff}
+.status-past{color:#ffc17e}
+@media(max-width:760px){
+.app{display:block}
+aside{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(290px,85vw);transform:translateX(-105%);transition:.2s}
+aside.open{transform:translateX(0)}
+#overlay{display:block;position:fixed;inset:0;background:#0009;z-index:19;opacity:0;pointer-events:none}
+#overlay.visible{opacity:1;pointer-events:auto}
+main{height:100dvh}
+header{height:65px;padding:9px 11px}
+.mobile-menu{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+select{max-width:54%;font-size:11px;padding:9px}
+#messages{padding:16px 12px}
+.msg{gap:8px}
+.compose{padding:9px 10px calc(9px + env(safe-area-inset-bottom))}
+.studio-grid,.time-grid{grid-template-columns:1fr}
+.preview{min-height:170px}
+.modal-shell{padding:12px;border-radius:14px}
+.two{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
 <body>
-<div id="overlay"></div><div class="app">
-<aside id="sidebar"><div class="brand"><span class="logo">N</span>NOVA AI</div><button class="primary" id="new">＋ Nouvelle conversation</button><div class="side-label">HISTORIQUE</div><div id="history"></div><div class="side-bottom">NOVA AI<br>Réfléchir · créer · apprendre<br><br>Historique enregistré sur cet appareil.</div></aside>
-<main><header><div class="head-left"><button class="mobile-menu" id="menu">☰</button><div><div class="head-title">NOVA AI</div><div class="head-sub">Votre espace intelligent</div></div></div><select id="model"><option value="">Chargement des modèles…</option></select></header>
-<section id="messages"><div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide.</p><div class="suggestions"><button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button><button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button><button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button></div></div></section>
-<div class="compose"><div class="toolbar"><button class="tiny" id="openTime">📍 Localisation & temps</button><button class="tiny" id="openStudio">✦ NOVA VIDEO STUDIO</button><button class="tiny" id="clear">Effacer la conversation</button></div><div class="status" id="status"></div><form id="form"><input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><button type="button" class="tiny" id="attach">📎</button><textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea><button class="send" id="send" type="submit">➤</button></form><div id="imagePreview"></div><div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div></div></main></div>
+<div id="overlay"></div>
+<div class="app">
+<aside id="sidebar">
+<div class="brand"><span class="logo">N</span>NOVA AI</div>
+<button class="primary" id="new">＋ Nouvelle conversation</button>
+<div class="side-label">HISTORIQUE</div>
+<div id="history"></div>
+<div class="side-bottom">NOVA AI<br>Réfléchir · créer · apprendre<br><br>Historique enregistré sur cet appareil.</div>
+</aside>
+<main>
+<header>
+<div class="head-left">
+<button class="mobile-menu" id="menu">☰</button>
+<div><div class="head-title">NOVA AI</div><div class="head-sub">Votre espace intelligent</div></div>
+</div>
+<select id="model"><option value="">Chargement des modèles…</option></select>
+</header>
+<section id="messages">
+<div class="welcome" id="welcome">
+<div class="orb">✦</div>
+<h1>Que veux-tu créer aujourd'hui ?</h1>
+<p>Pose une question, imagine un projet ou demande de l'aide.</p>
+<div class="suggestions">
+<button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
+<button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
+<button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
+</div>
+</div>
+</section>
+<div class="compose">
+<div class="toolbar">
+<button class="tiny" id="openTime">📍 Localisation & temps</button>
+<button class="tiny" id="openStudio">✦ NOVA VIDEO STUDIO</button>
+<button class="tiny" id="clear">Effacer la conversation</button>
+</div>
+<div class="status" id="status"></div>
+<form id="form">
+<input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+<button type="button" class="tiny" id="attach">📎</button>
+<textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea>
+<button class="send" id="send" type="submit">➤</button>
+</form>
+<div id="imagePreview"></div>
+<div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
+</div>
+</main>
+</div>
 
-<section id="studio"><div class="modal-shell"><div class="modal-top"><div><div class="modal-title">✦ <span>NOVA VIDEO STUDIO</span></div><div class="head-sub">Création d'animations locale · 0 €</div></div><button class="close" id="closeStudio">✕ Fermer</button></div><p class="intro">Décris une scène et NOVA crée une animation graphique dans ton navigateur. Aucun service payant ni aucune clé API. Ce studio ne génère pas encore de vidéo photoréaliste par IA.</p>
-<div class="studio-grid"><div class="panel"><h3>1. Création</h3><div class="mode-switch"><button id="autoMode" class="active">✦ Automatique</button><button id="expertMode">⚙ Expert</button></div><div class="field"><label for="videoPrompt">Décris ta vidéo</label><textarea id="videoPrompt" placeholder="Une cité futuriste au-dessus des nuages, des lumières violettes, des étoiles et une ambiance de film…"></textarea></div><div class="field"><label for="videoStyle">Style visuel</label><select id="videoStyle"><option value="cinema">Cinématique</option><option value="neon">Néon futuriste</option><option value="nature">Nature onirique</option><option value="space">Espace</option><option value="fantasy">Fantaisie magique</option><option value="minimal">Minimaliste</option><option value="abstract">Abstrait</option></select></div><div class="two"><div class="field"><label for="videoRatio">Format</label><select id="videoRatio"><option value="9:16">Vertical 9:16</option><option value="16:9" selected>Paysage 16:9</option><option value="1:1">Carré 1:1</option></select></div><div class="field"><label for="videoDuration">Durée</label><select id="videoDuration"><option>6</option><option selected>10</option><option>15</option><option>20</option></select></div></div><div id="expertFields" hidden><div class="two"><div class="field"><label for="videoSpeed">Mouvement</label><select id="videoSpeed"><option value=".6">Lent</option><option value="1" selected>Normal</option><option value="1.5">Rapide</option></select></div><div class="field"><label for="videoDensity">Effets</label><select id="videoDensity"><option value="35">Légers</option><option value="75" selected>Normaux</option><option value="130">Intenses</option></select></div></div><div class="field"><label for="videoQuality">Export</label><select id="videoQuality"><option value="720">HD 720p</option><option value="1080">Full HD 1080p</option></select></div></div><button class="gradient studio-primary" id="generateVideo">✦ Créer mon animation</button><div id="studioStatus">Prêt à créer.</div></div>
-<div class="panel"><h3>2. Aperçu et export</h3><div class="preview"><canvas id="videoCanvas" width="1280" height="720"></canvas><div class="placeholder" id="previewPlaceholder"><b>✦</b>L'aperçu apparaîtra ici</div></div><div class="meta"><span id="previewFormat">16:9 · Paysage</span><span id="previewDuration">10 secondes</span></div>
-><div class="actions"><button id="playPreview" disabled>▶ Lire</button><button id="stopPreview" disabled>■ Arrêter</button><button id="exportVideo" disabled>⬇ Exporter</button><button id="resetStudio">↺ Réinitialiser</button></div><p class="note">L'export utilise l'enregistreur vidéo intégré au navigateur. Selon iOS/Safari, le format proposé peut varier (MP4 ou WebM). Garde la fenêtre ouverte pendant l'export.</p></div></div></div></section>
+<section id="studio">
+<div class="modal-shell">
+<div class="modal-top">
+<div>
+<div class="modal-title">✦ <span>NOVA VIDEO STUDIO</span></div>
+<div class="head-sub">Moteur de scènes animées · 0 €</div>
+</div>
+<button class="close" id="closeStudio">✕ Fermer</button>
+</div>
+<p class="intro">Décris une scène : NOVA détecte le décor, le sujet, l'action et l'ambiance pour construire une animation dans ton navigateur. Aucun service vidéo payant. Ce moteur crée des illustrations animées, pas une vidéo photoréaliste générée par IA.</p>
 
-<section id="timePanel"><div class="modal-shell"><div class="modal-top"><div><div class="modal-title">📍 NOVA <span>GEO & TEMPS</span></div><div class="head-sub">Position de l'appareil, horloge et explorateur de dates</div></div><button class="close" id="closeTime">✕ Fermer</button></div><p class="intro">La date et l'heure actuelles sont lues sur ton appareil. La localisation n'est demandée que si tu appuies sur le bouton ci-dessous. Tu peux ensuite explorer une date passée ou future.</p>
-<div class="time-grid"><div class="time-card"><div class="side-label">DATE ET HEURE LOCALES</div><div class="time-big" id="nowDate">—</div><div id="nowClock" class="time-big">—</div><div class="time-muted" id="zoneInfo">Fuseau horaire : —</div><div class="time-muted" id="deviceInfo"></div></div><div class="time-card"><div class="side-label">GÉOLOCALISATION</div><div class="time-big" style="font-size:22px">Ta position</div><div class="time-muted" id="geoResult">Aucune position demandée.</div><button class="gradient" id="getLocation" style="margin-top:14px;width:100%">📍 Autoriser ma localisation</button><div class="note">Le navigateur demandera ton autorisation. La position n'est pas transmise au serveur par ce module.</div></div></div>
-<div class="time-card" style="margin-top:15px"><div class="side-label">DÉTECTEUR DE DATE — PASSÉ / PRÉSENT / FUTUR</div><div class="field"><label for="dateExplorer">Choisis une date à examiner</label><input id="dateExplorer" type="date"></div><div class="date-result" id="dateResult">Sélectionne une date pour savoir si elle appartient au passé, à aujourd'hui ou au futur.</div><div class="two" style="margin-top:10px"><button class="secondary" id="chooseYesterday">← Hier</button><button class="secondary" id="chooseTomorrow">Demain →</button></div></div><div id="timeStatus"></div></div></section>
+<div class="studio-grid">
+<div class="panel">
+<h3>1. Création de la scène</h3>
+<div class="mode-switch">
+<button id="autoMode" class="active">✦ Automatique</button>
+<button id="expertMode">⚙ Expert</button>
+</div>
+<div class="field">
+<label for="videoPrompt">Décris ta vidéo</label>
+<textarea id="videoPrompt" placeholder="Exemple : Un homme fait du poney sur une plage au coucher du soleil, les vagues arrivent sur le sable, caméra cinématique…"></textarea>
+</div>
+<div class="field">
+<label for="videoStyle">Style visuel</label>
+<select id="videoStyle">
+<option value="cinema">Cinématique</option>
+<option value="neon">Néon futuriste</option>
+<option value="nature">Nature onirique</option>
+<option value="space">Espace</option>
+<option value="fantasy">Fantaisie magique</option>
+<option value="minimal">Minimaliste</option>
+<option value="abstract">Abstrait</option>
+</select>
+</div>
+<div class="two">
+<div class="field">
+<label for="videoRatio">Format</label>
+<select id="videoRatio">
+<option value="9:16">Vertical 9:16</option>
+<option value="16:9" selected>Paysage 16:9</option>
+<option value="1:1">Carré 1:1</option>
+</select>
+</div>
+<div class="field">
+<label for="videoDuration">Durée</label>
+<select id="videoDuration"><option>6</option><option selected>10</option><option>15</option><option>20</option></select>
+</div>
+</div>
+<div id="expertFields" hidden>
+<div class="two">
+<div class="field">
+<label for="videoSpeed">Mouvement</label>
+<select id="videoSpeed"><option value=".6">Lent</option><option value="1" selected>Normal</option><option value="1.5">Rapide</option></select>
+</div>
+<div class="field">
+<label for="videoDensity">Effets</label>
+<select id="videoDensity"><option value="35">Légers</option><option value="75" selected>Normaux</option><option value="130">Intenses</option></select>
+</div>
+</div>
+<div class="field">
+<label for="videoQuality">Export</label>
+<select id="videoQuality"><option value="720">HD 720p</option><option value="1080">Full HD 1080p</option></select>
+</div>
+</div>
+<button class="gradient studio-primary" id="generateVideo">✦ Créer ma scène animée</button>
+<div id="studioStatus">Prêt à créer.</div>
+</div>
+
+<div class="panel">
+<h3>2. Aperçu et export</h3>
+<div class="preview">
+<canvas id="videoCanvas" width="1280" height="720"></canvas>
+<div class="placeholder" id="previewPlaceholder"><b>✦</b>L'aperçu apparaîtra ici</div>
+</div>
+<div class="meta">
+<span id="previewFormat">16:9 · Paysage</span>
+<span id="previewDuration">10 secondes</span>
+</div>
+<div class="actions">
+<button id="playPreview" disabled>▶ Lire</button>
+<button id="stopPreview" disabled>■ Arrêter</button>
+<button id="exportVideo" disabled>⬇ Exporter</button>
+<button id="resetStudio">↺ Réinitialiser</button>
+</div>
+<p class="note">L'export enregistre l'animation et l'ambiance sonore synthétique si le navigateur le permet. Sur iPhone, le format et le téléchargement dépendent de Safari.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="timePanel">
+<div class="modal-shell">
+<div class="modal-top">
+<div>
+<div class="modal-title">📍 NOVA <span>GEO & TEMPS</span></div>
+<div class="head-sub">Position de l'appareil, horloge et explorateur de dates</div>
+</div>
+<button class="close" id="closeTime">✕ Fermer</button>
+</div>
+<p class="intro">La date et l'heure actuelles sont lues sur ton appareil. La localisation n'est demandée que si tu appuies sur le bouton ci-dessous.</p>
+<div class="time-grid">
+<div class="time-card">
+<div class="side-label">DATE ET HEURE LOCALES</div>
+<div class="time-big" id="nowDate">—</div>
+<div id="nowClock" class="time-big">—</div>
+<div class="time-muted" id="zoneInfo">Fuseau horaire : —</div>
+<div class="time-muted" id="deviceInfo"></div>
+</div>
+<div class="time-card">
+<div class="side-label">GÉOLOCALISATION</div>
+<div class="time-big" style="font-size:22px">Ta position</div>
+<div class="time-muted" id="geoResult">Aucune position demandée.</div>
+<button class="gradient" id="getLocation" style="margin-top:14px;width:100%">📍 Autoriser ma localisation</button>
+<div class="note">La position est affichée dans cette fenêtre et n'est pas envoyée au serveur par ce module.</div>
+</div>
+</div>
+<div class="time-card" style="margin-top:15px">
+<div class="side-label">DÉTECTEUR DE DATE — PASSÉ / PRÉSENT / FUTUR</div>
+<div class="field">
+<label for="dateExplorer">Choisis une date à examiner</label>
+<input id="dateExplorer" type="date">
+</div>
+<div class="date-result" id="dateResult">Sélectionne une date pour l'examiner.</div>
+<div class="two" style="margin-top:10px">
+<button class="secondary" id="chooseYesterday">← Hier</button>
+<button class="secondary" id="chooseTomorrow">Demain →</button>
+</div>
+</div>
+<div id="timeStatus"></div>
+</div>
+</section>
 
 <script>
-const $=id=>document.getElementById(id),STORAGE_KEY="nova_threads";let messages=[],busy=false,threads=[],threadId=null,pendingImages=[];
-function welcome(){return `<div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide.</p><div class="suggestions"><button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button><button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button><button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button></div></div>`}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function markdown(src){let blocks=[];let s=String(src??"").replace(/\r\n/g,"\n").replace(/```([\w-]*)\n([\s\S]*?)```/g,(_,l,c)=>{blocks.push({l:l||"Code",c});return `\n%%C${blocks.length-1}%%\n`});s=esc(s).replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>").replace(/`([^`\n]+)`/g,"<code>$1</code>");let out="",list="";const close=()=>{if(list){out+=`</${list}>`;list=""}};for(const line of s.split("\n")){let m=line.match(/^\s*[-•] (.+)$/),n=line.match(/^\s*\d+[.)] (.+)$/);if(m||n){let type=m?"ul":"ol";if(list!==type){close();list=type;out+=`<${type}>`}out+=`<li>${(m||n)[1]}</li>`}else{close();let c=line.match(/^%%C(\d+)%%$/);if(c){let b=blocks[+c[1]];out+=`<div class="code-wrap"><div class="code-head"><span>${esc(b.l)}</span><button data-copy-code="${+c[1]}">Copier</button></div><pre><code>${esc(b.c)}</code></pre></div>`}else if(/^<h[1-3]>/.test(line))out+=line;else if(line.trim())out+=`<p>${line}</p>`}}close();return out}
-async function copyText(t,b){try{await navigator.clipboard.writeText(t);b.textContent="Copié ✓"}catch(e){$("status").textContent="Copie impossible."}}
-function addMessage(role,content){let row=document.createElement("div");row.className="msg "+role;let av=document.createElement("div");av.className="avatar";av.textContent=role==="user"?"P":"N";let area=document.createElement("div");area.className="message-content";let bubble=document.createElement("div");bubble.className="bubble";bubble.innerHTML=role==="assistant"?markdown(content):esc(content);area.append(bubble);if(role==="assistant"&&content!=="NOVA réfléchit…"){let a=document.createElement("div");a.className="msg-actions";let b=document.createElement("button");b.textContent="Copier la réponse";b.onclick=()=>copyText(content,b);a.append(b);area.append(a)}row.append(av,area);$("messages").append(row);$("messages").scrollTop=$("messages").scrollHeight;return bubble}
-function stored(){return messages.map(m=>({role:m.role,content:Array.isArray(m.content)?m.content.map(p=>p.type==="text"?p:{type:"text",text:"[Photo envoyée — non conservée]" }):m.content}))}
-function save(){if(!messages.length||!threadId)return;let t=threads.find(x=>x.id===threadId);if(!t){let f=messages.find(x=>x.role==="user"),title=typeof f?.content==="string"?f.content:"Nouvelle conversation";t={id:threadId,title:title.slice(0,45)||"Nouvelle conversation",messages:[]};threads.unshift(t)}t.messages=stored();t.updatedAt=Date.now();threads.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));threads=threads.slice(0,50);try{localStorage.setItem(STORAGE_KEY,JSON.stringify(threads))}catch(e){$("status").textContent="Stockage local plein."}renderHistory()}
-function renderHistory(){$("history").innerHTML="";threads.forEach(t=>{let e=document.createElement("div");e.className="history-entry";let b=document.createElement("button");b.className="history-item"+(t.id===threadId?" active":"");b.textContent=t.title||"Conversation";b.onclick=()=>openThread(t.id);let d=document.createElement("button");d.className="delete-thread";d.textContent="×";d.onclick=()=>{threads=threads.filter(x=>x.id!==t.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));if(threadId===t.id)newThread();renderHistory()};e.append(b,d);$("history").append(e)})}
-function openThread(id){if(busy)return;let t=threads.find(x=>x.id===id);if(!t)return;threadId=id;messages=t.messages.slice();$("messages").innerHTML="";messages.forEach(m=>addMessage(m.role,typeof m.content==="string"?m.content:"[Photo envoyée]"));$("status").textContent="Conversation restaurée. Les photos précédentes ne sont pas conservées.";renderHistory();closeSidebar()}
-function newThread(){if(busy)return;messages=[];pendingImages=[];renderImagePreview();threadId=null;$("messages").innerHTML=welcome();$("status").textContent="";renderHistory()}
-function closeSidebar(){$("sidebar").classList.remove("open");$("overlay").classList.remove("visible")}
-function renderImagePreview(){$("imagePreview").innerHTML="";pendingImages.forEach((src,i)=>{let w=document.createElement("span"),im=document.createElement("img");im.src=src;im.style.cssText="width:60px;height:60px;object-fit:cover;border-radius:8px";let x=document.createElement("button");x.textContent="×";x.onclick=()=>{pendingImages.splice(i,1);renderImagePreview()};w.append(im,x);$("imagePreview").append(w)})}
-$("attach").onclick=()=>$("imageInput").click();$("imageInput").onchange=async e=>{for(const f of [...e.target.files||[]]){if(!["image/jpeg","image/png","image/webp"].includes(f.type)){alert("Formats JPG, PNG ou WEBP uniquement.");continue}if(f.size>1024*1024){alert("1 Mo maximum par image pour cette version.");continue}if(pendingImages.length>=3){alert("3 images maximum.");break}let data=await new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});pendingImages.push(data)}e.target.value="";renderImagePreview()};
-async function loadModels(){try{let r=await fetch("/api/models",{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||"Chargement impossible");if(!d.models?.length)throw Error("Aucun modèle gratuit disponible");$("model").innerHTML="";d.models.forEach(m=>{let o=document.createElement("option");o.value=m.id;o.textContent=m.name||m.id;$("model").append(o)});$("status").textContent=d.models.length+" modèles gratuits disponibles"}catch(e){$("model").innerHTML="<option value=''>Modèles indisponibles</option>";$("status").textContent="Erreur modèles : "+e.message}}
-async function sendMessage(text){if((!text.trim()&&!pendingImages.length)||busy)return;let model=$("model").value;if(!model){$("status").textContent="Aucun modèle disponible.";return}if(!threadId)threadId=String(Date.now());let userText=text.trim(),imgs=pendingImages.slice(),parts=[];if(userText)parts.push({type:"text",text:userText});imgs.forEach(url=>parts.push({type:"image_url",image_url:{url}}));let content=imgs.length?parts:userText;$("welcome")?.remove();let bubble=addMessage("user",userText||"Regarde cette image.");imgs.forEach(src=>{let im=document.createElement("img");im.src=src;im.style.cssText="display:block;max-width:220px;max-height:220px;border-radius:10px;margin-top:8px";bubble.append(im)});messages.push({role:"user",content});pendingImages=[];renderImagePreview();$("input").value="";busy=true;$("send").disabled=true;$("attach").disabled=true;$("status").textContent="NOVA analyse ton message…";let answer=addMessage("assistant","NOVA réfléchit…");try{let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,messages})}),d=await r.json();if(!r.ok)throw Error(d.error?.message||d.error||"Erreur API");let result=d.choices?.[0]?.message?.content;if(Array.isArray(result))result=result.map(p=>p.text||"").join("");if(typeof result!=="string"||!result.trim())throw Error("Réponse vide.");answer.innerHTML=markdown(result);messages.push({role:"assistant",content:result});save();$("status").textContent=d.nova_fallback?"Modèle de secours : "+(d.nova_model_used||"autre modèle"):"Réponse générée par "+(d.nova_model_used||model)}catch(e){answer.textContent="Erreur : "+e.message;messages.pop();$("status").textContent="Échec : "+e.message}finally{busy=false;$("send").disabled=false;$("attach").disabled=false}}
-$("form").onsubmit=e=>{e.preventDefault();sendMessage($("input").value)};$("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit()}};$("new").onclick=newThread;$("clear").onclick=newThread;$("menu").onclick=()=>{$("sidebar").classList.add("open");$("overlay").classList.add("visible")};$("overlay").onclick=closeSidebar;$("messages").onclick=e=>{let p=e.target.closest("[data-prompt]");if(p){$("input").value=p.dataset.prompt;$("form").requestSubmit()}let c=e.target.closest("[data-copy-code]");if(c){let v=c.closest(".code-wrap").querySelector("code").textContent;copyText(v,c)}};
-try{let saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(saved))threads=saved}catch(e){}renderHistory();loadModels();
+const $=id=>document.getElementById(id);
+const STORAGE_KEY="nova_threads";
+let messages=[],busy=false,threads=[],threadId=null,pendingImages=[];
 
-/* VIDEO STUDIO */
-const canvas=$("videoCanvas"),ctx=canvas.getContext("2d"),palettes={cinema:["#080d22","#34216c","#ff9b70","#7fe5e0"],neon:["#07051c","#25105c","#f51caa","#24e8ff"],nature:["#071b1a","#145b50","#9de6a5","#f3d98a"],space:["#050817","#15285d","#8b73ff","#58d8ef"],minimal:["#111827","#334155","#e7edf8","#9aaac2"],fantasy:["#160b2d","#52266f","#ffb7dc","#83f4e4"],abstract:["#160c25","#5b1c67","#ff6f91","#f9d66b"]};let mode="auto",scene=null,particles=[],playing=false,raf=0,recording=false;
-function videoMode(m){mode=m;$("autoMode").classList.toggle("active",m==="auto");$("expertMode").classList.toggle("active",m==="expert");$("expertFields").hidden=m!=="expert"}$("autoMode").onclick=()=>videoMode("auto");$("expertMode").onclick=()=>videoMode("expert");
-function sizeCanvas(){let ratio=$("videoRatio").value,q=mode==="expert"?+$("videoQuality").value:720,w,h;if(ratio==="9:16"){w=Math.round(q*9/16);h=q}else if(ratio==="1:1"){w=q;h=q}else{w=q*16/9;h=q}canvas.width=w;canvas.height=h;$("previewFormat").textContent=ratio+" · "+({ "9:16":"Vertical","16:9":"Paysage","1:1":"Carré"}[ratio]);$("previewDuration").textContent=$("videoDuration").value+" secondes"}
-function seed(s){let h=2166136261;for(let c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-function makeScene(){let prompt=$("videoPrompt").value.trim();if(!prompt){$("studioStatus").textContent="Écris d'abord une idée.";return false}sizeCanvas();let style=$("videoStyle").value,rand=seed(prompt+style),count=mode==="expert"?+$("videoDensity").value:75;particles=Array.from({length:count},()=>({x:rand()*canvas.width,y:rand()*canvas.height,r:1+rand()*4,vx:(rand()-.5)*.5,vy:(rand()-.5)*.6,p:rand()*6.28}));scene={prompt,p:palettes[style],speed:mode==="expert"?+$("videoSpeed").value:1};$("previewPlaceholder").style.display="none";draw(0);$("playPreview").disabled=false;$("exportVideo").disabled=false;$("studioStatus").textContent="Aperçu prêt. Lis-le ou exporte ta vidéo.";return true}
-function draw(ms){if(!scene)return;let w=canvas.width,h=canvas.height,t=ms/1000*scene.speed,p=scene.p,g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,p[0]);g.addColorStop(.55,p[1]);g.addColorStop(1,"#050812");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);let glow=ctx.createRadialGradient(w*(.25+.08*Math.sin(t*.4)),h*.35,0,w*.5,h*.5,Math.max(w,h)*.7);glow.addColorStop(0,p[2]+"66");glow.addColorStop(1,"transparent");ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);let x=w*.5+Math.sin(t*.32)*w*.08,y=h*.42+Math.cos(t*.25)*h*.07,r=Math.min(w,h)*(.19+.018*Math.sin(t));let orb=ctx.createRadialGradient(x-r*.35,y-r*.4,r*.03,x,y,r*1.35);orb.addColorStop(0,"#fff");orb.addColorStop(.2,p[3]);orb.addColorStop(.65,p[2]);orb.addColorStop(1,p[1]);ctx.shadowColor=p[3];ctx.shadowBlur=r*.6;ctx.fillStyle=orb;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle="#ffffff66";ctx.lineWidth=Math.max(2,r*.018);for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(x,y,r*(1.15+k*.16),r*(.35+k*.09),t*.2+k*.8,0,Math.PI*2);ctx.stroke()}particles.forEach((q,i)=>{let px=(q.x+q.vx*ms*.05*scene.speed+w)%w,py=(q.y+q.vy*ms*.05*scene.speed+h)%h;ctx.globalAlpha=.3+.6*(.5+.5*Math.sin(t*2+q.p));ctx.fillStyle=i%3===0?p[3]:"#fff";ctx.beginPath();ctx.arc(px,py,q.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;let words=scene.prompt.split(/\s+/),lines=[],line="",max=Math.max(18,Math.floor(w/22));words.forEach(word=>{if((line+" "+word).trim().length>max){lines.push(line);line=word}else line=(line+" "+word).trim()});if(line)lines.push(line);lines=lines.slice(0,4);let fs=Math.max(18,Math.min(w*.045,48));ctx.textAlign="center";ctx.font=`700 ${fs}px Arial`;ctx.shadowColor="#000";ctx.shadowBlur=15;ctx.fillStyle="#fff";let base=h*.8-(lines.length-1)*fs*.6;lines.forEach((l,i)=>ctx.fillText(l,w/2,base+i*fs*1.2,w*.86));ctx.shadowBlur=0;ctx.font=`600 ${Math.max(11,fs*.28)}px Arial`;ctx.fillStyle="#ffffffaa";ctx.fillText("NOVA AI · CREATIVE MOTION",w/2,h*.95)}
-function stop(){playing=false;if(raf)cancelAnimationFrame(raf);raf=0;$("playPreview").disabled=!scene;$("stopPreview").disabled=true}
-function play(){if(!scene&&!makeScene())return;stop();playing=true;$("playPreview").disabled=true;$("stopPreview").disabled=false;let start=performance.now(),duration=+$("videoDuration").value*1000;function tick(now){if(!playing)return;let elapsed=now-start;draw(elapsed);if(elapsed>=duration){stop();draw(duration);return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick)}
-function mimeType(){if(!window.MediaRecorder)return"";return["video/mp4;codecs=h264","video/mp4","video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(x=>MediaRecorder.isTypeSupported?.(x))||""}
-async function exportVideo(){if(recording)return;if(!scene&&!makeScene())return;if(!canvas.captureStream||!window.MediaRecorder){$("studioStatus").textContent="Enregistrement vidéo non pris en charge par ce navigateur. Essaie Safari à jour.";return}let mime=mimeType();if(!mime){$("studioStatus").textContent="Aucun format vidéo compatible détecté.";return}stop();let stream=canvas.captureStream(30),chunks=[];try{let rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:mode==="expert"&&+$("videoQuality").value===1080?5500000:3000000});recording=true;$("generateVideo").disabled=true;$("exportVideo").disabled=true;$("studioStatus").textContent="Export en cours… garde NOVA ouvert.";rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};rec.onerror=()=>{$("studioStatus").textContent="Erreur d'enregistrement.";recording=false;$("generateVideo").disabled=false};rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());recording=false;$("generateVideo").disabled=false;$("exportVideo").disabled=false;let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nova-video-"+Date.now()+"."+(mime.includes("mp4")?"mp4":"webm");document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);$("studioStatus").textContent="Export terminé. Vérifie les téléchargements de ton navigateur."};rec.start(200);let start=performance.now(),duration=+$("videoDuration").value*1000;function frame(now){let elapsed=now-start;draw(elapsed);if(elapsed>=duration){rec.stop();return}requestAnimationFrame(frame)}requestAnimationFrame(frame)}catch(e){stream.getTracks().forEach(t=>t.stop());recording=false;$("generateVideo").disabled=false;$("studioStatus").textContent="Export impossible : "+e.message}}
-$("openStudio").onclick=()=>{$("studio").classList.add("open");sizeCanvas()};$("closeStudio").onclick=()=>{stop();$("studio").classList.remove("open")};$("generateVideo").onclick=()=>{if(makeScene())play()};$("playPreview").onclick=play;$("stopPreview").onclick=()=>{stop();if(scene)draw(0)};$("exportVideo").onclick=exportVideo;$("resetStudio").onclick=()=>{stop();scene=null;ctx.clearRect(0,0,canvas.width,canvas.height);$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("stopPreview").disabled=$("exportVideo").disabled=true;$("studioStatus").textContent="Prêt pour une nouvelle création."};["videoRatio","videoDuration","videoQuality"].forEach(id=>$(id).onchange=()=>{sizeCanvas();if(scene){scene=null;$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("exportVideo").disabled=true}});
+function welcome(){
+return `<div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide.</p><div class="suggestions"><button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button><button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button><button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button></div></div>`;
+}
+function esc(s){
+return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function markdown(src){
+let blocks=[];
+let s=String(src??"").replace(/\r\n/g,"\n").replace(/```([\w-]*)\n([\s\S]*?)```/g,(_,l,c)=>{blocks.push({l:l||"Code",c});return `\n%%C${blocks.length-1}%%\n`;});
+s=esc(s).replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>").replace(/`([^`\n]+)`/g,"<code>$1</code>");
+let out="",list="";
+const close=()=>{if(list){out+=`</${list}>`;list="";}};
+for(const line of s.split("\n")){
+let m=line.match(/^\s*[-•] (.+)$/),n=line.match(/^\s*\d+[.)] (.+)$/);
+if(m||n){let type=m?"ul":"ol";if(list!==type){close();list=type;out+=`<${type}>`;}out+=`<li>${(m||n)[1]}</li>`;}
+else{close();let c=line.match(/^%%C(\d+)%%$/);if(c){let b=blocks[+c[1]];out+=`<div class="code-wrap"><div class="code-head"><span>${esc(b.l)}</span><button data-copy-code="${+c[1]}">Copier</button></div><pre><code>${esc(b.c)}</code></pre></div>`;}else if(/^<h[1-3]>/.test(line))out+=line;else if(line.trim())out+=`<p>${line}</p>`;}
+}
+close();
+return out;
+}
+async function copyText(t,b){
+try{await navigator.clipboard.writeText(t);b.textContent="Copié ✓";}
+catch(e){$("status").textContent="Copie impossible.";}
+}
+function addMessage(role,content){
+let row=document.createElement("div");row.className="msg "+role;
+let av=document.createElement("div");av.className="avatar";av.textContent=role==="user"?"P":"N";
+let area=document.createElement("div");area.className="message-content";
+let bubble=document.createElement("div");bubble.className="bubble";
+bubble.innerHTML=role==="assistant"?markdown(content):esc(content);
+area.append(bubble);
+if(role==="assistant"&&content!=="NOVA réfléchit…"){
+let a=document.createElement("div");a.className="msg-actions";
+let b=document.createElement("button");b.textContent="Copier la réponse";b.onclick=()=>copyText(content,b);a.append(b);area.append(a);
+}
+row.append(av,area);$("messages").append(row);$("messages").scrollTop=$("messages").scrollHeight;return bubble;
+}
+function stored(){
+return messages.map(m=>({role:m.role,content:Array.isArray(m.content)?m.content.map(p=>p.type==="text"?p:{type:"text",text:"[Photo envoyée — non conservée]"}):m.content}));
+}
+function save(){
+if(!messages.length||!threadId)return;
+let t=threads.find(x=>x.id===threadId);
+if(!t){let f=messages.find(x=>x.role==="user"),title=typeof f?.content==="string"?f.content:"Nouvelle conversation";t={id:threadId,title:title.slice(0,45)||"Nouvelle conversation",messages:[]};threads.unshift(t);}
+t.messages=stored();t.updatedAt=Date.now();threads.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));threads=threads.slice(0,50);
+try{localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));}catch(e){$("status").textContent="Stockage local plein.";}
+renderHistory();
+}
+function renderHistory(){
+$("history").innerHTML="";
+threads.forEach(t=>{
+let e=document.createElement("div");e.className="history-entry";
+let b=document.createElement("button");b.className="history-item"+(t.id===threadId?" active":"");b.textContent=t.title||"Conversation";b.onclick=()=>openThread(t.id);
+let d=document.createElement("button");d.className="delete-thread";d.textContent="×";
+d.onclick=()=>{threads=threads.filter(x=>x.id!==t.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));if(threadId===t.id)newThread();renderHistory();};
+e.append(b,d);$("history").append(e);
+});
+}
+function openThread(id){
+if(busy)return;
+let t=threads.find(x=>x.id===id);if(!t)return;
+threadId=id;messages=t.messages.slice();$("messages").innerHTML="";
+messages.forEach(m=>addMessage(m.role,typeof m.content==="string"?m.content:"[Photo envoyée]"));
+$("status").textContent="Conversation restaurée. Les photos précédentes ne sont pas conservées.";renderHistory();closeSidebar();
+}
+function newThread(){
+if(busy)return;
+messages=[];pendingImages=[];renderImagePreview();threadId=null;$("messages").innerHTML=welcome();$("status").textContent="";renderHistory();
+}
+function closeSidebar(){
+$("sidebar").classList.remove("open");$("overlay").classList.remove("visible");
+}
+function renderImagePreview(){
+$("imagePreview").innerHTML="";
+pendingImages.forEach((src,i)=>{
+let w=document.createElement("span"),im=document.createElement("img");im.src=src;im.style.cssText="width:60px;height:60px;object-fit:cover;border-radius:8px";
+let x=document.createElement("button");x.textContent="×";x.onclick=()=>{pendingImages.splice(i,1);renderImagePreview();};
+w.append(im,x);$("imagePreview").append(w);
+});
+}
+$("attach").onclick=()=>$("imageInput").click();
+$("imageInput").onchange=async e=>{
+for(const f of [...e.target.files||[]]){
+if(!["image/jpeg","image/png","image/webp"].includes(f.type)){alert("Formats JPG, PNG ou WEBP uniquement.");continue;}
+if(f.size>1024*1024){alert("1 Mo maximum par image pour cette version.");continue;}
+if(pendingImages.length>=3){alert("3 images maximum.");break;}
+let data=await new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});
+pendingImages.push(data);
+}
+e.target.value="";renderImagePreview();
+};
+async function loadModels(){
+try{
+let r=await fetch("/api/models",{cache:"no-store"}),d=await r.json();
+if(!r.ok)throw Error(d.error||"Chargement impossible");
+if(!d.models?.length)throw Error("Aucun modèle gratuit disponible");
+$("model").innerHTML="";
+d.models.forEach(m=>{let o=document.createElement("option");o.value=m.id;o.textContent=m.name||m.id;$("model").append(o);});
+$("status").textContent=d.models.length+" modèles gratuits disponibles";
+}catch(e){$("model").innerHTML="<option value=''>Modèles indisponibles</option>";$("status").textContent="Erreur modèles : "+e.message;}
+}
+async function sendMessage(text){
+if((!text.trim()&&!pendingImages.length)||busy)return;
+let model=$("model").value;if(!model){$("status").textContent="Aucun modèle disponible.";return;}
+if(!threadId)threadId=String(Date.now());
+let userText=text.trim(),imgs=pendingImages.slice(),parts=[];
+if(userText)parts.push({type:"text",text:userText});
+imgs.forEach(url=>parts.push({type:"image_url",image_url:{url}}));
+let content=imgs.length?parts:userText;
+$("welcome")?.remove();
+let bubble=addMessage("user",userText||"Regarde cette image.");
+imgs.forEach(src=>{let im=document.createElement("img");im.src=src;im.style.cssText="display:block;max-width:220px;max-height:220px;border-radius:10px;margin-top:8px";bubble.append(im);});
+messages.push({role:"user",content});pendingImages=[];renderImagePreview();$("input").value="";
+busy=true;$("send").disabled=true;$("attach").disabled=true;$("status").textContent="NOVA analyse ton message…";
+let answer=addMessage("assistant","NOVA réfléchit…");
+try{
+let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,messages})}),d=await r.json();
+if(!r.ok)throw Error(d.error?.message||d.error||"Erreur API");
+let result=d.choices?.[0]?.message?.content;
+if(Array.isArray(result))result=result.map(p=>p.text||"").join("");
+if(typeof result!=="string"||!result.trim())throw Error("Réponse vide.");
+answer.innerHTML=markdown(result);messages.push({role:"assistant",content:result});save();
+$("status").textContent=d.nova_fallback?"Modèle de secours : "+(d.nova_model_used||"autre modèle"):"Réponse générée par "+(d.nova_model_used||model);
+}catch(e){answer.textContent="Erreur : "+e.message;messages.pop();$("status").textContent="Échec : "+e.message;}
+finally{busy=false;$("send").disabled=false;$("attach").disabled=false;}
+}
+$("form").onsubmit=e=>{e.preventDefault();sendMessage($("input").value);};
+$("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit();}};
+$("new").onclick=newThread;$("clear").onclick=newThread;
+$("menu").onclick=()=>{$("sidebar").classList.add("open");$("overlay").classList.add("visible");};
+$("overlay").onclick=closeSidebar;
+$("messages").onclick=e=>{
+let p=e.target.closest("[data-prompt]");
+if(p){$("input").value=p.dataset.prompt;$("form").requestSubmit();}
+let c=e.target.closest("[data-copy-code]");
+if(c){let v=c.closest(".code-wrap").querySelector("code").textContent;copyText(v,c);}
+};
+try{let saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(saved))threads=saved;}catch(e){}
+renderHistory();loadModels();
 
-/* GEOLOCATION + DATE/TIME EXPLORER */
+/* NOVA VIDEO STUDIO — MOTEUR DE SCÈNES */
+const canvas=$("videoCanvas"),ctx=canvas.getContext("2d");
+const palettes={
+cinema:["#080d22","#34216c","#ff9b70","#7fe5e0"],
+neon:["#07051c","#25105c","#f51caa","#24e8ff"],
+nature:["#071b1a","#145b50","#9de6a5","#f3d98a"],
+space:["#050817","#15285d","#8b73ff","#58d8ef"],
+minimal:["#111827","#334155","#e7edf8","#9aaac2"],
+fantasy:["#160b2d","#52266f","#ffb7dc","#83f4e4"],
+abstract:["#160c25","#5b1c67","#ff6f91","#f9d66b"]
+};
+let mode="auto",scene=null,particles=[],playing=false,raf=0,recording=false,audioCtx=null,audioNodes=[],audioDestination=null;
+
+function videoMode(m){
+mode=m;$("autoMode").classList.toggle("active",m==="auto");$("expertMode").classList.toggle("active",m==="expert");$("expertFields").hidden=m!=="expert";
+}
+$("autoMode").onclick=()=>videoMode("auto");
+$("expertMode").onclick=()=>videoMode("expert");
+
+function sizeCanvas(){
+let ratio=$("videoRatio").value,q=mode==="expert"?+$("videoQuality").value:720,w,h;
+if(ratio==="9:16"){w=Math.round(q*9/16);h=q;}
+else if(ratio==="1:1"){w=q;h=q;}
+else{w=q*16/9;h=q;}
+canvas.width=w;canvas.height=h;
+$("previewFormat").textContent=ratio+" · "+({"9:16":"Vertical","16:9":"Paysage","1:1":"Carré"}[ratio]);
+$("previewDuration").textContent=$("videoDuration").value+" secondes";
+}
+function seed(s){
+let h=2166136261;
+for(let c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}
+return()=>{
+h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);
+return((t^t>>>14)>>>0)/4294967296;
+};
+}
+function detectScene(text){
+let s=text.toLowerCase(),has=(...w)=>w.some(x=>s.includes(x));
+let place=has("plage","mer","océan","ocean","sable","vague")?"beach":
+has("forêt","foret","bois","jungle","arbre")?"forest":
+has("ville","immeuble","gratte-ciel","rue","urbain")?"city":
+has("espace","galaxie","planète","planete","astronaute","étoile","etoile")?"space":
+has("montagne","neige","sommet","ski")?"mountain":
+has("désert","desert","dune")?"desert":
+has("maison","château","chateau","village")?"village":"cinema";
+let subject=has("poney","cheval","cavalier","jument","étalon","etalon")?"horse":
+has("chien","chiot")?"dog":
+has("chat","chaton")?"cat":
+has("voiture","auto","automobile","course","camion")?"car":
+has("homme","femme","personne","garçon","garcon","fille","cavalier")?"person":"none";
+let action=has("court","courir","galope","galop","avance","traverse","marche","roule","vole","saute","fait du poney","chevauche","monte")?"move":
+has("danse","danser")?"dance":"idle";
+let day=has("nuit","nocturne","étoiles","etoiles")?"night":
+has("coucher","crépuscule","crepuscule","soir","golden hour")?"sunset":
+has("aube","matin","lever du soleil")?"dawn":"day";
+return{place,subject,action,day};
+}
+function makeScene(){
+let prompt=$("videoPrompt").value.trim();
+if(!prompt){$("studioStatus").textContent="Écris d'abord une idée.";return false;}
+sizeCanvas();
+let style=$("videoStyle").value,rand=seed(prompt+style),count=mode==="expert"?+$("videoDensity").value:90;
+particles=Array.from({length:count},()=>({x:rand()*canvas.width,y:rand()*canvas.height,r:1+rand()*3,vx:(rand()-.5)*.45,vy:(rand()-.5)*.4,p:rand()*6.28}));
+scene={prompt,p:palettes[style],speed:mode==="expert"?+$("videoSpeed").value:1,...detectScene(prompt),rand};
+$("previewPlaceholder").style.display="none";draw(0);
+$("playPreview").disabled=false;$("exportVideo").disabled=false;
+$("studioStatus").textContent=`Scène détectée : ${scene.place} · ${scene.subject==="none"?"décor animé":scene.subject} · ${scene.action==="move"?"mouvement":"animation douce"}. Aperçu prêt.`;
+return true;
+}
+function path(points,color){
+ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
+points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();
+}
+function cloud(x,y,s){
+ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle="rgba(255,255,255,.65)";
+ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.arc(22,-9,28,0,Math.PI*2);ctx.arc(48,0,20,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function drawPerson(x,y,scale,t,color="#26334b"){
+ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+let swing=Math.sin(t*5)*9;
+ctx.strokeStyle="#172033";ctx.lineWidth=9;ctx.lineCap="round";ctx.beginPath();
+ctx.moveTo(0,-28);ctx.lineTo(-8+swing,-2);ctx.moveTo(0,-28);ctx.lineTo(9-swing,-2);ctx.stroke();
+ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(-12,-65);ctx.lineTo(12,-65);ctx.lineTo(10,-28);ctx.lineTo(-10,-28);ctx.fill();
+ctx.strokeStyle="#d9a27c";ctx.lineWidth=7;ctx.beginPath();
+ctx.moveTo(-9,-58);ctx.lineTo(-20+Math.sin(t*4)*5,-38);ctx.moveTo(9,-58);ctx.lineTo(18-Math.sin(t*4)*5,-40);ctx.stroke();
+ctx.fillStyle="#d9a27c";ctx.beginPath();ctx.arc(0,-77,10,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#172033";ctx.beginPath();ctx.arc(0,-85,10,Math.PI,0);ctx.fill();
+ctx.restore();
+}
+function drawHorse(x,y,scale,t){
+ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);let gallop=Math.sin(t*7)*12;
+ctx.strokeStyle="#38241e";ctx.lineWidth=7;ctx.lineCap="round";ctx.beginPath();
+ctx.moveTo(-22,-24);ctx.lineTo(-30+gallop,-2);ctx.moveTo(12,-24);ctx.lineTo(22-gallop,-2);
+ctx.moveTo(-8,-24);ctx.lineTo(-2-gallop,-2);ctx.moveTo(25,-25);ctx.lineTo(34+gallop,-2);ctx.stroke();
+ctx.fillStyle="#8b5134";ctx.beginPath();ctx.ellipse(0,-43,39,19,-.05,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.moveTo(22,-52);ctx.quadraticCurveTo(35,-80,43,-77);ctx.lineTo(53,-51);ctx.lineTo(34,-37);ctx.fill();
+ctx.fillStyle="#5d3428";ctx.beginPath();ctx.moveTo(39,-76);ctx.lineTo(34,-90);ctx.lineTo(45,-80);ctx.fill();
+ctx.strokeStyle="#3c241f";ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(-34,-48);ctx.quadraticCurveTo(-58,-58,-55+Math.sin(t*4)*7,-32);ctx.stroke();
+ctx.fillStyle="#201a18";ctx.beginPath();ctx.arc(47,-65,2.5,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function drawBeach(w,h,t){
+let horizon=h*.53,sky=ctx.createLinearGradient(0,0,0,horizon);
+sky.addColorStop(0,scene.day==="night"?"#101b43":scene.day==="sunset"?"#f18b73":"#62b9e9");
+sky.addColorStop(1,scene.day==="night"?"#334d78":scene.day==="sunset"?"#ffd19a":"#d5eefa");
+ctx.fillStyle=sky;ctx.fillRect(0,0,w,horizon);
+let sunY=scene.day==="sunset"?h*.36:h*.2;
+ctx.fillStyle=scene.day==="night"?"#f4f0d5":"#ffe5a0";ctx.beginPath();ctx.arc(w*.76,sunY,Math.min(w,h)*.07,0,Math.PI*2);ctx.fill();
+cloud(w*.18,h*.18,.8);cloud(w*.48,h*.27,.55);
+ctx.fillStyle="#2b9bb5";ctx.fillRect(0,horizon,w,h*.19);
+for(let i=0;i<8;i++){
+let yy=horizon+((i*23+t*18)%(h*.19));ctx.strokeStyle="rgba(255,255,255,.45)";ctx.lineWidth=Math.max(1,h*.002);
+ctx.beginPath();ctx.moveTo(w*.05,yy);ctx.quadraticCurveTo(w*.3,yy-5,w*.55,yy);ctx.quadraticCurveTo(w*.78,yy+5,w,yy-2);ctx.stroke();
+}
+ctx.fillStyle="#e9c58e";ctx.beginPath();ctx.moveTo(0,h*.7);ctx.quadraticCurveTo(w*.45,h*.62,w,h*.73);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.fill();
+for(let i=0;i<35;i++){let x=(i*97)%w,y=h*.74+((i*47)%(h*.24));ctx.fillStyle=i%2?"#fff3d3":"#b99164";ctx.globalAlpha=.25;ctx.fillRect(x,y,2,2);}
+ctx.globalAlpha=1;
+}
+function drawForest(w,h,t){
+let g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,"#9ac7b1");g.addColorStop(1,"#173e36");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+ctx.fillStyle="#8c7650";ctx.fillRect(0,h*.72,w,h*.28);
+for(let i=0;i<12;i++){
+let x=i*w/11,hh=h*(.28+(i%4)*.08);ctx.fillStyle="#493d2d";ctx.fillRect(x-w*.012,h*.45,w*.025,h*.45);
+ctx.fillStyle=i%2?"#1e674a":"#2d8052";ctx.beginPath();ctx.arc(x,h*.45-hh*.25,w*.09,0,Math.PI*2);ctx.fill();
+}
+ctx.fillStyle="#d9e9bb";ctx.globalAlpha=.15;for(let i=0;i<6;i++)ctx.fillRect(i*w/6,0,w*.018,h);ctx.globalAlpha=1;
+}
+function drawCity(w,h,t){
+let g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,scene.day==="night"?"#101b40":"#8bc4e9");g.addColorStop(1,scene.day==="sunset"?"#ed9b80":"#e6d6bd");
+ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.fillStyle="#303b56";
+for(let i=0;i<13;i++){
+let bw=w*(.045+(i%3)*.018),x=i*w/12-bw/2,bh=h*(.2+(i*37%43)/100);
+ctx.fillRect(x,h*.72-bh,bw,bh);ctx.fillStyle="#f8d88a";
+for(let yy=h*.74-bh;yy<h*.7;yy+=h*.045)for(let xx=x+bw*.2;xx<x+bw*.8;xx+=bw*.35)ctx.fillRect(xx,yy,bw*.12,h*.018);
+ctx.fillStyle="#303b56";
+}
+ctx.fillStyle="#202a3e";ctx.fillRect(0,h*.72,w,h*.28);
+}
+function drawBackground(w,h,t){
+if(scene.place==="beach")return drawBeach(w,h,t);
+if(scene.place==="forest")return drawForest(w,h,t);
+if(scene.place==="city")return drawCity(w,h,t);
+let p=scene.p,g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,p[0]);g.addColorStop(.6,p[1]);g.addColorStop(1,"#07101d");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+if(scene.place==="space"){
+ctx.fillStyle="#fff";particles.forEach(q=>{ctx.globalAlpha=.4+.6*Math.sin(t+q.p)**2;ctx.fillRect(q.x,q.y,q.r*1.5,q.r*1.5);});
+ctx.globalAlpha=1;ctx.fillStyle="#7564bd";ctx.beginPath();ctx.arc(w*.72,h*.38,h*.16,0,Math.PI*2);ctx.fill();
+}else if(scene.place==="mountain"||scene.place==="desert"){
+path([[0,h*.68],[w*.2,h*.3],[w*.38,h*.66],[w*.65,h*.22],[w,h*.7],[w,h],[0,h]],scene.place==="desert"?"#c99a62":"#647b91");
+ctx.fillStyle=scene.place==="desert"?"#e7bc7f":"#d5e4ed";ctx.fillRect(0,h*.72,w,h*.28);
+}else{
+ctx.fillStyle="#152b45";ctx.fillRect(0,h*.68,w,h*.32);
+}
+}
+function drawSubject(w,h,t){
+let x=w*(.48+Math.sin(t*.45)*.13),ground=h*(scene.place==="beach"?.79:.76),scale=Math.min(w,h)/500;
+if(scene.subject==="horse"){
+drawHorse(x,ground,scale*1.45,t);
+if(scene.prompt.toLowerCase().includes("cavalier")||scene.prompt.toLowerCase().includes("homme"))drawPerson(x,ground-h*.055,scale*.85,t,"#273b59");
+}else if(scene.subject==="person")drawPerson(x,ground,scale*1.25,t);
+else if(scene.subject==="car"){
+ctx.save();ctx.translate(x+Math.sin(t*.7)*w*.12,ground);ctx.fillStyle="#c83d43";ctx.beginPath();ctx.roundRect(-w*.11,-h*.1,w*.22,h*.09,12);ctx.fill();
+ctx.fillStyle="#8bd4e8";ctx.fillRect(-w*.055,-h*.15,w*.11,h*.06);ctx.fillStyle="#151b28";
+[-.065,.065].forEach(a=>{ctx.beginPath();ctx.arc(w*a,0,h*.035,0,Math.PI*2);ctx.fill();});ctx.restore();
+}else if(scene.subject==="dog"||scene.subject==="cat"){
+ctx.fillStyle=scene.subject==="dog"?"#b77a45":"#777b8c";ctx.beginPath();ctx.ellipse(x,ground-h*.07,h*.12,h*.07,0,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.arc(x+h*.1,ground-h*.15,h*.055,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle="#47362b";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x-h*.08,ground-h*.04);ctx.lineTo(x-h*.1,ground);ctx.moveTo(x+h*.04,ground-h*.04);ctx.lineTo(x+h*.05,ground);ctx.stroke();
+}else if(scene.subject==="none"){
+let glow=ctx.createRadialGradient(x,ground-h*.35,1,x,ground-h*.35,h*.3);glow.addColorStop(0,scene.p[2]);glow.addColorStop(1,"transparent");ctx.fillStyle=glow;ctx.fillRect(x-h*.3,ground-h*.7,h*.6,h*.7);
+}
+}
+function draw(ms){
+if(!scene)return;
+let w=canvas.width,h=canvas.height,t=ms/1000*scene.speed;ctx.save();
+let cam=Math.sin(t*.22)*w*.012;ctx.translate(-cam,0);drawBackground(w,h,t);drawSubject(w,h,t);
+if(scene.place==="beach"){
+ctx.fillStyle="rgba(255,255,255,.45)";
+for(let i=0;i<5;i++){let x=(i*w/4+(t*25)%w)%w;ctx.beginPath();ctx.ellipse(x,h*.72+Math.sin(t+i)*4,w*.07,h*.006,0,0,Math.PI*2);ctx.fill();}
+}
+particles.forEach((q,i)=>{
+if(scene.place==="space"||scene.day==="night"){
+ctx.globalAlpha=.25+.65*(.5+.5*Math.sin(t*1.7+q.p));ctx.fillStyle="#fff";ctx.beginPath();ctx.arc((q.x+t*q.vx*15+w)%w,q.y,q.r,0,Math.PI*2);ctx.fill();
+}
+});
+ctx.globalAlpha=1;ctx.restore();
+let words=scene.prompt.split(/\s+/),lines=[],line="",max=Math.max(20,Math.floor(w/19));
+words.forEach(word=>{if((line+" "+word).trim().length>max){lines.push(line);line=word;}else line=(line+" "+word).trim();});
+if(line)lines.push(line);lines=lines.slice(0,3);
+let fs=Math.max(16,Math.min(w*.027,34));ctx.textAlign="center";ctx.font=`700 ${fs}px Arial`;ctx.shadowColor="#000";ctx.shadowBlur=8;ctx.fillStyle="#fff";
+let base=h*.91-(lines.length-1)*fs*.65;lines.forEach((l,i)=>ctx.fillText(l,w/2,base+i*fs*1.2,w*.88));
+ctx.shadowBlur=0;ctx.font=`600 ${Math.max(10,fs*.32)}px Arial`;ctx.fillStyle="#ffffffbb";ctx.fillText("NOVA AI · SCENE ENGINE",w/2,h*.975);
+}
+
+/* AUDIO SYNTHÉTIQUE */
+function startSound(){
+try{
+if(!audioCtx){
+audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+audioDestination=audioCtx.createMediaStreamDestination();
+let master=audioCtx.createGain();master.gain.value=.22;master.connect(audioCtx.destination);master.connect(audioDestination);
+let buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*2,audioCtx.sampleRate),data=buffer.getChannelData(0);
+for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.22;
+let noise=audioCtx.createBufferSource();noise.buffer=buffer;noise.loop=true;
+let filter=audioCtx.createBiquadFilter();filter.type="lowpass";filter.frequency.value=scene?.place==="beach"?520:scene?.place==="forest"?850:260;
+let gain=audioCtx.createGain();gain.gain.value=scene?.place==="beach"?.16:.055;
+noise.connect(filter);filter.connect(gain);gain.connect(master);noise.start();
+let osc=audioCtx.createOscillator(),tone=audioCtx.createGain();osc.type="sine";osc.frequency.value=scene?.place==="beach"?92:scene?.place==="forest"?145:65;tone.gain.value=.018;osc.connect(tone);tone.connect(master);osc.start();
+audioNodes=[noise,osc,master];
+}
+if(audioCtx.state==="suspended")audioCtx.resume();
+}catch(e){$("studioStatus").textContent="Animation prête ; audio indisponible sur ce navigateur.";}
+}
+function stopSound(){
+if(audioCtx&&audioCtx.state==="running"){
+try{audioNodes.forEach(n=>{if(n.stop)n.stop();});}catch(e){}
+audioNodes=[];audioCtx.close().catch(()=>{});audioCtx=null;audioDestination=null;
+}
+}
+function stop(){
+playing=false;if(raf)cancelAnimationFrame(raf);raf=0;
+$("playPreview").disabled=!scene;$("stopPreview").disabled=true;stopSound();
+}
+function play(){
+if(!scene&&!makeScene())return;
+stop();startSound();playing=true;$("playPreview").disabled=true;$("stopPreview").disabled=false;
+let start=performance.now(),duration=+$("videoDuration").value*1000;
+function tick(now){
+if(!playing)return;let elapsed=now-start;draw(elapsed);
+if(elapsed>=duration){stop();draw(duration);return;}
+raf=requestAnimationFrame(tick);
+}
+raf=requestAnimationFrame(tick);
+}
+function mimeType(){
+if(!window.MediaRecorder)return"";
+return["video/mp4;codecs=h264","video/mp4","video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(x=>MediaRecorder.isTypeSupported?.(x))||"";
+}
+async function exportVideo(){
+if(recording)return;
+if(!scene&&!makeScene())return;
+if(!canvas.captureStream||!window.MediaRecorder){$("studioStatus").textContent="Enregistrement non pris en charge par ce navigateur. Essaie Safari à jour.";return;}
+let mime=mimeType();if(!mime){$("studioStatus").textContent="Aucun format vidéo compatible détecté.";return;}
+stop();startSound();
+let stream=canvas.captureStream(30),chunks=[];
+if(audioDestination)audioDestination.stream.getAudioTracks().forEach(track=>stream.addTrack(track));
+try{
+let rec=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:mode==="expert"&&+$("videoQuality").value===1080?5500000:3000000});
+recording=true;$("generateVideo").disabled=true;$("exportVideo").disabled=true;
+$("studioStatus").textContent="Export en cours avec ambiance sonore… garde NOVA ouvert.";
+rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data);};
+rec.onerror=()=>{$("studioStatus").textContent="Erreur d'enregistrement.";recording=false;$("generateVideo").disabled=false;};
+rec.onstop=()=>{
+stream.getTracks().forEach(t=>t.stop());recording=false;stopSound();
+$("generateVideo").disabled=false;$("exportVideo").disabled=false;
+let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download="nova-video-"+Date.now()+"."+(mime.includes("mp4")?"mp4":"webm");
+document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+$("studioStatus").textContent="Export terminé. Vérifie les téléchargements de ton navigateur.";
+};
+rec.start(200);
+let start=performance.now(),duration=+$("videoDuration").value*1000;
+function frame(now){let elapsed=now-start;draw(elapsed);if(elapsed>=duration){rec.stop();return;}requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+}catch(e){
+stream.getTracks().forEach(t=>t.stop());recording=false;stopSound();$("generateVideo").disabled=false;
+$("studioStatus").textContent="Export impossible : "+e.message;
+}
+}
+$("openStudio").onclick=()=>{$("studio").classList.add("open");sizeCanvas();};
+$("closeStudio").onclick=()=>{stop();$("studio").classList.remove("open");};
+$("generateVideo").onclick=()=>{if(makeScene())play();};
+$("playPreview").onclick=play;
+$("stopPreview").onclick=()=>{stop();if(scene)draw(0);};
+$("exportVideo").onclick=exportVideo;
+$("resetStudio").onclick=()=>{
+stop();scene=null;ctx.clearRect(0,0,canvas.width,canvas.height);$("previewPlaceholder").style.display="block";
+$("playPreview").disabled=$("stopPreview").disabled=$("exportVideo").disabled=true;$("studioStatus").textContent="Prêt pour une nouvelle création.";
+};
+["videoRatio","videoDuration","videoQuality"].forEach(id=>$(id).onchange=()=>{
+sizeCanvas();
+if(scene){scene=null;$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("exportVideo").disabled=true;}
+});
+
+/* GÉOLOCALISATION ET EXPLORATEUR DE DATES */
 let clockTimer=null;
-function updateClock(){let now=new Date();$("nowDate").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(now);$("nowClock").textContent=new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(now);let zone=Intl.DateTimeFormat().resolvedOptions().timeZone||"Fuseau inconnu";$("zoneInfo").textContent="Fuseau horaire : "+zone+" · "+(-now.getTimezoneOffset()/60)+" h UTC";$("deviceInfo").textContent="Date lue sur l'appareil · "+navigator.language}
-function localISODate(d){let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`}
-function examineDate(value){if(!value){$("dateResult").textContent="Choisis une date.";return}let [y,m,d]=value.split("-").map(Number),chosen=new Date(y,m-1,d),now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),diff=Math.round((chosen-today)/86400000),label,cls,detail;if(diff===0){label="AUJOURD'HUI — PRÉSENT";cls="status-good";detail="Cette date correspond à la date locale actuelle."}else if(diff<0){label="PASSÉ";cls="status-past";detail=`Cette date est passée depuis ${Math.abs(diff)} jour(s).`}else{label="FUTUR";cls="status-future";detail=`Cette date arrivera dans ${diff} jour(s).`}$("dateResult").innerHTML=`<strong class="${cls}">${label}</strong><br>${new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(chosen)}<br>${detail}`}
-function openTimePanel(){$("timePanel").classList.add("open");updateClock();if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(updateClock,1000);let today=new Date();$("dateExplorer").value=localISODate(today);examineDate($("dateExplorer").value)}
-function closeTimePanel(){$("timePanel").classList.remove("open");if(clockTimer)clearInterval(clockTimer);clockTimer=null}
-$("openTime").onclick=openTimePanel;$("closeTime").onclick=closeTimePanel;$("dateExplorer").onchange=e=>examineDate(e.target.value);
-$("chooseYesterday").onclick=()=>{let d=new Date();d.setDate(d.getDate()-1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value)};
-$("chooseTomorrow").onclick=()=>{let d=new Date();d.setDate(d.getDate()+1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value)};
-$("getLocation").onclick=()=>{let out=$("geoResult");if(!navigator.geolocation){out.textContent="La géolocalisation n'est pas prise en charge par ce navigateur.";return}out.textContent="Demande de position en cours…";navigator.geolocation.getCurrentPosition(pos=>{let c=pos.coords;out.innerHTML=`<span class="status-good">Position obtenue</span><br>Latitude : ${c.latitude.toFixed(5)}<br>Longitude : ${c.longitude.toFixed(5)}<br>Précision : environ ${Math.round(c.accuracy)} m<br><span class="time-muted">Position ponctuelle · relevée ${new Date(pos.timestamp).toLocaleTimeString("fr-FR")}</span>`;$("timeStatus").textContent="La position est affichée uniquement dans cette fenêtre. Elle n'est pas envoyée à NOVA AI ni à son serveur."},err=>{out.textContent=({1:"Autorisation refusée. Tu peux l'activer dans les réglages du navigateur.",2:"Position indisponible. Vérifie le GPS et la connexion.",3:"Délai dépassé. Réessaie."}[err.code]||"Impossible d'obtenir la position.")},{enableHighAccuracy:true,timeout:15000,maximumAge:0})};
-</script></body></html>
-><div class="actions"><button id="playPreview" disabled>▶ Lire</button><button id="stopPreview" disabled>■ Arrêter</button><button id="exportVideo" disabled>⬇ Exporter</button><button id="resetStudio">↺ Réinitialiser</button></div><p class="note">L'export utilise l'enregistreur vidéo intégré au navigateur. Selon iOS/Safari, le format proposé peut varier (MP4 ou WebM). Garde la fenêtre ouverte pendant l'export.</p></div></div></div></section>
-
-<section id="timePanel"><div class="modal-shell"><div class="modal-top"><div><div class="modal-title">📍 NOVA <span>GEO & TEMPS</span></div><div class="head-sub">Position de l'appareil, horloge et explorateur de dates</div></div><button class="close" id="closeTime">✕ Fermer</button></div><p class="intro">La date et l'heure actuelles sont lues sur ton appareil. La localisation n'est demandée que si tu appuies sur le bouton ci-dessous. Tu peux ensuite explorer une date passée ou future.</p>
-<div class="time-grid"><div class="time-card"><div class="side-label">DATE ET HEURE LOCALES</div><div class="time-big" id="nowDate">—</div><div id="nowClock" class="time-big">—</div><div class="time-muted" id="zoneInfo">Fuseau horaire : —</div><div class="time-muted" id="deviceInfo"></div></div><div class="time-card"><div class="side-label">GÉOLOCALISATION</div><div class="time-big" style="font-size:22px">Ta position</div><div class="time-muted" id="geoResult">Aucune position demandée.</div><button class="gradient" id="getLocation" style="margin-top:14px;width:100%">📍 Autoriser ma localisation</button><div class="note">Le navigateur demandera ton autorisation. La position n'est pas transmise au serveur par ce module.</div></div></div>
-<div class="time-card" style="margin-top:15px"><div class="side-label">DÉTECTEUR DE DATE — PASSÉ / PRÉSENT / FUTUR</div><div class="field"><label for="dateExplorer">Choisis une date à examiner</label><input id="dateExplorer" type="date"></div><div class="date-result" id="dateResult">Sélectionne une date pour savoir si elle appartient au passé, à aujourd'hui ou au futur.</div><div class="two" style="margin-top:10px"><button class="secondary" id="chooseYesterday">← Hier</button><button class="secondary" id="chooseTomorrow">Demain →</button></div></div><div id="timeStatus"></div></div></section>
-
-<script>
-const $=id=>document.getElementById(id),STORAGE_KEY="nova_threads";let messages=[],busy=false,threads=[],threadId=null,pendingImages=[];
-function welcome(){return `<div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide.</p><div class="suggestions"><button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button><button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button><button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button></div></div>`}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function markdown(src){let blocks=[];let s=String(src??"").replace(/\r\n/g,"\n").replace(/```([\w-]*)\n([\s\S]*?)```/g,(_,l,c)=>{blocks.push({l:l||"Code",c});return `\n%%C${blocks.length-1}%%\n`});s=esc(s).replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>").replace(/`([^`\n]+)`/g,"<code>$1</code>");let out="",list="";const close=()=>{if(list){out+=`</${list}>`;list=""}};for(const line of s.split("\n")){let m=line.match(/^\s*[-•] (.+)$/),n=line.match(/^\s*\d+[.)] (.+)$/);if(m||n){let type=m?"ul":"ol";if(list!==type){close();list=type;out+=`<${type}>`}out+=`<li>${(m||n)[1]}</li>`}else{close();let c=line.match(/^%%C(\d+)%%$/);if(c){let b=blocks[+c[1]];out+=`<div class="code-wrap"><div class="code-head"><span>${esc(b.l)}</span><button data-copy-code="${+c[1]}">Copier</button></div><pre><code>${esc(b.c)}</code></pre></div>`}else if(/^<h[1-3]>/.test(line))out+=line;else if(line.trim())out+=`<p>${line}</p>`}}close();return out}
-async function copyText(t,b){try{await navigator.clipboard.writeText(t);b.textContent="Copié ✓"}catch(e){$("status").textContent="Copie impossible."}}
-function addMessage(role,content){let row=document.createElement("div");row.className="msg "+role;let av=document.createElement("div");av.className="avatar";av.textContent=role==="user"?"P":"N";let area=document.createElement("div");area.className="message-content";let bubble=document.createElement("div");bubble.className="bubble";bubble.innerHTML=role==="assistant"?markdown(content):esc(content);area.append(bubble);if(role==="assistant"&&content!=="NOVA réfléchit…"){let a=document.createElement("div");a.className="msg-actions";let b=document.createElement("button");b.textContent="Copier la réponse";b.onclick=()=>copyText(content,b);a.append(b);area.append(a)}row.append(av,area);$("messages").append(row);$("messages").scrollTop=$("messages").scrollHeight;return bubble}
-function stored(){return messages.map(m=>({role:m.role,content:Array.isArray(m.content)?m.content.map(p=>p.type==="text"?p:{type:"text",text:"[Photo envoyée — non conservée]" }):m.content}))}
-function save(){if(!messages.length||!threadId)return;let t=threads.find(x=>x.id===threadId);if(!t){let f=messages.find(x=>x.role==="user"),title=typeof f?.content==="string"?f.content:"Nouvelle conversation";t={id:threadId,title:title.slice(0,45)||"Nouvelle conversation",messages:[]};threads.unshift(t)}t.messages=stored();t.updatedAt=Date.now();threads.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));threads=threads.slice(0,50);try{localStorage.setItem(STORAGE_KEY,JSON.stringify(threads))}catch(e){$("status").textContent="Stockage local plein."}renderHistory()}
-function renderHistory(){$("history").innerHTML="";threads.forEach(t=>{let e=document.createElement("div");e.className="history-entry";let b=document.createElement("button");b.className="history-item"+(t.id===threadId?" active":"");b.textContent=t.title||"Conversation";b.onclick=()=>openThread(t.id);let d=document.createElement("button");d.className="delete-thread";d.textContent="×";d.onclick=()=>{threads=threads.filter(x=>x.id!==t.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));if(threadId===t.id)newThread();renderHistory()};e.append(b,d);$("history").append(e)})}
-function openThread(id){if(busy)return;let t=threads.find(x=>x.id===id);if(!t)return;threadId=id;messages=t.messages.slice();$("messages").innerHTML="";messages.forEach(m=>addMessage(m.role,typeof m.content==="string"?m.content:"[Photo envoyée]"));$("status").textContent="Conversation restaurée. Les photos précédentes ne sont pas conservées.";renderHistory();closeSidebar()}
-function newThread(){if(busy)return;messages=[];pendingImages=[];renderImagePreview();threadId=null;$("messages").innerHTML=welcome();$("status").textContent="";renderHistory()}
-function closeSidebar(){$("sidebar").classList.remove("open");$("overlay").classList.remove("visible")}
-function renderImagePreview(){$("imagePreview").innerHTML="";pendingImages.forEach((src,i)=>{let w=document.createElement("span"),im=document.createElement("img");im.src=src;im.style.cssText="width:60px;height:60px;object-fit:cover;border-radius:8px";let x=document.createElement("button");x.textContent="×";x.onclick=()=>{pendingImages.splice(i,1);renderImagePreview()};w.append(im,x);$("imagePreview").append(w)})}
-$("attach").onclick=()=>$("imageInput").click();$("imageInput").onchange=async e=>{for(const f of [...e.target.files||[]]){if(!["image/jpeg","image/png","image/webp"].includes(f.type)){alert("Formats JPG, PNG ou WEBP uniquement.");continue}if(f.size>1024*1024){alert("1 Mo maximum par image pour cette version.");continue}if(pendingImages.length>=3){alert("3 images maximum.");break}let data=await new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});pendingImages.push(data)}e.target.value="";renderImagePreview()};
-async function loadModels(){try{let r=await fetch("/api/models",{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||"Chargement impossible");if(!d.models?.length)throw Error("Aucun modèle gratuit disponible");$("model").innerHTML="";d.models.forEach(m=>{let o=document.createElement("option");o.value=m.id;o.textContent=m.name||m.id;$("model").append(o)});$("status").textContent=d.models.length+" modèles gratuits disponibles"}catch(e){$("model").innerHTML="<option value=''>Modèles indisponibles</option>";$("status").textContent="Erreur modèles : "+e.message}}
-async function sendMessage(text){if((!text.trim()&&!pendingImages.length)||busy)return;let model=$("model").value;if(!model){$("status").textContent="Aucun modèle disponible.";return}if(!threadId)threadId=String(Date.now());let userText=text.trim(),imgs=pendingImages.slice(),parts=[];if(userText)parts.push({type:"text",text:userText});imgs.forEach(url=>parts.push({type:"image_url",image_url:{url}}));let content=imgs.length?parts:userText;$("welcome")?.remove();let bubble=addMessage("user",userText||"Regarde cette image.");imgs.forEach(src=>{let im=document.createElement("img");im.src=src;im.style.cssText="display:block;max-width:220px;max-height:220px;border-radius:10px;margin-top:8px";bubble.append(im)});messages.push({role:"user",content});pendingImages=[];renderImagePreview();$("input").value="";busy=true;$("send").disabled=true;$("attach").disabled=true;$("status").textContent="NOVA analyse ton message…";let answer=addMessage("assistant","NOVA réfléchit…");try{let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,messages})}),d=await r.json();if(!r.ok)throw Error(d.error?.message||d.error||"Erreur API");let result=d.choices?.[0]?.message?.content;if(Array.isArray(result))result=result.map(p=>p.text||"").join("");if(typeof result!=="string"||!result.trim())throw Error("Réponse vide.");answer.innerHTML=markdown(result);messages.push({role:"assistant",content:result});save();$("status").textContent=d.nova_fallback?"Modèle de secours : "+(d.nova_model_used||"autre modèle"):"Réponse générée par "+(d.nova_model_used||model)}catch(e){answer.textContent="Erreur : "+e.message;messages.pop();$("status").textContent="Échec : "+e.message}finally{busy=false;$("send").disabled=false;$("attach").disabled=false}}
-$("form").onsubmit=e=>{e.preventDefault();sendMessage($("input").value)};$("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("form").requestSubmit()}};$("new").onclick=newThread;$("clear").onclick=newThread;$("menu").onclick=()=>{$("sidebar").classList.add("open");$("overlay").classList.add("visible")};$("overlay").onclick=closeSidebar;$("messages").onclick=e=>{let p=e.target.closest("[data-prompt]");if(p){$("input").value=p.dataset.prompt;$("form").requestSubmit()}let c=e.target.closest("[data-copy-code]");if(c){let v=c.closest(".code-wrap").querySelector("code").textContent;copyText(v,c)}};
-try{let saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(saved))threads=saved}catch(e){}renderHistory();loadModels();
-
-/* VIDEO STUDIO */
-const canvas=$("videoCanvas"),ctx=canvas.getContext("2d"),palettes={cinema:["#080d22","#34216c","#ff9b70","#7fe5e0"],neon:["#07051c","#25105c","#f51caa","#24e8ff"],nature:["#071b1a","#145b50","#9de6a5","#f3d98a"],space:["#050817","#15285d","#8b73ff","#58d8ef"],minimal:["#111827","#334155","#e7edf8","#9aaac2"],fantasy:["#160b2d","#52266f","#ffb7dc","#83f4e4"],abstract:["#160c25","#5b1c67","#ff6f91","#f9d66b"]};let mode="auto",scene=null,particles=[],playing=false,raf=0,recording=false;
-function videoMode(m){mode=m;$("autoMode").classList.toggle("active",m==="auto");$("expertMode").classList.toggle("active",m==="expert");$("expertFields").hidden=m!=="expert"}$("autoMode").onclick=()=>videoMode("auto");$("expertMode").onclick=()=>videoMode("expert");
-function sizeCanvas(){let ratio=$("videoRatio").value,q=mode==="expert"?+$("videoQuality").value:720,w,h;if(ratio==="9:16"){w=Math.round(q*9/16);h=q}else if(ratio==="1:1"){w=q;h=q}else{w=q*16/9;h=q}canvas.width=w;canvas.height=h;$("previewFormat").textContent=ratio+" · "+({ "9:16":"Vertical","16:9":"Paysage","1:1":"Carré"}[ratio]);$("previewDuration").textContent=$("videoDuration").value+" secondes"}
-function seed(s){let h=2166136261;for(let c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-function makeScene(){let prompt=$("videoPrompt").value.trim();if(!prompt){$("studioStatus").textContent="Écris d'abord une idée.";return false}sizeCanvas();let style=$("videoStyle").value,rand=seed(prompt+style),count=mode==="expert"?+$("videoDensity").value:75;particles=Array.from({length:count},()=>({x:rand()*canvas.width,y:rand()*canvas.height,r:1+rand()*4,vx:(rand()-.5)*.5,vy:(rand()-.5)*.6,p:rand()*6.28}));scene={prompt,p:palettes[style],speed:mode==="expert"?+$("videoSpeed").value:1};$("previewPlaceholder").style.display="none";draw(0);$("playPreview").disabled=false;$("exportVideo").disabled=false;$("studioStatus").textContent="Aperçu prêt. Lis-le ou exporte ta vidéo.";return true}
-function draw(ms){if(!scene)return;let w=canvas.width,h=canvas.height,t=ms/1000*scene.speed,p=scene.p,g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,p[0]);g.addColorStop(.55,p[1]);g.addColorStop(1,"#050812");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);let glow=ctx.createRadialGradient(w*(.25+.08*Math.sin(t*.4)),h*.35,0,w*.5,h*.5,Math.max(w,h)*.7);glow.addColorStop(0,p[2]+"66");glow.addColorStop(1,"transparent");ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);let x=w*.5+Math.sin(t*.32)*w*.08,y=h*.42+Math.cos(t*.25)*h*.07,r=Math.min(w,h)*(.19+.018*Math.sin(t));let orb=ctx.createRadialGradient(x-r*.35,y-r*.4,r*.03,x,y,r*1.35);orb.addColorStop(0,"#fff");orb.addColorStop(.2,p[3]);orb.addColorStop(.65,p[2]);orb.addColorStop(1,p[1]);ctx.shadowColor=p[3];ctx.shadowBlur=r*.6;ctx.fillStyle=orb;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle="#ffffff66";ctx.lineWidth=Math.max(2,r*.018);for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(x,y,r*(1.15+k*.16),r*(.35+k*.09),t*.2+k*.8,0,Math.PI*2);ctx.stroke()}particles.forEach((q,i)=>{let px=(q.x+q.vx*ms*.05*scene.speed+w)%w,py=(q.y+q.vy*ms*.05*scene.speed+h)%h;ctx.globalAlpha=.3+.6*(.5+.5*Math.sin(t*2+q.p));ctx.fillStyle=i%3===0?p[3]:"#fff";ctx.beginPath();ctx.arc(px,py,q.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;let words=scene.prompt.split(/\s+/),lines=[],line="",max=Math.max(18,Math.floor(w/22));words.forEach(word=>{if((line+" "+word).trim().length>max){lines.push(line);line=word}else line=(line+" "+word).trim()});if(line)lines.push(line);lines=lines.slice(0,4);let fs=Math.max(18,Math.min(w*.045,48));ctx.textAlign="center";ctx.font=`700 ${fs}px Arial`;ctx.shadowColor="#000";ctx.shadowBlur=15;ctx.fillStyle="#fff";let base=h*.8-(lines.length-1)*fs*.6;lines.forEach((l,i)=>ctx.fillText(l,w/2,base+i*fs*1.2,w*.86));ctx.shadowBlur=0;ctx.font=`600 ${Math.max(11,fs*.28)}px Arial`;ctx.fillStyle="#ffffffaa";ctx.fillText("NOVA AI · CREATIVE MOTION",w/2,h*.95)}
-function stop(){playing=false;if(raf)cancelAnimationFrame(raf);raf=0;$("playPreview").disabled=!scene;$("stopPreview").disabled=true}
-function play(){if(!scene&&!makeScene())return;stop();playing=true;$("playPreview").disabled=true;$("stopPreview").disabled=false;let start=performance.now(),duration=+$("videoDuration").value*1000;function tick(now){if(!playing)return;let elapsed=now-start;draw(elapsed);if(elapsed>=duration){stop();draw(duration);return}raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick)}
-function mimeType(){if(!window.MediaRecorder)return"";return["video/mp4;codecs=h264","video/mp4","video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(x=>MediaRecorder.isTypeSupported?.(x))||""}
-async function exportVideo(){if(recording)return;if(!scene&&!makeScene())return;if(!canvas.captureStream||!window.MediaRecorder){$("studioStatus").textContent="Enregistrement vidéo non pris en charge par ce navigateur. Essaie Safari à jour.";return}let mime=mimeType();if(!mime){$("studioStatus").textContent="Aucun format vidéo compatible détecté.";return}stop();let stream=canvas.captureStream(30),chunks=[];try{let rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:mode==="expert"&&+$("videoQuality").value===1080?5500000:3000000});recording=true;$("generateVideo").disabled=true;$("exportVideo").disabled=true;$("studioStatus").textContent="Export en cours… garde NOVA ouvert.";rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};rec.onerror=()=>{$("studioStatus").textContent="Erreur d'enregistrement.";recording=false;$("generateVideo").disabled=false};rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());recording=false;$("generateVideo").disabled=false;$("exportVideo").disabled=false;let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nova-video-"+Date.now()+"."+(mime.includes("mp4")?"mp4":"webm");document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);$("studioStatus").textContent="Export terminé. Vérifie les téléchargements de ton navigateur."};rec.start(200);let start=performance.now(),duration=+$("videoDuration").value*1000;function frame(now){let elapsed=now-start;draw(elapsed);if(elapsed>=duration){rec.stop();return}requestAnimationFrame(frame)}requestAnimationFrame(frame)}catch(e){stream.getTracks().forEach(t=>t.stop());recording=false;$("generateVideo").disabled=false;$("studioStatus").textContent="Export impossible : "+e.message}}
-$("openStudio").onclick=()=>{$("studio").classList.add("open");sizeCanvas()};$("closeStudio").onclick=()=>{stop();$("studio").classList.remove("open")};$("generateVideo").onclick=()=>{if(makeScene())play()};$("playPreview").onclick=play;$("stopPreview").onclick=()=>{stop();if(scene)draw(0)};$("exportVideo").onclick=exportVideo;$("resetStudio").onclick=()=>{stop();scene=null;ctx.clearRect(0,0,canvas.width,canvas.height);$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("stopPreview").disabled=$("exportVideo").disabled=true;$("studioStatus").textContent="Prêt pour une nouvelle création."};["videoRatio","videoDuration","videoQuality"].forEach(id=>$(id).onchange=()=>{sizeCanvas();if(scene){scene=null;$("previewPlaceholder").style.display="block";$("playPreview").disabled=$("exportVideo").disabled=true}});
-
-/* GEOLOCATION + DATE/TIME EXPLORER */
-let clockTimer=null;
-function updateClock(){let now=new Date();$("nowDate").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(now);$("nowClock").textContent=new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(now);let zone=Intl.DateTimeFormat().resolvedOptions().timeZone||"Fuseau inconnu";$("zoneInfo").textContent="Fuseau horaire : "+zone+" · "+(-now.getTimezoneOffset()/60)+" h UTC";$("deviceInfo").textContent="Date lue sur l'appareil · "+navigator.language}
-function localISODate(d){let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`}
-function examineDate(value){if(!value){$("dateResult").textContent="Choisis une date.";return}let [y,m,d]=value.split("-").map(Number),chosen=new Date(y,m-1,d),now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),diff=Math.round((chosen-today)/86400000),label,cls,detail;if(diff===0){label="AUJOURD'HUI — PRÉSENT";cls="status-good";detail="Cette date correspond à la date locale actuelle."}else if(diff<0){label="PASSÉ";cls="status-past";detail=`Cette date est passée depuis ${Math.abs(diff)} jour(s).`}else{label="FUTUR";cls="status-future";detail=`Cette date arrivera dans ${diff} jour(s).`}$("dateResult").innerHTML=`<strong class="${cls}">${label}</strong><br>${new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(chosen)}<br>${detail}`}
-function openTimePanel(){$("timePanel").classList.add("open");updateClock();if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(updateClock,1000);let today=new Date();$("dateExplorer").value=localISODate(today);examineDate($("dateExplorer").value)}
-function closeTimePanel(){$("timePanel").classList.remove("open");if(clockTimer)clearInterval(clockTimer);clockTimer=null}
-$("openTime").onclick=openTimePanel;$("closeTime").onclick=closeTimePanel;$("dateExplorer").onchange=e=>examineDate(e.target.value);
-$("chooseYesterday").onclick=()=>{let d=new Date();d.setDate(d.getDate()-1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value)};
-$("chooseTomorrow").onclick=()=>{let d=new Date();d.setDate(d.getDate()+1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value)};
-$("getLocation").onclick=()=>{let out=$("geoResult");if(!navigator.geolocation){out.textContent="La géolocalisation n'est pas prise en charge par ce navigateur.";return}out.textContent="Demande de position en cours…";navigator.geolocation.getCurrentPosition(pos=>{let c=pos.coords;out.innerHTML=`<span class="status-good">Position obtenue</span><br>Latitude : ${c.latitude.toFixed(5)}<br>Longitude : ${c.longitude.toFixed(5)}<br>Précision : environ ${Math.round(c.accuracy)} m<br><span class="time-muted">Position ponctuelle · relevée ${new Date(pos.timestamp).toLocaleTimeString("fr-FR")}</span>`;$("timeStatus").textContent="La position est affichée uniquement dans cette fenêtre. Elle n'est pas envoyée à NOVA AI ni à son serveur."},err=>{out.textContent=({1:"Autorisation refusée. Tu peux l'activer dans les réglages du navigateur.",2:"Position indisponible. Vérifie le GPS et la connexion.",3:"Délai dépassé. Réessaie."}[err.code]||"Impossible d'obtenir la position.")},{enableHighAccuracy:true,timeout:15000,maximumAge:0})};
-</script></body></html>
+function updateClock(){
+let now=new Date();
+$("nowDate").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(now);
+$("nowClock").textContent=new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(now);
+let zone=Intl.DateTimeFormat().resolvedOptions().timeZone||"Fuseau inconnu";
+$("zoneInfo").textContent="Fuseau horaire : "+zone+" · "+(-now.getTimezoneOffset()/60)+" h UTC";
+$("deviceInfo").textContent="Date lue sur l'appareil · "+navigator.language;
+}
+function localISODate(d){
+let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+return `${y}-${m}-${day}`;
+}
+function examineDate(value){
+if(!value){$("dateResult").textContent="Choisis une date.";return;}
+let [y,m,d]=value.split("-").map(Number),chosen=new Date(y,m-1,d),now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+let diff=Math.round((chosen-today)/86400000),label,cls,detail;
+if(diff===0){label="AUJOURD'HUI — PRÉSENT";cls="status-good";detail="Cette date correspond à la date locale actuelle.";}
+else if(diff<0){label="PASSÉ";cls="status-past";detail=`Cette date est passée depuis ${Math.abs(diff)} jour(s).`;}
+else{label="FUTUR";cls="status-future";detail=`Cette date arrivera dans ${diff} jour(s).`;}
+$("dateResult").innerHTML=`<strong class="${cls}">${label}</strong><br>${new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(chosen)}<br>${detail}`;
+}
+function openTimePanel(){
+$("timePanel").classList.add("open");updateClock();
+if(clockTimer)clearInterval(clockTimer);
+clockTimer=setInterval(updateClock,1000);
+let today=new Date();$("dateExplorer").value=localISODate(today);examineDate($("dateExplorer").value);
+}
+function closeTimePanel(){
+$("timePanel").classList.remove("open");if(clockTimer)clearInterval(clockTimer);clockTimer=null;
+}
+$("openTime").onclick=openTimePanel;
+$("closeTime").onclick=closeTimePanel;
+$("dateExplorer").onchange=e=>examineDate(e.target.value);
+$("chooseYesterday").onclick=()=>{
+let d=new Date();d.setDate(d.getDate()-1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value);
+};
+$("chooseTomorrow").onclick=()=>{
+let d=new Date();d.setDate(d.getDate()+1);$("dateExplorer").value=localISODate(d);examineDate($("dateExplorer").value);
+};
+$("getLocation").onclick=()=>{
+let out=$("geoResult");
+if(!navigator.geolocation){out.textContent="La géolocalisation n'est pas prise en charge par ce navigateur.";return;}
+out.textContent="Demande de position en cours…";
+navigator.geolocation.getCurrentPosition(pos=>{
+let c=pos.coords;
+out.innerHTML=`<span class="status-good">Position obtenue</span><br>Latitude : ${c.latitude.toFixed(5)}<br>Longitude : ${c.longitude.toFixed(5)}<br>Précision : environ ${Math.round(c.accuracy)} m<br><span class="time-muted">Position ponctuelle · relevée ${new Date(pos.timestamp).toLocaleTimeString("fr-FR")}</span>`;
+$("timeStatus").textContent="La position est affichée uniquement dans cette fenêtre. Elle n'est pas envoyée à NOVA AI ni à son serveur.";
+},err=>{
+out.textContent=({1:"Autorisation refusée. Tu peux l'activer dans les réglages du navigateur.",2:"Position indisponible. Vérifie le GPS et la connexion.",3:"Délai dépassé. Réessaie."}[err.code]||"Impossible d'obtenir la position.");
+},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+};
+</script>
+</body>
+</html>
