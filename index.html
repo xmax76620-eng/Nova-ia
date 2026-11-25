@@ -660,69 +660,120 @@ async function loadModels() {
 }
 
 async function sendMessage(text) {
-  if(!text.trim() || busy) return;
+  if ((!text.trim() && !pendingImages.length) || busy) return;
 
   const selectedModel = $("model").value;
-  if(!selectedModel) {
-    $("status").textContent = "Aucun modèle disponible. Réessaie dans un instant.";
+
+  if (!selectedModel) {
+    $("status").textContent = "Aucun modèle disponible.";
     return;
   }
 
-  if(!threadId) threadId = String(Date.now());
+  if (!threadId) threadId = String(Date.now());
 
   const userText = text.trim();
-  messages.push({role:"user",content:userText});
+  const images = pendingImages.slice();
+
+  const content = [];
+
+  if (userText) {
+    content.push({type:"text",text:userText});
+  }
+
+  images.forEach(image => {
+    content.push({
+      type:"image_url",
+      image_url:{url:image}
+    });
+  });
+
+  const messageContent = images.length
+    ? content
+    : userText;
+
+  messages.push({
+    role:"user",
+    content:userText || "[Photo envoyée — non conservée dans l'historique]"
+  });
 
   $("welcome")?.remove();
-  addMessage("user",userText);
+
+  const userBubble = addMessage(
+    "user",
+    userText || "Regarde cette image."
+  );
+
+  images.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.className = "attached-image";
+    userBubble.append(img);
+  });
+
+  pendingImages = [];
+  renderImagePreview();
 
   $("input").value = "";
   $("input").style.height = "";
 
   busy = true;
   $("send").disabled = true;
-  $("status").textContent = "NOVA réfléchit…";
+  $("attach").disabled = true;
+  $("status").textContent = "NOVA analyse ton message et tes images…";
 
   const answer = addMessage("assistant","NOVA réfléchit…");
 
   try {
+    const requestMessages = messages.slice(0,-1);
+
+    requestMessages.push({
+      role:"user",
+      content:messageContent
+    });
+
     const response = await fetch("/api/chat",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         model:selectedModel,
-        messages
+        messages:requestMessages
       })
     });
 
     const data = await response.json();
 
-    if(!response.ok) {
-      throw Error(data.error?.message || data.error || data.message || "Erreur API");
+    if (!response.ok) {
+      throw Error(data.error?.message || data.error || "Erreur API");
     }
 
-    let content = data.choices?.[0]?.message?.content;
+    let result = data.choices?.[0]?.message?.content;
 
-    if(Array.isArray(content)) {
-      content = content.map(part => part.text || "").join("");
+    if (Array.isArray(result)) {
+      result = result.map(part => part.text || "").join("");
     }
 
-    if(typeof content !== "string" || !content.trim()) {
-      throw Error("Réponse vide du modèle");
+    if (typeof result !== "string" || !result.trim()) {
+      throw Error("Réponse vide du modèle.");
     }
 
-    answer.innerHTML = renderMarkdown(content);
+    answer.innerHTML = renderMarkdown(result);
+
+    messages.push({
+      role:"assistant",
+      content:result
+    });
+
+    saveThread();
 
     const actions = document.createElement("div");
     actions.className = "msg-actions";
+
     const copy = document.createElement("button");
     copy.textContent = "Copier la réponse";
-    copy.onclick = () => copyText(content,copy);
+    copy.onclick = () => copyText(result,copy);
+
     actions.append(copy);
     answer.parentElement.append(actions);
-
-    messages.push({role:"assistant",content});
-    saveThread();
 
     $("status").textContent = data.nova_fallback
       ? "Modèle de secours utilisé : " + (data.nova_model_used || "autre modèle")
@@ -735,7 +786,10 @@ async function sendMessage(text) {
   } finally {
     busy = false;
     $("send").disabled = false;
+    $("attach").disabled = false;
     $("messages").scrollTop = $("messages").scrollHeight;
+  }
+}
   }
 }
 
