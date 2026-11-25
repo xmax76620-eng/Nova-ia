@@ -1,3 +1,4 @@
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -10,7 +11,7 @@ module.exports = async function handler(req, res) {
 
   if (!key) {
     return res.status(500).json({
-      error: "Clé OPENROUTER_API_KEY absente dans Vercel."
+      error: "Clé OpenRouter absente dans Vercel."
     });
   }
 
@@ -22,20 +23,39 @@ module.exports = async function handler(req, res) {
 
   if (!isFree(model)) {
     return res.status(400).json({
-      error: "Sélectionne un modèle gratuit."
+      error: "Seuls les modèles gratuits sont autorisés."
     });
   }
 
-  if (!Array.isArray(messages) || !messages.length || messages.length > 50) {
+  if (
+    !Array.isArray(messages) ||
+    messages.length === 0 ||
+    messages.length > 50
+  ) {
     return res.status(400).json({
       error: "Conversation invalide."
     });
   }
 
-  const safeMessages = messages.map(m => ({
-    role: m?.role === "assistant" ? "assistant" : "user",
-    content: String(m?.content || "").slice(0, 16000)
-  }));
+  const safeMessages = [];
+
+  for (const message of messages) {
+    if (
+      !message ||
+      !["user", "assistant"].includes(message.role) ||
+      typeof message.content !== "string" ||
+      !message.content.trim()
+    ) {
+      return res.status(400).json({
+        error: "Un message de la conversation est invalide."
+      });
+    }
+
+    safeMessages.push({
+      role: message.role,
+      content: message.content.slice(0, 16000)
+    });
+  }
 
   async function ask(modelId) {
     const response = await fetch(
@@ -50,89 +70,121 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({
           model: modelId,
           messages: safeMessages,
-          max_tokens: 1800
+          max_tokens: 2000,
+          temperature: 0.7
         })
       }
     );
 
     let data = {};
+
     try {
       data = await response.json();
     } catch (_) {}
 
     if (!response.ok) {
       const error = new Error(
-        data.error?.message || `OpenRouter HTTP ${response.status}`
+        data.error?.message ||
+        `Erreur OpenRouter : ${response.status}`
       );
+
       error.status = response.status;
       throw error;
     }
 
-    if (!data.choices?.[0]?.message?.content) {
-      throw new Error("Réponse vide du modèle.");
+    const content = data.choices?.[0]?.message?.content;
+
+    if (
+      !content ||
+      (typeof content !== "string" && !Array.isArray(content))
+    ) {
+      throw new Error("Le modèle a renvoyé une réponse vide.");
     }
 
     return data;
   }
 
+  async function getBackupModels() {
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/models",
+      {
+        headers: {
+          Authorization: `Bearer ${key}`
+        }
+      }
+    );
+
+    if (!response.ok) return [];
+
+    const catalog = await response.json();
+
+    return (catalog.data || [])
+      .filter(item =>
+        item?.id &&
+        isFree(item.id) &&
+        item.id !== model
+      )
+      .map(item => item.id)
+      .slice(0, 3);
+  }
+
   try {
+    const attemptedModels = [model];
+
     try {
       const result = await ask(model);
+
       result.nova_model_used = model;
+      result.nova_fallback = false;
+
       return res.status(200).json(result);
 
-    } catch (first) {
+    } catch (firstError) {
       const retryable =
-        !first.status ||
-        [400, 404, 429].includes(first.status) ||
-        first.status >= 500;
+        !firstError.status ||
+        [400, 404, 408, 429].includes(firstError.status) ||
+        firstError.status >= 500;
 
       if (!retryable) {
-        return res.status(first.status).json({
-          error: first.message
+        return res.status(firstError.status || 502).json({
+          error: firstError.message
         });
       }
 
       let backups = [];
 
       try {
-        const response = await fetch(
-          "https://openrouter.ai/api/v1/models",
-          {
-            headers: {
-              Authorization: `Bearer ${key}`
-            }
-          }
-        );
-
-        const catalog = await response.json();
-
-        if (response.ok && Array.isArray(catalog.data)) {
-          backups = catalog.data
-            .map(x => x?.id)
-            .filter(id => isFree(id) && id !== model)
-            .slice(0, 3);
-        }
+        backups = await getBackupModels();
       } catch (_) {}
 
       for (const backup of backups) {
+        attemptedModels.push(backup);
+
         try {
           const result = await ask(backup);
+
           result.nova_model_used = backup;
           result.nova_fallback = true;
+          result.nova_original_model = model;
+
           return res.status(200).json(result);
-        } catch (_) {}
+
+        } catch (_) {
+          // On essaie le prochain modèle.
+        }
       }
 
       return res.status(502).json({
-        error: `Le modèle sélectionné et les modèles de secours ont échoué. ${first.message}`,
-        attempted_model: model
+        error:
+          "Aucun modèle gratuit n'a répondu. Réessaie dans quelques instants.",
+        attempted_models: attemptedModels,
+        original_error: firstError.message
       });
     }
 
   } catch (error) {
-    return res.status(502).json({
-      error: error.message || "Erreur serveur NOVA AI."
+    return res.status(500).json({
+      error: error.message || "Erreur interne de NOVA AI."
     });
   }
 };
