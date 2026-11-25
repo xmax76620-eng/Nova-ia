@@ -1,43 +1,324 @@
 
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d18"><title>NOVA AI</title>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>NOVA AI</title>
 <style>
-:root{color-scheme:dark;--bg:#080d18;--panel:#101827;--line:#293650;--txt:#eef3ff;--muted:#91a0b8;--a:#7659ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#26365e,transparent 48%),var(--bg);color:var(--txt);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:1100px;margin:auto;display:grid;grid-template-columns:250px 1fr;height:100dvh}aside{padding:18px;background:#0b1220;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px}.brand{font-size:22px;font-weight:800;letter-spacing:2px}.logo{display:inline-grid;place-items:center;background:linear-gradient(135deg,#7659ff,#20c8c8);width:34px;height:34px;border-radius:11px;margin-right:8px}.muted,small{color:var(--muted)}button,select{font:inherit;color:inherit;cursor:pointer}.btn{background:#151f31;border:1px solid var(--line);border-radius:11px;padding:11px;text-align:left}.primary{background:linear-gradient(120deg,#7659ff,#3478ec);border:0;border-radius:11px;padding:12px;font-weight:700}#history{display:grid;gap:7px}.bottom{margin-top:auto}main{min-width:0;display:flex;flex-direction:column}header{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.select{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px;max-width:210px}#messages{flex:1;overflow:auto;padding:25px max(15px,calc((100% - 760px)/2))}.welcome{text-align:center;max-width:620px;margin:8vh auto}.orb{margin:auto auto 18px;width:70px;height:70px;border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);display:grid;place-items:center;font-size:32px}h1{font-size:32px}.welcome p{color:var(--muted)}.prompts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.prompt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;text-align:left}.msg{display:flex;gap:12px;max-width:760px;margin:0 auto 20px}.avatar{width:34px;height:34px;flex:none;border-radius:11px;background:#273650;display:grid;place-items:center}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 0}.user .bubble{background:#17243a;border:1px solid #2c3c59;border-radius:13px;padding:12px}.compose{border-top:1px solid var(--line);padding:14px;background:#0b1220}.compose form{max-width:790px;margin:auto;display:flex;gap:10px;background:var(--panel);border:1px solid #34425d;border-radius:15px;padding:9px}textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:var(--txt);padding:9px;min-height:42px;max-height:140px}.send{width:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#7659ff,#3478ec)}.hint{text-align:center;color:#71819c;font-size:11px;margin-top:7px}dialog{background:#101827;color:var(--txt);border:1px solid var(--line);border-radius:16px;width:min(500px,calc(100% - 24px))}dialog input{width:100%;padding:12px;background:#080d18;color:white;border:1px solid var(--line);border-radius:9px}dialog label{display:block;margin:15px 0 6px;color:var(--muted)}@media(max-width:700px){.app{display:block}aside{display:none}main{height:100dvh}header{padding:12px}.select{max-width:140px}#messages{padding:18px 13px}.prompts{grid-template-columns:1fr}h1{font-size:28px}}
+:root {
+  color-scheme: dark;
+  --bg:#080d18;
+  --panel:#101827;
+  --line:#293650;
+  --txt:#eef3ff;
+  --muted:#91a0b8;
+  --a:#7659ff;
+}
+* { box-sizing:border-box }
+body {
+  margin:0;
+  background:radial-gradient(ellipse at 50% -20%,#26365e,transparent 48%),var(--bg);
+  color:var(--txt);
+  font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.app {
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:250px 1fr;
+  height:100dvh;
+}
+aside {
+  padding:18px;
+  background:#0b1220;
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.brand { font-size:22px;font-weight:800;letter-spacing:2px }
+.logo {
+  display:inline-grid;
+  place-items:center;
+  background:linear-gradient(135deg,#7659ff,#20c8c8);
+  width:34px;height:34px;border-radius:11px;margin-right:8px;
+}
+.muted,small { color:var(--muted) }
+button,select { font:inherit;color:inherit;cursor:pointer }
+.btn {
+  background:#151f31;border:1px solid var(--line);
+  border-radius:11px;padding:11px;text-align:left;
+}
+.primary {
+  background:linear-gradient(120deg,#7659ff,#3478ec);
+  border:0;border-radius:11px;padding:12px;font-weight:700;
+}
+#history { display:grid;gap:7px }
+.bottom { margin-top:auto }
+main { min-width:0;display:flex;flex-direction:column }
+header {
+  padding:15px 20px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.select {
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:9px;max-width:210px;
+}
+#messages {
+  flex:1;overflow:auto;
+  padding:25px max(15px,calc((100% - 760px)/2));
+}
+.welcome { text-align:center;max-width:620px;margin:8vh auto }
+.orb {
+  margin:auto auto 18px;width:70px;height:70px;
+  border-radius:24px;background:linear-gradient(135deg,#7659ff,#20c8c8);
+  display:grid;place-items:center;font-size:32px;
+}
+h1 { font-size:32px }
+.welcome p { color:var(--muted) }
+.prompts { display:grid;grid-template-columns:1fr 1fr;gap:10px }
+.prompt {
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:13px;text-align:left;
+}
+.msg {
+  display:flex;gap:12px;max-width:760px;margin:0 auto 20px;
+}
+.avatar {
+  width:34px;height:34px;flex:none;border-radius:11px;
+  background:#273650;display:grid;place-items:center;
+}
+.bubble { white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 0 }
+.user .bubble {
+  background:#17243a;border:1px solid #2c3c59;
+  border-radius:13px;padding:12px;
+}
+.compose {
+  border-top:1px solid var(--line);padding:14px;background:#0b1220;
+}
+.compose form {
+  max-width:790px;margin:auto;display:flex;gap:10px;
+  background:var(--panel);border:1px solid #34425d;
+  border-radius:15px;padding:9px;
+}
+textarea {
+  flex:1;resize:none;background:transparent;border:0;outline:0;
+  color:var(--txt);padding:9px;min-height:42px;max-height:140px;
+}
+.send {
+  width:44px;border:0;border-radius:12px;
+  background:linear-gradient(135deg,#7659ff,#3478ec);
+}
+.hint { text-align:center;color:#71819c;font-size:11px;margin-top:7px }
+dialog {
+  background:#101827;color:var(--txt);border:1px solid var(--line);
+  border-radius:16px;width:min(500px,calc(100% - 24px));
+}
+dialog input {
+  width:100%;padding:12px;background:#080d18;color:white;
+  border:1px solid var(--line);border-radius:9px;
+}
+dialog label { display:block;margin:15px 0 6px;color:var(--muted) }
+@media(max-width:700px) {
+  .app { display:block }
+  aside { display:none }
+  main { height:100dvh }
+  header { padding:12px }
+  .select { max-width:140px }
+  #messages { padding:18px 13px }
+  .prompts { grid-template-columns:1fr }
+  h1 { font-size:28px }
+}
 
 /* NOVA 3D STUDIO */
-.studio-launch{position:fixed;right:16px;bottom:94px;z-index:20;border:1px solid #5667a0;background:linear-gradient(135deg,#7659ff,#147fba);color:white;border-radius:16px;padding:13px 17px;font-weight:800;box-shadow:0 10px 35px #0008}
-#studio{position:fixed;inset:0;z-index:30;background:#070b14;color:#eef3ff;display:none;overflow:auto;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#studio.open{display:block}.st-head{position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(16px);border-bottom:1px solid #293650;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.st-head b{font-size:18px;letter-spacing:1px}.st-wrap{max-width:1250px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:16px}.st-panel{background:#101827;border:1px solid #293650;border-radius:18px;padding:16px;min-width:0}.st-view{position:relative;background:#03060c;border-radius:14px;overflow:hidden;aspect-ratio:16/9;min-height:220px;touch-action:pan-y}.st-view canvas{display:block;width:100%;height:100%;outline:0}.st-load{position:absolute;inset:0;display:grid;place-items:center;color:#cbd7ef;background:#080d18;text-align:center;padding:20px}.st-controls{display:grid;gap:12px}.st-controls label{display:grid;gap:6px;color:#aebbd2;font-size:13px}.st-controls input,.st-controls select,.st-controls textarea{width:100%;background:#080f1d;color:#f2f5ff;border:1px solid #34425d;border-radius:10px;padding:11px;font:inherit}.st-controls textarea{min-height:90px;resize:vertical}.st-row{display:flex;gap:8px;flex-wrap:wrap}.st-btn{background:#19263d;color:#fff;border:1px solid #354765;border-radius:11px;padding:11px 13px;font:inherit}.st-btn.main{background:linear-gradient(120deg,#7659ff,#247bc2);border:0;font-weight:700}.st-btn:disabled{opacity:.45}.st-note{font-size:12px;color:#91a0b8;line-height:1.5}.st-status{font-size:13px;color:#b8c9e8;min-height:20px}.st-preset{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.st-preset button{text-align:left}.st-preset button.active{outline:2px solid #8c7cff;background:#27254a}.st-meter{height:4px;background:#202c40;border-radius:5px;overflow:hidden}.st-meter span{display:block;height:100%;width:0;background:#8c7cff;transition:width .2s}.st-close{font-size:20px;padding:7px 12px}.st-below{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#aab7ce;font-size:12px;margin-top:10px}
-@media(max-width:800px){.st-wrap{grid-template-columns:1fr;padding:10px}.st-view{aspect-ratio:9/16;max-height:62vh}.st-panel{padding:12px}.studio-launch{bottom:85px;right:12px}}
-
-</style></head><body>
-<div class="app"><aside><div class="brand"><span class="logo">N</span>NOVA AI</div><small>TON ASSISTANT INTELLIGENT</small><button class="primary" id="new">＋ Nouvelle conversation</button><small>HISTORIQUE</small><div id="history"></div><button class="btn bottom" id="settingsSide">⚙ Connexion API</button><small id="status">Worker non configuré</small></aside>
-<main><header><div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div><div><select class="select" id="model"><option value="">Modèles</option></select> <button class="btn" id="settingsTop">⚙</button></div></header>
-<section id="messages"><div class="welcome" id="welcome"><div class="orb">✦</div><h1>Que veux-tu créer aujourd'hui ?</h1><p>Pose une question, imagine un projet ou demande de l'aide pour coder.</p><div class="prompts"><button class="prompt">💡 Trouve-moi
-
-  
- une idée de projet innovant</button><button class="prompt">🧠 Explique-moi un sujet compliqué</button><button class="prompt">💻 Aide-moi à créer une application</button><button class="prompt">✍️ Rédige un texte professionnel</button></div></div></section>
-<div class="compose"><form id="form"><textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea><button class="send" id="send">➤</button></form><div class="hint">Vérifie les réponses importantes : une IA peut se tromper.</div></div></main></div>
-
+.studio-launch {
+  position:fixed;right:16px;bottom:94px;z-index:20;
+  border:1px solid #5667a0;
+  background:linear-gradient(135deg,#7659ff,#147fba);
+  color:white;border-radius:16px;padding:13px 17px;
+  font-weight:800;box-shadow:0 10px 35px #0008;
+}
+#studio {
+  position:fixed;inset:0;z-index:30;background:#070b14;
+  color:#eef3ff;display:none;overflow:auto;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+#studio.open { display:block }
+.st-head {
+  position:sticky;top:0;z-index:5;background:#0b1220ed;
+  backdrop-filter:blur(16px);border-bottom:1px solid #293650;
+  padding:12px 16px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;
+}
+.st-head b { font-size:18px;letter-spacing:1px }
+.st-wrap {
+  max-width:1250px;margin:auto;padding:18px;
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);
+  gap:16px;
+}
+.st-panel {
+  background:#101827;border:1px solid #293650;
+  border-radius:18px;padding:16px;min-width:0;
+}
+.st-view {
+  position:relative;background:#03060c;border-radius:14px;
+  overflow:hidden;aspect-ratio:16/9;min-height:220px;touch-action:pan-y;
+}
+.st-view canvas { display:block;width:100%;height:100%;outline:0 }
+.st-load {
+  position:absolute;inset:0;display:grid;place-items:center;
+  color:#cbd7ef;background:#080d18;text-align:center;padding:20px;
+}
+.st-controls { display:grid;gap:12px }
+.st-controls label {
+  display:grid;gap:6px;color:#aebbd2;font-size:13px;
+}
+.st-controls input,.st-controls select,.st-controls textarea {
+  width:100%;background:#080f1d;color:#f2f5ff;
+  border:1px solid #34425d;border-radius:10px;padding:11px;font:inherit;
+}
+.st-controls textarea { min-height:90px;resize:vertical }
+.st-row { display:flex;gap:8px;flex-wrap:wrap }
+.st-btn {
+  background:#19263d;color:#fff;border:1px solid #354765;
+  border-radius:11px;padding:11px 13px;font:inherit;
+}
+.st-btn.main {
+  background:linear-gradient(120deg,#7659ff,#247bc2);
+  border:0;font-weight:700;
+}
+.st-btn:disabled { opacity:.45 }
+.st-note { font-size:12px;color:#91a0b8;line-height:1.5 }
+.st-status { font-size:13px;color:#b8c9e8;min-height:20px }
+.st-preset { display:grid;grid-template-columns:repeat(2,1fr);gap:8px }
+.st-preset button { text-align:left }
+.st-preset button.active {
+  outline:2px solid #8c7cff;background:#27254a;
+}
+.st-meter { height:4px;background:#202c40;border-radius:5px;overflow:hidden }
+.st-meter span {
+  display:block;height:100%;width:0;background:#8c7cff;transition:width .2s;
+}
+.st-close { font-size:20px;padding:7px 12px }
+.st-below {
+  display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  color:#aab7ce;font-size:12px;margin-top:10px;
+}
+@media(max-width:800px) {
+  .st-wrap { grid-template-columns:1fr;padding:10px }
+  .st-view { aspect-ratio:9/16;max-height:62vh }
+  .st-panel { padding:12px }
+  .studio-launch { bottom:85px;right:12px }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+<div class="brand"><span class="logo">N</span>NOVA AI</div>
+<small>TON ASSISTANT INTELLIGENT</small>
+<button class="primary" id="new">＋ Nouvelle conversation</button>
+<small>HISTORIQUE</small>
+<div id="history"></div>
+<button class="btn bottom" id="settingsSide">⚙ Connexion API</button>
+<small id="status">Worker non configuré</small>
+</aside>
+<main>
+<header>
+<div><b>NOVA AI</b><br><small>Réfléchir · créer · apprendre</small></div>
+<div>
+<select class="select" id="model"><option value="">Modèles</option></select>
+<button class="btn" id="settingsTop">⚙</button>
+</div>
+</header>
+<section id="messages">
+<div class="welcome" id="welcome">
+<div class="orb">✦</div>
+<h1>Que veux-tu créer aujourd'hui ?</h1>
+<p>Pose une question, imagine un projet ou demande de l'aide pour coder.</p>
+<div class="prompts">
+<button class="prompt">💡 Trouve-moi une idée de projet innovant</button>
+<button class="prompt">🧠 Explique-moi un sujet compliqué</button>
+<button class="prompt">💻 Aide-moi à créer une application</button>
+<button class="prompt">✍️ Rédige un texte professionnel</button>
+</div>
+</div>
+</section>
+<div class="compose">
+<form id="form">
+<textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…"></textarea>
+<button class="send" id="send">➤</button>
+</form>
+<div class="hint">Vérifie les réponses importantes : une IA peut se tromper.</div>
+</div>
+</main>
+</div>
 <button class="studio-launch" id="openStudio">✦ NOVA 3D STUDIO</button>
+
 <section id="studio" aria-label="Studio vidéo 3D">
- <div class="st-head"><div><b>✦ NOVA 3D STUDIO</b><div class="st-note">Moteur de scènes 3D cinématiques</div></div><button class="st-btn st-close" id="closeStudio" aria-label="Fermer">✕</button></div>
+ <div class="st-head">
+  <div><b>✦ NOVA 3D STUDIO</b><div class="st-note">Moteur de scènes 3D cinématiques</div></div>
+  <button class="st-btn st-close" id="closeStudio" aria-label="Fermer">✕</button>
+ </div>
  <div class="st-wrap">
   <div class="st-panel">
    <h2 style="margin:0 0 12px">Aperçu 3D en temps réel</h2>
-   <div class="st-view" id="threeHost"><div class="st-load" id="threeLoad">Chargement du moteur 3D…<br><small>Connexion aux ressources 3D</small></div></div>
+   <div class="st-view" id="threeHost">
+    <div class="st-load" id="threeLoad">Chargement du moteur 3D…<br><small>Connexion aux ressources 3D</small></div>
+   </div>
    <div class="st-below"><span id="stSceneName">Littoral cinématique</span><span id="stRenderInfo">Rendu 3D temps réel</span></div>
-   <div class="st-row" style="margin-top:13px"><button class="st-btn" id="stPlay">Ⅱ Pause</button><button class="st-btn" id="stReset">↻ Recentrer caméra</button><button class="st-btn main" id="stExport">⬇ Exporter la vidéo</button></div>
-   <div class="st-meter" style="margin-top:12px"><span id="stProgress"></span></div><div class="st-status" id="stStatus" aria-live="polite">Initialisation…</div>
+   <div class="st-row" style="margin-top:13px">
+    <button class="st-btn" id="stPlay">Ⅱ Pause</button>
+    <button class="st-btn" id="stReset">↻ Recentrer caméra</button>
+    <button class="st-btn main" id="stExport">⬇ Exporter la vidéo</button>
+   </div>
+   <div class="st-meter" style="margin-top:12px"><span id="stProgress"></span></div>
+   <div class="st-status" id="stStatus" aria-live="polite">Initialisation…</div>
   </div>
   <div class="st-panel st-controls">
    <h2 style="margin:0">Créer une scène</h2>
-   <label>Décris précisément ta vidéo<textarea id="stPrompt">Un cheval brun au galop sur une plage au coucher du soleil, caméra cinéma qui suit le cheval de trois-quarts, crinière au vent, vagues réalistes, lumière dorée.</textarea></label>
-   <label>Univers visuel<select id="stScene"><option value="beach">Plage & littoral</option><option value="mountain">Montagnes</option><option value="forest">Forêt</option><option value="space">Espace</option><option value="desert">Désert</option><option value="nightcity">Ville de nuit</option></select></label>
-   <div class="st-preset"><button class="st-btn active" data-look="cinematic">🎬 Cinéma réaliste</button><button class="st-btn" data-look="sunset">🌅 Golden hour</button><button class="st-btn" data-look="storm">⛈ Orage dramatique</button><button class="st-btn" data-look="dream">✨ Onirique</button></div>
-   <label>Format vidéo<select id="stRatio"><option value="16:9">16:9 · Paysage</option><option value="9:16">9:16 · Vertical</option><option value="1:1">1:1 · Carré</option></select></label>
-   <label>Durée<select id="stDuration"><option value="6">6 secondes</option><option value="10" selected>10 secondes</option><option value="15">15 secondes</option><option value="20">20 secondes</option></select></label>
-   <label>Qualité de rendu<select id="stQuality"><option value="720">HD · 720p (plus fluide sur iPhone)</option><option value="1080" selected>Full HD · 1080p</option></select></label>
+   <label>Décris précisément ta vidéo
+    <textarea id="stPrompt">Un cheval brun au galop sur une plage au coucher du soleil, caméra cinéma qui suit le cheval de trois-quarts, crinière au vent, vagues réalistes, lumière dorée.</textarea>
+   </label>
+   <label>Univers visuel
+    <select id="stScene">
+     <option value="beach">Plage & littoral</option>
+     <option value="mountain">Montagnes</option>
+     <option value="forest">Forêt</option>
+     <option value="space">Espace</option>
+     <option value="desert">Désert</option>
+     <option value="nightcity">Ville de nuit</option>
+    </select>
+   </label>
+   <div class="st-preset">
+    <button class="st-btn active" data-look="cinematic">🎬 Cinéma réaliste</button>
+    <button class="st-btn" data-look="sunset">🌅 Golden hour</button>
+    <button class="st-btn" data-look="storm">⛈ Orage dramatique</button>
+    <button class="st-btn" data-look="dream">✨ Onirique</button>
+   </div>
+   <label>Format vidéo
+    <select id="stRatio">
+     <option value="16:9">16:9 · Paysage</option>
+     <option value="9:16">9:16 · Vertical</option>
+     <option value="1:1">1:1 · Carré</option>
+    </select>
+   </label>
+   <label>Durée
+    <select id="stDuration">
+     <option value="6">6 secondes</option>
+     <option value="10" selected>10 secondes</option>
+     <option value="15">15 secondes</option>
+     <option value="20">20 secondes</option>
+    </select>
+   </label>
+   <label>Qualité de rendu
+    <select id="stQuality">
+     <option value="720">HD · 720p (plus fluide sur iPhone)</option>
+     <option value="1080" selected>Full HD · 1080p</option>
+    </select>
+   </label>
    <button class="st-btn main" id="stGenerate">✦ Générer / actualiser la scène 3D</button>
    <p class="st-note">Le moteur construit une scène 3D WebGL avec éclairage, matériaux, profondeur, caméra animée et éléments procéduraux. Le modèle de cheval 3D est chargé depuis une ressource publique si le réseau l'autorise. Ce n'est pas une génération vidéo neuronale comme Sora : le rendu dépend des objets 3D disponibles et du navigateur.</p>
    <p class="st-note">Export : WebM lorsque MediaRecorder est pris en charge. Sur iPhone, Safari peut limiter l'enregistrement, la résolution ou l'enregistrement en arrière-plan. Garde la page ouverte pendant l'export.</p>
@@ -45,58 +326,511 @@
  </div>
 </section>
 
-<dialog id="dlg"><h2>Connexion de NOVA AI</h2><p class="muted">Colle l'adresse HTTPS de ton Worker Cloudflare. La clé API reste côté serveur.</p><label>URL du Worker</label><input id="worker" placeholder="https://ton-worker.workers.dev"><p style="text-align:right"><button class="btn" id="cancel">Annuler</button> <button class="primary" id="save">Enregistrer</button></p></dialog>
-<script>
-const $=s=>document.querySelector(s);let chats=JSON.parse(localStorage.nova_chats||'[]'),id=null,busy=false;const url=()=>localStorage.nova_worker_url||'';
-function status(t){$('#status').textContent=t}function cur(){return chats.find(c=>c.id===id)}function save(){localStorage.nova_chats=JSON.stringify(chats)}
-function newChat(){id=crypto.randomUUID();chats.push({id,title:'Nouvelle conversation',messages:[]});save();history();render()}
-function history(){let h=$('#history');h.innerHTML='';chats.slice().reverse().forEach(c=>{let b=document.createElement('button');b.className='btn';b.textContent=c.title;b.onclick=()=>{id=c.id;render()};h.append(b)})}
-function render(){let a=$('#messages');a.innerHTML='';let c=cur();if(!c||!c.messages.length){let w=$('#welcome').cloneNode(true);w.id='';a.append(w);w.querySelectorAll('.prompt').forEach(b=>b.onclick=()=>{$('#input').value=b.textContent.replace(/^.{2}\s/,'');$('#input').focus()});return}c.messages.forEach(m=>add(m.role,m.content,false))}
-function add(role,text,scroll=true){let r=document.createElement('div');r.className='msg '+role;let av=document.createElement('div');av.className='avatar';av.textContent=role==='user'?'P':'N';let b=document.createElement('div');b.className='bubble';b.textContent=text;r.append(av,b);$('#messages').append(r);if(scroll)$('#messages').scrollTop=$('#messages').scrollHeight;return b}
-function settings(){$('#worker').value=url();$('#dlg').showModal()}
-async function models(){if(!url()){status('Worker non configuré');return}try{let r=await fetch(url().replace(/\/$/,'')+'/models');let d=await r.json();if(!r.ok)throw Error(d.error||r.status);$('#model').innerHTML='';(d.data||[]).forEach(m=>{let o=document.createElement('option');o.value=m.id;o.textContent=m.name||m.id;$('#model').append(o)});status('Connecté · '+(d.data||[]).length+' modèles')}catch(e){status('Erreur connexion : '+e.message)}}
-async function send(t){if(!t.trim()||busy)return;if(!url()){settings();return}if(!id)newChat();let c=cur();c.messages.push({role:'user',content:t});if(c.messages.length===1)c.title=t.slice(0,35);save();history();render();$('#input').value='';busy=true;$('#send').disabled=true;let b=add('assistant','NOVA réfléchit…');try{let r=await fetch(url().replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:$('#model').value,messages:c.messages})});let d=await r.json();if(!r.ok)throw Error(d.error||'Erreur '+r.status);let answer=d.choices?.[0]?.message?.content||d.response||'Réponse vide';b.textContent=answer;c.messages.push({role:'assistant',content:answer});save()}catch(e){b.textContent='Erreur : '+e.message}finally{busy=false;$('#send').disabled=false}}
-$('#form').onsubmi
+<dialog id="dlg">
+ <h2>Connexion de NOVA AI</h2>
+ <p class="muted">Colle l'adresse HTTPS de ton Worker Cloudflare. La clé API reste côté serveur.</p>
+ <label>URL du Worker</label>
+ <input id="worker" placeholder="https://ton-worker.workers.dev">
+ <p style="text-align:right">
+  <button class="btn" id="cancel">Annuler</button>
+  <button class="primary" id="save">Enregistrer</button>
+ </p>
+</dialog>
 
-t=e=>{e.preventDefault();let t=$('#input').value;send(t)};$('#input').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#form').requestSubmit()}};$('#new').onclick=newChat;$('#settingsSide').onclick=$('#settingsTop').onclick=settings;$('#cancel').onclick=()=>$('#dlg').close();$('#save').onclick=()=>{let u=$('#worker').value.trim().replace(/\/$/,'');if(u&&!u.startsWith('https://')){alert('Il faut une URL HTTPS.');return}localStorage.nova_worker_url=u;$('#dlg').close();models()};if(!chats.length)newChat();else{id=chats[chats.length-1].id;history();render()}if(url())models();else settings();
+<script>
+const $=s=>document.querySelector(s);
+let chats=[];
+try {
+ chats=JSON.parse(localStorage.getItem('nova_chats')||'[]');
+ if(!Array.isArray(chats))chats=[];
+} catch(e) { chats=[]; }
+
+let id=null,busy=false;
+const welcomeTemplate=$('#welcome')?.cloneNode(true);
+const url=()=>localStorage.getItem('nova_worker_url')||'';
+
+function status(t){$('#status').textContent=t}
+function cur(){return chats.find(c=>c.id===id)}
+function save(){
+ try {localStorage.setItem('nova_chats',JSON.stringify(chats))}
+ catch(e){status('Stockage local indisponible : '+e.message)}
+}
+function newChat(){
+ id=(crypto.randomUUID?crypto.randomUUID():'nova-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+ chats.push({id,title:'Nouvelle conversation',messages:[]});
+ save();history();render();
+}
+function history(){
+ let h=$('#history');h.innerHTML='';
+ chats.slice().reverse().forEach(c=>{
+  let b=document.createElement('button');
+  b.className='btn';b.textContent=c.title;
+  b.onclick=()=>{id=c.id;render()};
+  h.append(b);
+ });
+}
+function render(){
+ let a=$('#messages'),c=cur();a.innerHTML='';
+ if(!c||!c.messages.length){
+  if(welcomeTemplate){
+   let w=welcomeTemplate.cloneNode(true);w.removeAttribute('id');a.append(w);
+   w.querySelectorAll('.prompt').forEach(b=>b.onclick=()=>{
+    $('#input').value=b.textContent.replace(/^.{2}\s/,'');
+    $('#input').focus();
+   });
+  }
+  return;
+ }
+ c.messages.forEach(m=>add(m.role,m.content,false));
+}
+function add(role,text,scroll=true){
+ let r=document.createElement('div');r.className='msg '+role;
+ let av=document.createElement('div');av.className='avatar';
+ av.textContent=role==='user'?'P':'N';
+ let b=document.createElement('div');b.className='bubble';b.textContent=text;
+ r.append(av,b);$('#messages').append(r);
+ if(scroll)$('#messages').scrollTop=$('#messages').scrollHeight;
+ return b;
+}
+function settings(){
+ $('#worker').value=url();
+ $('#dlg').showModal();
+}
+async function models(){
+ if(!url()){status('Worker non configuré');return}
+ try {
+  let r=await fetch(url().replace(/\/$/,'')+'/models');
+  let d=await r.json();
+  if(!r.ok)throw Error(d.error||r.status);
+  $('#model').innerHTML='';
+  (d.data||[]).forEach(m=>{
+   let o=document.createElement('option');
+   o.value=m.id;o.textContent=m.name||m.id;$('#model').append(o);
+  });
+  status('Connecté · '+(d.data||[]).length+' modèles');
+ } catch(e){status('Erreur connexion : '+e.message)}
+}
+async function send(t){
+ if(!t.trim()||busy)return;
+ if(!url()){settings();return}
+ if(!id)newChat();
+ let c=cur();
+ c.messages.push({role:'user',content:t});
+ if(c.messages.length===1)c.title=t.slice(0,35);
+ save();history();render();$('#input').value='';
+ busy=true;$('#send').disabled=true;
+ let b=add('assistant','NOVA réfléchit…');
+ try {
+  let r=await fetch(url().replace(/\/$/,'')+'/chat',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({model:$('#model').value,messages:c.messages})
+  });
+  let d=await r.json();
+  if(!r.ok)throw Error(d.error||'Erreur '+r.status);
+  let answer=d.choices?.[0]?.message?.content||d.response||'Réponse vide';
+  b.textContent=answer;
+  c.messages.push({role:'assistant',content:answer});save();
+ } catch(e){b.textContent='Erreur : '+e.message}
+ finally {busy=false;$('#send').disabled=false}
+}
+$('#form').onsubmit=e=>{
+ e.preventDefault();
+ let t=$('#input').value;send(t);
+};
+$('#input').onkeydown=e=>{
+ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#form').requestSubmit()}
+};
+$('#new').onclick=newChat;
+$('#settingsSide').onclick=$('#settingsTop').onclick=settings;
+$('#cancel').onclick=()=>$('#dlg').close();
+$('#save').onclick=()=>{
+ let u=$('#worker').value.trim().replace(/\/$/,'');
+ if(u&&!u.startsWith('https://')){alert('Il faut une URL HTTPS.');return}
+ localStorage.setItem('nova_worker_url',u);
+ $('#dlg').close();models();
+};
+if(!chats.length)newChat();
+else {id=chats[chats.length-1].id;history();render()}
+if(url())models();else settings();
 </script>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}
+</script>
+
 <script type="module">
 const $3=id=>document.getElementById(id);
-const host=$3('threeHost'), overlay=$3('studio');let THREE,renderer,scene,camera,clock,raf,mixer,horse,playing=true,look='cinematic',sceneType='beach',recording=false,resizeObs,objects=[];
+const host=$3('threeHost'),overlay=$3('studio');
+let THREE,renderer,scene,camera,clock,raf,mixer,horse;
+let playing=true,look='cinematic',sceneType='beach',recording=false,resizeObs,objects=[];
 const setStatus=t=>$3('stStatus').textContent=t;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-$3('openStudio').onclick=()=>{overlay.classList.add('open');document.body.style.overflow='hidden';init3D()};
-$3('closeStudio').onclick=()=>{overlay.classList.remove('open');document.body.style.overflow='';};
-$3('stPlay').onclick=()=>{playing=!playing;$3('stPlay').textContent=playing?'Ⅱ Pause':'▶ Reprendre'};
-$3('stReset').onclick=()=>{if(camera){camera.position.set(10,6,13);camera.lookAt(0,1,0)}};
-document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{look=b.dataset.look;document.querySelectorAll('[data-look]').forEach(x=>x.classList.toggle('active',x===b));buildScene(sceneType)});
-$3('stScene').onchange=e=>{sceneType=e.target.value;buildScene(sceneType)};
-$3('stGenerate').onclick=()=>{const p=$3('stPrompt').value.trim();if(!p){setStatus('Ajoute une description pour guider la scène.');return}sceneType=$3('stScene').value;buildScene(sceneType);setStatus('Scène actualisée : '+p.slice(0,100))};
-async function init3D(){if(renderer)return;try{setStatus('Chargement de Three.js…');const mod=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');THREE=mod;scene=new THREE.Scene();clock=new THREE.Clock();camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(10,6,13);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.innerHTML='';host.appendChild(renderer.domElement);const hemi=new THREE.HemisphereLight(0xb9d9ff,0x69503a,2.0);scene.add(hemi);const sun=new THREE.DirectionalLight(0xffd5a1,3.2);sun.position.set(-8,14,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-18;sun.shadow.camera.right=18;sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;scene.add(sun);window.__novaSun=sun;buildScene(sceneType);resizeObs=new ResizeObserver(resize);resizeObs.observe(host);resize();animate();setStatus('Moteur 3D prêt. Tu peux changer de décor ou lancer un export.');}catch(e){$3('threeLoad').style.display='grid';$3('threeLoad').textContent='Impossible de charger le moteur 3D. Vérifie la connexion internet puis recharge NOVA. Détail : '+e.message;setStatus('Erreur moteur 3D : '+e.message)}}
-function clearScene(){for(const o of objects){scene.remove(o);o.traverse?.(x=>{x.geometry?.dispose?.();if(x.material){(Array.isArray(x.material)?x.material:[x.material]).forEach(m=>m.dispose?.())}})}objects=[];if(horse){scene.remove(horse);horse=null}mixer=null}
-function add(o){scene.add(o);objects.push(o);return o}
-function mat(color,rough=.8,metal=0){return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal})}
-function plane(w,h,m,x=0,y=0,z=0){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);o.rotation.x=-Math.PI/2;o.position.set(x,y,z);o.receiveShadow=true;return add(o)}
-function buildScene(type){if(!renderer)return;clearScene();sceneType=type;let sky=0xf4a77d,ground=0xc9a477,water=0x168ba4;if(look==='storm'){sky=0x26394e;water=0x315c70}else if(look==='dream'){sky=0x9c8ad6;water=0x558cbd}else if(look==='sunset'){sky=0xf29a68}
-scene.background=new THREE.Color(type==='space'?0x050817:sky);scene.fog=new THREE.Fog(type==='space'?0x050817:sky,22,85);
-const groundMat=mat(type==='beach'?ground:type==='desert'?0xb98a55:type==='forest'?0x345d39:type==='mountain'?0x78818c:0x161b28,.95);plane(160,160,groundMat,0,-.1,0);
-if(type==='beach'){const sea=plane(160,65,new THREE.MeshStandardMaterial({color:water,roughness:.23,metalness:.18}),0,.02,-34);sea.material.side=THREE.DoubleSide;for(let i=0;i<8;i++){const wave=new THREE.Mesh(new THREE.BoxGeometry(145,.035,.055),new THREE.MeshStandardMaterial({color:0xbceaf0,transparent:true,opacity:.34}));wave.position.set(0,.12,-8-i*3);add(wave)}const sun=new THREE.Mesh(new THREE.SphereGeometry(2.1,32,24),new THREE.MeshBasicMaterial({color:0xffe4a0}));sun.position.set(-12,10,-30);add(sun);for(let i=0;i<12;i++){const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(.3+Math.random()*.5,1),mat(0x92785c));rock.position.set((Math.random()-.5)*60,.15,-5-Math.random()*45);rock.scale.y=.4;rock.castShadow=true;add(rock)}}
-if(type==='mountain'){for(let i=0;i<14;i++){const h=5+Math.random()*14;const m=new THREE.Mesh(new THREE.ConeGeometry(3+Math.random()*5,h,6),mat(i%2?0x596d7a:0x71828a));m.position.set((Math.random()-.5)*70,h/2-1,-18-Math.random()*45);m.castShadow=true;add(m)}}
-if(type==='forest'){for(let i=0;i<65;i++){const x=(Math.random()-.5)*65,z=(Math.random()-.5)*65-8;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.28,2.5,8),mat(0x59402d));trunk.position.set(x,1.2,z);trunk.castShadow=true;add(trunk);for(let j=0;j<3;j++){const crown=new THREE.Mesh(new THREE.ConeGeometry(1.5-j*.25,2.8,8),mat(i%3?0x24583a:0x376b42));crown.position.set(x,2.3+j*1.15,z);crown.castShadow=true;add(crown)}}}
-if(type==='desert'){for(let i=0;i<12;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),mat(i%2?0xc08c53:0xd3a66a));d.scale.set(8+Math.random()*9,1.2,5);d.position.set((Math.random()-.5)*55,.1,-10-Math.random()*38);add(d)}}
-if(type==='nightcity'){scene.background.set(0x080d20);scene.fog.color.set(0x10172b);for(let i=0;i<32;i++){const h=3+Math.random()*17;const b=new THREE.Mesh(new THREE.BoxGeometry(2+Math.random()*3,h,2+Math.random()*3),mat(0x202b42,.7,.25));b.position.set((Math.random()-.5)*55,h/2,-10-Math.random()*35);add(b);for(let j=0;j<8;j++){const win=new THREE.Mesh(new THREE.BoxGeometry(.16,.22,.03),new THREE.MeshBasicMaterial({color:Math.random()>.4?0xffcf77:0x6d9dff}));win.position.set(b.position.x-0.6+Math.random()*1.2,.4+Math.random()*(h-1),b.position.z+1.02);add(win)}}}
-if(type==='space'){scene.fog=new THREE.Fog(0x050817,60,180);const stars=new THREE.BufferGeometry(),arr=[];for(let i=0;i<1800;i++)arr.push((Math.random()-.5)*180,(Math.random()-.5)*100,(Math.random()-. 
 
-5)*160);stars.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));add(new THREE.Points(stars,new THREE.PointsMaterial({color:0xffffff,size:.13})));const planet=new THREE.Mesh(new THREE.SphereGeometry(7,48,40),new THREE.MeshStandardMaterial({color:0x345eae,roughness:.85,metalness:.05}));planet.position.set(-13,3,-28);add(planet);const glow=new THREE.PointLight(0x719bff,45,90);glow.position.set(-10,10,-15);add(glow)}
-if(type!=='space'&&type!=='nightcity'){for(let i=0;i<5;i++){const cloud=new THREE.Group();for(let j=0;j<5;j++){const c=new THREE.Mesh(new THREE.SphereGeometry(1.1+Math.random()*.45,16,12),new THREE.MeshStandardMaterial({color:0xfff1e6,roughness:1,transparent:true,opacity:.8}));c.position.set(j*1.25,Math.random()*.45,0);cloud.add(c)}cloud.position.set(-20+i*10,12+Math.random()*7,-25-Math.random()*20);add(cloud)}}
-// Heroine/horse proxy remains fully volumetric if external animated horse is unavailable.
-const rider=new THREE.Group();const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.72,5,10),mat(0x253d59));torso.position.y=1.7;rider.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.23,20,16),mat(0xc98e69));head.position.set(0,2.25,0);rider.add(head);const legs=mat(0x1b2434);for(let x of [-.16,.16]){const l=new THREE.Mesh(new THREE.CylinderGeometry(.07,.09,.8,10),legs);l.position.set(x,1.05,0);rider.add(l)}rider.position.set(0,.15,0);add(rider);$3('stSceneName').textContent=({beach:'Littoral cinématique',mountain:'Haute montagne',forest:'Forêt immersive',space:'Espace profond',desert:'Désert',nightcity:'Métropole nocturne'})[type];camera.position.set(type==='space'?12:10,6,13);camera.lookAt(0,1,0);loadHorse();}
-async function loadHorse(){try{const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');const loader=new GLTFLoader();loader.load('https://threejs.org/examples/models/gltf/Horse.glb',g=>{if(!scene)return;horse=g.scene;horse.scale.setScalar(1.35);horse.position.set(-1,0,1);horse.rotation.y=Math.PI/2;horse.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});add(horse);if(g.animations?.length){mixer=new THREE.AnimationMixer(horse);mixer.clipAction(g.animations[0]).play()}setStatus('Modèle 3D du cheval chargé avec animation.');},undefined,()=>setStatus('Décor 3D prêt. Modèle externe indisponible : affichage de la scène sans cheval détaillé.'));}catch(e){setStatus('Scène 3D active ; modèle détaillé non disponible sur ce réseau.')}}
-function resize(){if(!renderer)return;const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;const ratio=$3('stRatio').value;let ar=ratio==='9:16'?9/16:ratio==='1:1'?1:16/9;let cw=w,ch=w/ar;if(ch>h&&h>0){ch=h;cw=h*ar}renderer.setSize(cw,ch,false);renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';camera.aspect=cw/ch;camera.updateProjectionMatrix()}
-function animate(){raf=requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;if(playing){if(mixer)mixer.update(dt);if(horse){horse.position.z=1+Math.sin(t*1.2)*.5;horse.position.x=-1+Math.sin(t*.45)*1.3}camera.position.x=10+Math.sin(t*.12)*1.4;camera.position.z=13+Math.cos(t*.12)*.8;camera.lookAt(0,1,0);objects.forEach(o=>{if(o.geometry?.type==='BoxGeometry'&&o.position.y===.12)o.position.x=Math.sin(t*.6+o.position.z)*.5})}renderer.render(scene,camera)}
+$3('openStudio').onclick=()=>{
+ overlay.classList.add('open');
+ document.body.style.overflow='hidden';
+ init3D();
+};
+$3('closeStudio').onclick=()=>{
+ overlay.classList.remove('open');
+ document.body.style.overflow='';
+};
+$3('stPlay').onclick=()=>{
+ playing=!playing;
+ $3('stPlay').textContent=playing?'Ⅱ Pause':'▶ Reprendre';
+};
+$3('stReset').onclick=()=>{
+ if(camera){camera.position.set(10,6,13);camera.lookAt(0,1,0)}
+};
+document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{
+ look=b.dataset.look;
+ document.querySelectorAll('[data-look]').forEach(x=>x.classList.toggle('active',x===b));
+ buildScene(sceneType);
+});
+$3('stScene').onchange=e=>{
+ sceneType=e.target.value;
+ buildScene(sceneType);
+};
+$3('stGenerate').onclick=()=>{
+ const p=$3('stPrompt').value.trim();
+ if(!p){setStatus('Ajoute une description pour guider la scène.');return}
+ sceneType=$3('stScene').value;
+ buildScene(sceneType);
+ setStatus('Scène actualisée : '+p.slice(0,100));
+};
+
+async function init3D(){
+ if(renderer)return;
+ try {
+  setStatus('Chargement de Three.js…');
+  const mod=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');
+  THREE=mod;
+  scene=new THREE.Scene();
+  clock=new THREE.Clock();
+  camera=new THREE.PerspectiveCamera(42,1,.1,500);
+  camera.position.set(10,6,13);
+  renderer=new THREE.WebGLRenderer({
+   antialias:true,alpha:false,powerPreference:'high-performance',
+   preserveDrawingBuffer:true
+  });
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.12;
+  host.innerHTML='';
+  host.appendChild(renderer.domElement);
+
+  const hemi=new THREE.HemisphereLight(0xb9d9ff,0x69503a,2.0);
+  scene.add(hemi);
+  const sun=new THREE.DirectionalLight(0xffd5a1,3.2);
+  sun.position.set(-8,14,8);sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048);
+  sun.shadow.camera.left=-18;sun.shadow.camera.right=18;
+  sun.shadow.camera.top=18;sun.shadow.camera.bottom=-18;
+  scene.add(sun);
+  window.__novaSun=sun;
+
+  buildScene(sceneType);
+  resizeObs=new ResizeObserver(resize);
+  resizeObs.observe(host);
+  resize();animate();
+  setStatus('Moteur 3D prêt. Tu peux changer de décor ou lancer un export.');
+ } catch(e) {
+  $3('threeLoad').style.display='grid';
+  $3('threeLoad').textContent='Impossible de charger le moteur 3D. Vérifie la connexion internet puis recharge NOVA. Détail : '+e.message;
+  setStatus('Erreur moteur 3D : '+e.message);
+ }
+}
+function clearScene(){
+ for(const o of objects){
+  scene.remove(o);
+  o.traverse?.(x=>{
+   x.geometry?.dispose?.();
+   if(x.material){
+    (Array.isArray(x.material)?x.material:[x.material]).forEach(m=>m.dispose?.());
+   }
+  });
+ }
+ objects=[];
+ if(horse){scene.remove(horse);horse=null}
+ mixer=null;
+}
+function add(o){scene.add(o);objects.push(o);return o}
+function mat(color,rough=.8,metal=0){
+ return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+}
+function plane(w,h,m,x=0,y=0,z=0){
+ const o=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);
+ o.rotation.x=-Math.PI/2;o.position.set(x,y,z);o.receiveShadow=true;
+ return add(o);
+}
+function buildScene(type){
+ if(!renderer)return;
+ clearScene();sceneType=type;
+ let sky=0xf4a77d,ground=0xc9a477,water=0x168ba4;
+ if(look==='storm'){sky=0x26394e;water=0x315c70}
+ else if(look==='dream'){sky=0x9c8ad6;water=0x558cbd}
+ else if(look==='sunset'){sky=0xf29a68}
+
+ scene.background=new THREE.Color(type==='space'?0x050817:sky);
+ scene.fog=new THREE.Fog(type==='space'?0x050817:sky,22,85);
+ const groundMat=mat(
+  type==='beach'?ground:
+  type==='desert'?0xb98a55:
+  type==='forest'?0x345d39:
+  type==='mountain'?0x78818c:0x161b28,.95
+ );
+ plane(160,160,groundMat,0,-.1,0);
+
+ if(type==='beach'){
+  const sea=plane(160,65,new THREE.MeshStandardMaterial({
+   color:water,roughness:.23,metalness:.18
+  }),0,.02,-34);
+  sea.material.side=THREE.DoubleSide;
+  for(let i=0;i<8;i++){
+   const wave=new THREE.Mesh(
+    new THREE.BoxGeometry(145,.035,.055),
+    new THREE.MeshStandardMaterial({color:0xbceaf0,transparent:true,opacity:.34})
+   );
+   wave.position.set(0,.12,-8-i*3);add(wave);
+  }
+  const sun=new THREE.Mesh(
+   new THREE.SphereGeometry(2.1,32,24),
+   new THREE.MeshBasicMaterial({color:0xffe4a0})
+  );
+  sun.position.set(-12,10,-30);add(sun);
+  for(let i=0;i<12;i++){
+   const rock=new THREE.Mesh(
+    new THREE.DodecahedronGeometry(.3+Math.random()*.5,1),mat(0x92785c)
+   );
+   rock.position.set((Math.random()-.5)*60,.15,-5-Math.random()*45);
+   rock.scale.y=.4;rock.castShadow=true;add(rock);
+  }
+ }
+ if(type==='mountain'){
+  for(let i=0;i<14;i++){
+   const h=5+Math.random()*14;
+   const m=new THREE.Mesh(
+    new THREE.ConeGeometry(3+Math.random()*5,h,6),
+    mat(i%2?0x596d7a:0x71828a)
+   );
+   m.position.set((Math.random()-.5)*70,h/2-1,-18-Math.random()*45);
+   m.castShadow=true;add(m);
+  }
+ }
+ if(type==='forest'){
+  for(let i=0;i<65;i++){
+   const x=(Math.random()-.5)*65,z=(Math.random()-.5)*65-8;
+   const trunk=new THREE.Mesh(
+    new THREE.CylinderGeometry(.16,.28,2.5,8),mat(0x59402d)
+   );
+   trunk.position.set(x,1.2,z);trunk.castShadow=true;add(trunk);
+   for(let j=0;j<3;j++){
+    const crown=new THREE.Mesh(
+     new THREE.ConeGeometry(1.5-j*.25,2.8,8),
+     mat(i%3?0x24583a:0x376b42)
+    );
+    crown.position.set(x,2.3+j*1.15,z);crown.castShadow=true;add(crown);
+   }
+  }
+ }
+ if(type==='desert'){
+  for(let i=0;i<12;i++){
+   const d=new THREE.Mesh(
+    new THREE.SphereGeometry(1,24,16),
+    mat(i%2?0xc08c53:0xd3a66a)
+   );
+   d.scale.set(8+Math.random()*9,1.2,5);
+   d.position.set((Math.random()-.5)*55,.1,-10-Math.random()*38);add(d);
+  }
+ }
+ if(type==='nightcity'){
+  scene.background.set(0x080d20);scene.fog.color.set(0x10172b);
+  for(let i=0;i<32;i++){
+   const h=3+Math.random()*17;
+   const b=new THREE.Mesh(
+    new THREE.BoxGeometry(2+Math.random()*3,h,2+Math.random()*3),
+    mat(0x202b42,.7,.25)
+   );
+   b.position.set((Math.random()-.5)*55,h/2,-10-Math.random()*35);add(b);
+   for(let j=0;j<8;j++){
+    const win=new THREE.Mesh(
+     new THREE.BoxGeometry(.16,.22,.03),
+     new THREE.MeshBasicMaterial({color:Math.random()>.4?0xffcf77:0x6d9dff})
+    );
+    win.position.set(b.position.x-.6+Math.random()*1.2,.4+Math.random()*(h-1),b.position.z+1.02);
+    add(win);
+   }
+  }
+ }
+ if(type==='space'){
+  scene.fog=new THREE.Fog(0x050817,60,180);
+  const stars=new THREE.BufferGeometry(),arr=[];
+  for(let i=0;i<1800;i++){
+   arr.push((Math.random()-.5)*180,(Math.random()-.5)*100,(Math.random()-.5)*160);
+  }
+  stars.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));
+  add(new THREE.Points(stars,new THREE.PointsMaterial({color:0xffffff,size:.13})));
+  const planet=new THREE.Mesh(
+   new THREE.SphereGeometry(7,48,40),
+   new THREE.MeshStandardMaterial({color:0x345eae,roughness:.85,metalness:.05})
+  );
+  planet.position.set(-13,3,-28);add(planet);
+  const glow=new THREE.PointLight(0x719bff,45,90);
+  glow.position.set(-10,10,-15);add(glow);
+ }
+ if(type!=='space'&&type!=='nightcity'){
+  for(let i=0;i<5;i++){
+   const cloud=new THREE.Group();
+   for(let j=0;j<5;j++){
+    const c=new THREE.Mesh(
+     new THREE.SphereGeometry(1.1+Math.random()*.45,16,12),
+     new THREE.MeshStandardMaterial({color:0xfff1e6,roughness:1,transparent:true,opacity:.8})
+    );
+    c.position.set(j*1.25,Math.random()*.45,0);cloud.add(c);
+   }
+   cloud.position.set(-20+i*10,12+Math.random()*7,-25-Math.random()*20);
+   add(cloud);
+  }
+ }
+ // Personnage 3D de remplacement si le modèle externe ne charge pas.
+ const rider=new THREE.Group();
+ const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.72,5,10),mat(0x253d59));
+ torso.position.y=1.7;rider.add(torso);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.23,20,16),mat(0xc98e69));
+ head.position.set(0,2.25,0);rider.add(head);
+ const legs=mat(0x1b2434);
+ for(let x of [-.16,.16]){
+  const l=new THREE.Mesh(new THREE.CylinderGeometry(.07,.09,.8,10),legs);
+  l.position.set(x,1.05,0);rider.add(l);
+ }
+ rider.position.set(0,.15,0);add(rider);
+ $3('stSceneName').textContent=({
+  beach:'Littoral cinématique',mountain:'Haute montagne',
+  forest:'Forêt immersive',space:'Espace profond',
+  desert:'Désert',nightcity:'Métropole nocturne'
+ })[type];
+ camera.position.set(type==='space'?12:10,6,13);
+ camera.lookAt(0,1,0);
+ loadHorse();
+}
+async function loadHorse(){
+ try {
+  const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');
+  const loader=new GLTFLoader();
+  loader.load(
+   'https://threejs.org/examples/models/gltf/Horse.glb',
+   g=>{
+    if(!scene)return;
+    horse=g.scene;horse.scale.setScalar(1.35);
+    horse.position.set(-1,0,1);horse.rotation.y=Math.PI/2;
+    horse.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
+    add(horse);
+    if(g.animations?.length){
+     mixer=new THREE.AnimationMixer(horse);
+     mixer.clipAction(g.animations[0]).play();
+    }
+    setStatus('Modèle 3D du cheval chargé avec animation.');
+   },
+   undefined,
+   ()=>setStatus('Décor 3D prêt. Modèle externe indisponible : affichage de la scène sans cheval détaillé.')
+  );
+ } catch(e) {
+  setStatus('Scène 3D active ; modèle détaillé non disponible sur ce réseau.');
+ }
+}
+function resize(){
+ if(!renderer)return;
+ const w=host.clientWidth,h=host.clientHeight;
+ if(!w||!h)return;
+ const ratio=$3('stRatio').value;
+ let ar=ratio==='9:16'?9/16:ratio==='1:1'?1:16/9;
+ let cw=w,ch=w/ar;
+ if(ch>h&&h>0){ch=h;cw=h*ar}
+ renderer.setSize(cw,ch,false);
+ renderer.domElement.style.width='100%';
+ renderer.domElement.style.height='100%';
+ camera.aspect=cw/ch;camera.updateProjectionMatrix();
+}
+function animate(){
+ raf=requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+ if(playing){
+  if(mixer)mixer.update(dt);
+  if(horse){
+   horse.position.z=1+Math.sin(t*1.2)*.5;
+   horse.position.x=-1+Math.sin(t*.45)*1.3;
+  }
+  camera.position.x=10+Math.sin(t*.12)*1.4;
+  camera.position.z=13+Math.cos(t*.12)*.8;
+  camera.lookAt(0,1,0);
+  objects.forEach(o=>{
+   if(o.geometry?.type==='BoxGeometry'&&o.position.y===.12)
+    o.position.x=Math.sin(t*.6+o.position.z)*.5;
+  });
+ }
+ renderer.render(scene,camera);
+}
 $3('stRatio').onchange=resize;
-$3('stExport').onclick=async()=>{if(!renderer||recording)return;const canvas=renderer.domElement;if(!canvas.captureStream||!window.MediaRecorder){setStatus('Cet iPhone/navigateur ne prend pas en charge l’export vidéo ici. Essaie avec un navigateur compatible.');return}try{recording=true;$3('stExport').disabled=true;const seconds=Number($3('stDuration').value),quality=Number($3('stQuality').value);const stream=canvas.captureStream(30);let mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('Format vidéo MediaRecorder non pris en charge par ce navigateur.');const chunks=[];const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:quality===1080?8500000:4500000});rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onstop=()=>{const blob=new Blob(chunks,{type:mime});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='NOVA-3D-'+Date.now()+'.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);stream.getTracks().forEach(t=>t.stop());setStatus('Export terminé. Si Safari ne lance pas le téléchargement, ouvre le fichier depuis le partage.');recording=false;$3('stExport').disabled=false;$3('stProgress').style.width='100%'};rec.start(250);let start=performance.now();const tick=()=>{if(!recording)return;let pct=clamp((performance.now()-start)/(seconds*1000)*100,0,100);$3('stProgress').style.width=pct+'%';if(pct>=100)rec.stop();else setTimeout(tick,100)};setStatus('Enregistrement en cours : garde NOVA au premier plan…');tick();}catch(e){recording=false;$3('stExport').disabled=false;setStatus('Export impossible : '+e.message)}};
-window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);resizeObs?.disconnect();renderer?.dispose()});
+$3('stExport').onclick=async()=>{
+ if(!renderer||recording)return;
+ const canvas=renderer.domElement;
+ if(!canvas.captureStream||!window.MediaRecorder){
+  setStatus('Cet iPhone/navigateur ne prend pas en charge l’export vidéo ici. Essaie avec un navigateur compatible.');
+  return;
+ }
+ try {
+  recording=true;$3('stExport').disabled=true;
+  const seconds=Number($3('stDuration').value);
+  const quality=Number($3('stQuality').value);
+  const stream=canvas.captureStream(30);
+  let mime=[
+   'video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'
+  ].find(x=>MediaRecorder.isTypeSupported(x));
+  if(!mime)throw Error('Format vidéo MediaRecorder non pris en charge par ce navigateur.');
+  const chunks=[];
+  const rec=new MediaRecorder(stream,{
+   mimeType:mime,
+   videoBitsPerSecond:quality===1080?8500000:4500000
+  });
+  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  rec.onstop=()=>{
+   const blob=new Blob(chunks,{type:mime});
+   const u=URL.createObjectURL(blob);
+   const a=document.createElement('a');
+   a.href=u;a.download='NOVA-3D-'+Date.now()+'.webm';
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(u),60000);
+   stream.getTracks().forEach(t=>t.stop());
+   setStatus('Export terminé. Si Safari ne lance pas le téléchargement, ouvre le fichier depuis le partage.');
+   recording=false;$3('stExport').disabled=false;
+   $3('stProgress').style.width='100%';
+  };
+  rec.start(250);
+  let start=performance.now();
+  const tick=()=>{
+   if(!recording)return;
+   let pct=clamp((performance.now()-start)/(seconds*1000)*100,0,100);
+   $3('stProgress').style.width=pct+'%';
+   if(pct>=100)rec.stop();
+   else setTimeout(tick,100);
+  };
+  setStatus('Enregistrement en cours : garde NOVA au premier plan…');
+  tick();
+ } catch(e) {
+  recording=false;$3('stExport').disabled=false;
+  setStatus('Export impossible : '+e.message);
+ }
+};
+window.addEventListener('pagehide',()=>{
+ if(raf)cancelAnimationFrame(raf);
+ resizeObs?.disconnect();
+ renderer?.dispose();
+});
 </script>
 
-</body></html>
+</body>
+</html>
