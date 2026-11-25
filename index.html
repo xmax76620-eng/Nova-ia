@@ -1,284 +1,682 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080d18">
-<title>NOVA AI — Votre espace intelligent</title>
+<title>NOVA AI — Intelligence artificielle</title>
 <style>
-:root{--bg:#080d18;--panel:#0d1525;--panel2:#111c30;--line:#273650;--text:#edf3ff;--muted:#91a0b8;--a:#7659ff;--b:#3478ec}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-button,select,textarea{font:inherit}
-button{cursor:pointer;color:inherit}
-.app{height:100dvh;display:grid;grid-template-columns:260px minmax(0,1fr);overflow:hidden}
-aside{background:#0b1220;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;min-height:0}
-.brand{font-size:23px;font-weight:800;letter-spacing:.4px;margin:5px 0 28px}
-.logo{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--a),#20c8c8);margin-right:8px}
-.primary,.send{border:0;background:linear-gradient(120deg,var(--a),var(--b));font-weight:700;border-radius:12px;padding:13px}
-.primary{width:100%}
-.side-label{color:var(--muted);font-size:11px;letter-spacing:1.2px;margin:26px 0 9px}
-#history{overflow:auto;display:grid;gap:7px}
-.history-item{border:1px solid transparent;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#bdc9dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.history-item.active,.history-item:hover{background:var(--panel2);border-color:var(--line)}
-.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.5}
-main{display:flex;flex-direction:column;min-width:0;min-height:0}
-header{height:72px;flex-shrink:0;padding:12px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(8,13,24,.96)}
-.head-title{font-weight:800}
-.head-sub{color:var(--muted);font-size:13px;margin-top:4px}
-select{max-width:min(58%,430px);min-width:0;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:11px}
-#messages{flex:1;overflow:auto;padding:28px 18px 35px;scroll-behavior:smooth}
-.welcome{max-width:720px;margin:10vh auto;text-align:center}
-.orb{width:76px;height:76px;margin:auto;border-radius:25px;background:linear-gradient(135deg,var(--a),#20c8c8);display:grid;place-items:center;font-size:34px;box-shadow:0 0 55px #7659ff55}
-.welcome h1{font-size:clamp(25px,4vw,36px);margin:25px 0 10px}
-.welcome p{color:var(--muted)}
-.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:26px}
-.suggestions button{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:10px 14px;color:#c7d2e5}
-.msg{display:flex;gap:13px;max-width:900px;margin:0 auto 25px;align-items:flex-start}
-.avatar{width:36px;height:36px;flex:0 0 36px;border-radius:11px;background:#263650;display:grid;place-items:center;font-weight:700}
-.assistant .avatar{background:linear-gradient(135deg,#5844c9,#1e9da5)}
-.bubble{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.72;padding:5px 0;min-width:0}
-.user .bubble{background:#17243a;border:1px solid #2c3e5c;border-radius:14px;padding:13px 15px}
-.bubble strong{color:white}
-.bubble a{color:#8eacff}
-.compose{padding:14px max(14px,calc((100% - 900px)/2));border-top:1px solid var(--line);background:#0b1220}
-form{max-width:900px;margin:auto;display:flex;gap:10px;align-items:flex-end;background:#101827;border:1px solid #34425d;border-radius:18px;padding:10px}
-textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;padding:11px;font:16px/1.5 inherit;min-height:48px;max-height:160px;min-width:0}
-.send{width:54px;height:50px;flex-shrink:0;font-size:22px}
-.send:disabled{opacity:.5;cursor:wait}
-.hint{text-align:center;color:#71819c;font-size:11px;margin:9px 0 0}
-.toolbar{max-width:900px;margin:0 auto 9px;display:flex;justify-content:flex-end;gap:8px}
-.tiny{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;padding:7px 10px;font-size:12px}
-.status{max-width:900px;margin:0 auto 12px;color:var(--muted);font-size:12px}
-@media(max-width:700px){
-.app{display:block}
-aside{display:none}
-main{height:100dvh}
-header{height:68px;padding:10px 12px}
-.head-sub{font-size:11px}
-select{max-width:58%;font-size:12px;padding:10px 7px}
-#messages{padding:18px 13px 25px}
-.welcome{margin:10vh auto}
-.msg{gap:9px}
-.compose{padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
-form{border-radius:16px}
-.send{height:48px;width:50px}
-.hint{font-size:10px}
+:root {
+  --bg:#080d18;
+  --panel:#0d1525;
+  --panel2:#111c30;
+  --line:#273650;
+  --text:#edf3ff;
+  --muted:#91a0b8;
+  --a:#7659ff;
+  --b:#3478ec;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+button,select,textarea {font:inherit}
+button {cursor:pointer;color:inherit}
+.app {
+  height:100dvh;display:grid;
+  grid-template-columns:270px minmax(0,1fr);overflow:hidden;
+}
+aside {
+  background:#0b1220;border-right:1px solid var(--line);
+  padding:18px;display:flex;flex-direction:column;min-height:0;
+}
+.brand {font-size:23px;font-weight:800;letter-spacing:.4px;margin:5px 0 28px}
+.logo {
+  display:inline-grid;place-items:center;width:36px;height:36px;
+  border-radius:12px;background:linear-gradient(135deg,var(--a),#20c8c8);
+  margin-right:8px;
+}
+.primary,.send {
+  border:0;background:linear-gradient(120deg,var(--a),var(--b));
+  font-weight:700;border-radius:12px;padding:13px;
+}
+.primary {width:100%}
+.side-label {
+  color:var(--muted);font-size:11px;letter-spacing:1.2px;
+  margin:25px 0 9px;
+}
+#history {overflow:auto;display:grid;gap:7px}
+.history-entry {display:flex;gap:5px;min-width:0}
+.history-item {
+  flex:1;min-width:0;border:1px solid transparent;background:transparent;
+  text-align:left;padding:11px;border-radius:10px;color:#bdc9dc;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.history-item.active,.history-item:hover {
+  background:var(--panel2);border-color:var(--line);
+}
+.delete-thread {
+  border:0;background:transparent;color:var(--muted);
+  border-radius:8px;padding:5px 9px;
+}
+.delete-thread:hover {background:#39202b;color:#ff8b9a}
+.side-bottom {
+  margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6;
+}
+main {display:flex;flex-direction:column;min-width:0;min-height:0}
+header {
+  height:72px;flex-shrink:0;padding:12px 22px;
+  border-bottom:1px solid var(--line);display:flex;
+  align-items:center;justify-content:space-between;gap:14px;
+  background:rgba(8,13,24,.96);
+}
+.head-left {display:flex;align-items:center;gap:12px;min-width:0}
+.head-title {font-weight:800}
+.head-sub {color:var(--muted);font-size:13px;margin-top:4px}
+select {
+  max-width:min(58%,430px);min-width:0;background:var(--panel2);
+  border:1px solid var(--line);color:var(--text);
+  border-radius:11px;padding:11px;
+}
+#messages {
+  flex:1;overflow:auto;padding:28px 18px 35px;
+  scroll-behavior:smooth;
+}
+.welcome {max-width:720px;margin:10vh auto;text-align:center}
+.orb {
+  width:76px;height:76px;margin:auto;border-radius:25px;
+  background:linear-gradient(135deg,var(--a),#20c8c8);
+  display:grid;place-items:center;font-size:34px;
+  box-shadow:0 0 55px #7659ff55;
+}
+.welcome h1 {font-size:clamp(25px,4vw,36px);margin:25px 0 10px}
+.welcome p {color:var(--muted)}
+.suggestions {
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:9px;margin-top:26px;
+}
+.suggestions button {
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:20px;padding:10px 14px;color:#c7d2e5;
+}
+.msg {
+  display:flex;gap:13px;max-width:900px;
+  margin:0 auto 25px;align-items:flex-start;
+}
+.avatar {
+  width:36px;height:36px;flex:0 0 36px;border-radius:11px;
+  background:#263650;display:grid;place-items:center;font-weight:700;
+}
+.assistant .avatar {background:linear-gradient(135deg,#5844c9,#1e9da5)}
+.message-content {min-width:0;flex:1}
+.bubble {
+  overflow-wrap:anywhere;line-height:1.75;
+  padding:5px 0;min-width:0;
+}
+.user .bubble {
+  background:#17243a;border:1px solid #2c3e5c;
+  border-radius:14px;padding:13px 15px;
+}
+.bubble p {margin:0 0 13px}
+.bubble h1,.bubble h2,.bubble h3 {line-height:1.3;margin:22px 0 10px}
+.bubble h1 {font-size:24px}
+.bubble h2 {font-size:20px}
+.bubble h3 {font-size:17px}
+.bubble ul,.bubble ol {padding-left:23px;margin:10px 0 16px}
+.bubble li {margin:5px 0}
+.bubble strong {color:white}
+.bubble a {color:#8eacff}
+.bubble blockquote {
+  border-left:3px solid var(--a);padding:8px 14px;
+  margin:12px 0;background:#111c30;color:#c6d2e6;
+}
+.code-wrap {
+  margin:14px 0;background:#080e1a;
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+}
+.code-head {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:#111c30;color:var(--muted);font-size:12px;
+}
+.code-head button {
+  background:transparent;border:1px solid var(--line);
+  border-radius:7px;padding:5px 9px;font-size:11px;
+}
+pre {
+  overflow:auto;margin:0;padding:15px;
+  white-space:pre;line-height:1.55;font-size:13px;
+}
+code {
+  background:#19263d;padding:2px 5px;border-radius:5px;
+  font-family:ui-monospace,monospace;font-size:.9em;
+}
+pre code {background:transparent;padding:0}
+.msg-actions {display:flex;gap:7px;margin-top:8px}
+.msg-actions button {
+  background:transparent;border:1px solid var(--line);
+  border-radius:8px;padding:6px 9px;color:var(--muted);font-size:11px;
+}
+.compose {
+  padding:14px max(14px,calc((100% - 900px)/2));
+  border-top:1px solid var(--line);background:#0b1220;
+}
+form {
+  max-width:900px;margin:auto;display:flex;gap:10px;
+  align-items:flex-end;background:#101827;
+  border:1px solid #34425d;border-radius:18px;padding:10px;
+}
+textarea {
+  flex:1;resize:none;background:transparent;border:0;
+  outline:0;color:white;padding:11px;font:16px/1.5 inherit;
+  min-height:48px;max-height:160px;min-width:0;
+}
+.send {width:54px;height:50px;flex-shrink:0;font-size:22px}
+.send:disabled {opacity:.5;cursor:wait}
+.hint {text-align:center;color:#71819c;font-size:11px;margin:9px 0 0}
+.toolbar {
+  max-width:900px;margin:0 auto 9px;
+  display:flex;justify-content:flex-end;gap:8px;
+}
+.tiny {
+  border:1px solid var(--line);background:transparent;
+  color:var(--muted);border-radius:9px;padding:7px 10px;font-size:12px;
+}
+.status {max-width:900px;margin:0 auto 12px;color:var(--muted);font-size:12px}
+.mobile-menu {display:none}
+#overlay {display:none}
+@media(max-width:700px) {
+  .app {display:block}
+  aside {
+    display:flex;position:fixed;z-index:20;top:0;bottom:0;left:0;
+    width:min(300px,85vw);transform:translateX(-105%);
+    transition:transform .2s ease;
+  }
+  aside.open {transform:translateX(0)}
+  #overlay {
+    display:block;position:fixed;inset:0;background:#0009;
+    z-index:19;opacity:0;pointer-events:none;transition:opacity .2s;
+  }
+  #overlay.visible {opacity:1;pointer-events:auto}
+  main {height:100dvh}
+  header {height:68px;padding:10px 12px}
+  .mobile-menu {
+    display:block;border:1px solid var(--line);background:var(--panel2);
+    border-radius:9px;padding:8px 11px;
+  }
+  .head-sub {font-size:11px}
+  select {max-width:55%;font-size:12px;padding:10px 7px}
+  #messages {padding:18px 13px 25px}
+  .welcome {margin:10vh auto}
+  .msg {gap:9px}
+  .compose {padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+  form {border-radius:16px}
+  .send {height:48px;width:50px}
+  .hint {font-size:10px}
 }
 </style>
 </head>
 <body>
+<div id="overlay"></div>
 <div class="app">
-<aside>
- <div class="brand"><span class="logo">N</span>NOVA AI</div>
- <button class="primary" id="new">＋ Nouvelle conversation</button>
- <div class="side-label">HISTORIQUE</div>
- <div id="history"></div>
- <div class="side-bottom">NOVA AI<br>Réfléchir · créer · apprendre<br><br><span>Les modèles gratuits peuvent être soumis à des limites de disponibilité.</span></div>
+<aside id="sidebar">
+  <div class="brand"><span class="logo">N</span>NOVA AI</div>
+  <button class="primary" id="new">＋ Nouvelle conversation</button>
+  <div class="side-label">HISTORIQUE</div>
+  <div id="history"></div>
+  <div class="side-bottom">
+    NOVA AI<br>Réfléchir · créer · apprendre<br><br>
+    Historique enregistré sur cet appareil.
+    <br>Les modèles gratuits peuvent avoir des limites.
+  </div>
 </aside>
+
 <main>
 <header>
- <div>
-  <div class="head-title">NOVA AI</div>
-  <div class="head-sub">Réfléchir · créer · apprendre</div>
- </div>
- <select id="model" aria-label="Choisir un modèle">
-  <option>Chargement des modèles…</option>
- </select>
-</header>
-<section id="messages">
- <div class="welcome" id="welcome">
-  <div class="orb">✦</div>
-  <h1>Que veux-tu créer aujourd'hui ?</h1>
-  <p>Pose une question, imagine un projet ou demande de l'aide.</p>
-  <div class="suggestions">
-   <button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
-   <button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
-   <button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
+  <div class="head-left">
+    <button class="mobile-menu" id="menu" aria-label="Ouvrir le menu">☰</button>
+    <div>
+      <div class="head-title">NOVA AI</div>
+      <div class="head-sub">Votre espace intelligent</div>
+    </div>
   </div>
- </div>
+  <select id="model" aria-label="Choisir un modèle">
+    <option value="">Chargement des modèles…</option>
+  </select>
+</header>
+
+<section id="messages">
+  <div class="welcome" id="welcome">
+    <div class="orb">✦</div>
+    <h1>Que veux-tu créer aujourd'hui ?</h1>
+    <p>Pose une question, imagine un projet ou demande de l'aide.</p>
+    <div class="suggestions">
+      <button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
+      <button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
+      <button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
+    </div>
+  </div>
 </section>
+
 <div class="compose">
- <div class="toolbar">
-  <button class="tiny" id="clear">Effacer la conversation</button>
- </div>
- <div class="status" id="status" aria-live="polite"></div>
- <form id="form">
-  <textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…" required></textarea>
-  <button class="send" id="send" type="submit" aria-label="Envoyer">➤</button>
- </form>
- <div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
+  <div class="toolbar">
+    <button class="tiny" id="clear">Effacer la conversation</button>
+  </div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <form id="form">
+    <textarea id="input" rows="1" placeholder="Écris ton message à NOVA AI…" required></textarea>
+    <button class="send" id="send" type="submit" aria-label="Envoyer">➤</button>
+  </form>
+  <div class="hint">Modèles gratuits uniquement · Une IA peut se tromper.</div>
 </div>
 </main>
 </div>
+
 <script>
-const $=id=>document.getElementById(id);
-let messages=[],busy=false,threads=[],threadId=null;
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = "nova_threads";
+let messages = [];
+let busy = false;
+let threads = [];
+let threadId = null;
 
-function welcome(){
- return `<div class="welcome" id="welcome">
- <div class="orb">✦</div>
- <h1>Que veux-tu créer aujourd'hui ?</h1>
- <p>Pose une question, imagine un projet ou demande de l'aide.</p>
- <div class="suggestions">
- <button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
- <button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
- <button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
- </div></div>`;
+function welcome() {
+  return `<div class="welcome" id="welcome">
+    <div class="orb">✦</div>
+    <h1>Que veux-tu créer aujourd'hui ?</h1>
+    <p>Pose une question, imagine un projet ou demande de l'aide.</p>
+    <div class="suggestions">
+      <button data-prompt="Explique-moi un sujet compliqué simplement.">Apprendre</button>
+      <button data-prompt="Aide-moi à imaginer un projet original et détaillé.">Créer un projet</button>
+      <button data-prompt="Aide-moi à écrire un texte professionnel.">Rédiger</button>
+    </div>
+  </div>`;
 }
 
-function addMessage(role,content){
- const row=document.createElement("div");
- row.className="msg "+role;
- const av=document.createElement("div");
- av.className="avatar";
- av.textContent=role==="user"?"P":"N";
- const bubble=document.createElement("div");
- bubble.className="bubble";
- bubble.textContent=content;
- row.append(av,bubble);
- $("messages").append(row);
- $("messages").scrollTop=$("messages").scrollHeight;
- return bubble;
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  })[char]);
 }
 
-function saveThread(){
- if(!messages.length)return;
- let t=threads.find(x=>x.id===threadId);
- if(!t){
-  t={id:threadId||String(Date.now()),title:messages.find(x=>x.role==="user")?.content.slice(0,45)||"Nouvelle conversation",messages:[]};
-  threadId=t.id;
-  threads.unshift(t);
- }
- t.messages=messages.slice();
- try{localStorage.setItem("nova_threads",JSON.stringify(threads.slice(0,30)))}catch(e){}
- renderHistory();
-}
+function renderMarkdown(source) {
+  const blocks = [];
+  let text = String(source || "").replace(/\r\n/g,"\n");
 
-function renderHistory(){
- $("history").innerHTML="";
- threads.forEach(t=>{
-  const b=document.createElement("button");
-  b.className="history-item"+(t.id===threadId?" active":"");
-  b.textContent=t.title;
-  b.onclick=()=>openThread(t.id);
-  $("history").append(b);
- });
-}
-
-function openThread(id){
- if(busy)return;
- const t=threads.find(x=>x.id===id);
- if(!t)return;
- threadId=id;
- messages=t.messages.slice();
- $("messages").innerHTML="";
- messages.forEach(m=>addMessage(m.role,m.content));
- renderHistory();
-}
-
-function newThread(){
- if(busy)return;
- messages=[];
- threadId=null;
- $("messages").innerHTML=welcome();
- $("status").textContent="";
- renderHistory();
-}
-
-async function loadModels(){
- try{
-  const r=await fetch("/api/models",{cache:"no-store"});
-  const d=await r.json();
-  if(!r.ok)throw Error(d.error||"Chargement impossible");
-  const list=d.models||d.data||[];
-  if(!Array.isArray(list)||!list.length)throw Error("Aucun modèle gratuit disponible");
-  $("model").innerHTML="";
-  list.forEach(m=>{
-   if(!m.id)return;
-   const o=document.createElement("option");
-   o.value=m.id;
-   o.textContent=m.name||m.id;
-   $("model").append(o);
+  text = text.replace(/```([\w-]*)\n([\s\S]*?)```/g,(_,lang,code) => {
+    const index = blocks.length;
+    blocks.push({lang:lang || "Code",code});
+    return `\n%%CODE${index}%%\n`;
   });
-  $("status").textContent=list.length+" modèles gratuits disponibles";
- }catch(e){
-  $("model").innerHTML="<option value=''>Modèles indisponibles</option>";
-  $("status").textContent="Erreur modèles : "+e.message;
- }
+
+  text = escapeHTML(text);
+
+  text = text.replace(/^### (.+)$/gm,"<h3>$1</h3>");
+  text = text.replace(/^## (.+)$/gm,"<h2>$1</h2>");
+  text = text.replace(/^# (.+)$/gm,"<h1>$1</h1>");
+  text = text.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+  text = text.replace(/__(.+?)__/g,"<strong>$1</strong>");
+  text = text.replace(/\*(.+?)\*/g,"<em>$1</em>");
+  text = text.replace(/`([^`\n]+)`/g,"<code>$1</code>");
+  text = text.replace(/^&gt; (.+)$/gm,"<blockquote>$1</blockquote>");
+
+  const lines = text.split("\n");
+  let html = "";
+  let inList = false;
+  let listType = "";
+
+  function closeList() {
+    if(inList) html += `</${listType}>`;
+    inList = false;
+    listType = "";
+  }
+
+  for(const line of lines) {
+    const unordered = line.match(/^\s*[-•] (.+)$/);
+    const ordered = line.match(/^\s*\d+[.)] (.+)$/);
+
+    if(unordered || ordered) {
+      const type = unordered ? "ul" : "ol";
+      if(!inList || listType !== type) {
+        closeList();
+        html += `<${type}>`;
+        inList = true;
+        listType = type;
+      }
+      html += `<li>${(unordered || ordered)[1]}</li>`;
+      continue;
+    }
+
+    closeList();
+
+    const codeMatch = line.match(/^%%CODE(\d+)%%$/);
+    if(codeMatch) {
+      const block = blocks[Number(codeMatch[1])];
+      if(block) {
+        html += `<div class="code-wrap">
+          <div class="code-head">
+            <span>${escapeHTML(block.lang)}</span>
+            <button type="button" data-copy-code="${Number(codeMatch[1])}">Copier le code</button>
+          </div>
+          <pre><code>${escapeHTML(block.code)}</code></pre>
+        </div>`;
+      }
+      continue;
+    }
+
+    if(/^<h[1-3]>/.test(line) || line.startsWith("<blockquote>")) {
+      html += line;
+    } else if(line.trim()) {
+      html += `<p>${line}</p>`;
+    }
+  }
+
+  closeList();
+  return html;
 }
 
-async function sendMessage(text){
- if(!text.trim()||busy)return;
- const model=$("model").value;
- if(!model){
-  $("status").textContent="Aucun modèle disponible. Réessaie dans un instant.";
-  return;
- }
- messages.push({role:"user",content:text.trim()});
- $("welcome")?.remove();
- addMessage("user",text.trim());
- $("input").value="";
- $("input").style.height="";
- busy=true;
- $("send").disabled=true;
- $("status").textContent="NOVA réfléchit…";
- const answer=addMessage("assistant","NOVA réfléchit…");
- try{
-  const r=await fetch("/api/chat",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({model,messages})
+function addMessage(role, content) {
+  const row = document.createElement("div");
+  row.className = "msg " + role;
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = role === "user" ? "P" : "N";
+
+  const area = document.createElement("div");
+  area.className = "message-content";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  if(role === "assistant") {
+    bubble.innerHTML = renderMarkdown(content);
+  } else {
+    bubble.textContent = content;
+  }
+
+  area.append(bubble);
+
+  if(role === "assistant" && content !== "NOVA réfléchit…") {
+    const actions = document.createElement("div");
+    actions.className = "msg-actions";
+    const copy = document.createElement("button");
+    copy.textContent = "Copier la réponse";
+    copy.onclick = () => copyText(content, copy);
+    actions.append(copy);
+    area.append(actions);
+  }
+
+  row.append(avatar,area);
+  $("messages").append(row);
+  $("messages").scrollTop = $("messages").scrollHeight;
+  return bubble;
+}
+
+async function copyText(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+    button.textContent = "Copié ✓";
+    setTimeout(() => button.textContent = "Copier la réponse",1500);
+  } catch(e) {
+    $("status").textContent = "Copie impossible sur ce navigateur.";
+  }
+}
+
+function saveThread() {
+  if(!messages.length || !threadId) return;
+
+  let thread = threads.find(t => t.id === threadId);
+
+  if(!thread) {
+    thread = {
+      id:threadId,
+      title:messages.find(m => m.role === "user")?.content.slice(0,45) || "Nouvelle conversation",
+      messages:[]
+    };
+    threads.unshift(thread);
+  }
+
+  thread.messages = messages.slice();
+  thread.updatedAt = Date.now();
+
+  threads.sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  threads = threads.slice(0,50);
+
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));
+  } catch(e) {
+    $("status").textContent = "Stockage plein : certaines anciennes conversations peuvent devoir être supprimées.";
+  }
+
+  renderHistory();
+}
+
+function renderHistory() {
+  $("history").innerHTML = "";
+
+  threads.forEach(thread => {
+    const entry = document.createElement("div");
+    entry.className = "history-entry";
+
+    const open = document.createElement("button");
+    open.className = "history-item" + (thread.id === threadId ? " active" : "");
+    open.textContent = thread.title || "Conversation";
+    open.onclick = () => {
+      openThread(thread.id);
+      closeSidebar();
+    };
+
+    const remove = document.createElement("button");
+    remove.className = "delete-thread";
+    remove.textContent = "×";
+    remove.title = "Supprimer cette conversation";
+    remove.onclick = () => deleteThread(thread.id);
+
+    entry.append(open,remove);
+    $("history").append(entry);
   });
-  const d=await r.json();
-  if(!r.ok)throw Error(d.error?.message||d.error||d.message||"Erreur API");
-  let content=d.choices?.[0]?.message?.content;
-  if(Array.isArray(content))content=content.map(p=>p.text||"").join("");
-  if(!content)throw Error("Réponse vide du modèle");
-  answer.textContent=content;
-  messages.push({role:"assistant",content});
-  $("status").textContent=d.nova_fallback
-   ?"Modèle de secours utilisé : "+(d.nova_model_used||"autre modèle")
-   :"Réponse générée par "+(d.nova_model_used||model);
-  saveThread();
- }catch(e){
-  answer.textContent="Erreur : "+e.message;
-  messages.pop();
-  $("status").textContent="La réponse n'a pas pu être générée.";
- }finally{
-  busy=false;
-  $("send").disabled=false;
-  $("messages").scrollTop=$("messages").scrollHeight;
- }
 }
 
-$("form").addEventListener("submit",e=>{
- e.preventDefault();
- sendMessage($("input").value);
+function deleteThread(id) {
+  if(busy) return;
+  threads = threads.filter(t => t.id !== id);
+
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));
+  } catch(e) {}
+
+  if(threadId === id) newThread();
+  renderHistory();
+}
+
+function openThread(id) {
+  if(busy) return;
+  const thread = threads.find(t => t.id === id);
+  if(!thread) return;
+
+  threadId = id;
+  messages = thread.messages.slice();
+  $("messages").innerHTML = "";
+
+  messages.forEach(m => addMessage(m.role,m.content));
+  $("status").textContent = "Conversation restaurée.";
+  renderHistory();
+}
+
+function newThread() {
+  if(busy) return;
+  messages = [];
+  threadId = null;
+  $("messages").innerHTML = welcome();
+  $("status").textContent = "";
+  renderHistory();
+}
+
+function openSidebar() {
+  $("sidebar").classList.add("open");
+  $("overlay").classList.add("visible");
+}
+
+function closeSidebar() {
+  $("sidebar").classList.remove("open");
+  $("overlay").classList.remove("visible");
+}
+
+async function loadModels() {
+  try {
+    const response = await fetch("/api/models",{cache:"no-store"});
+    const data = await response.json();
+
+    if(!response.ok) throw Error(data.error || "Chargement impossible");
+
+    const list = data.models || data.data || [];
+    if(!Array.isArray(list) || !list.length) {
+      throw Error("Aucun modèle gratuit disponible");
+    }
+
+    $("model").innerHTML = "";
+
+    list.forEach(model => {
+      if(!model.id) return;
+      const option = document.createElement("option");
+      option.value = model.id;
+      option.textContent = model.name || model.id;
+      $("model").append(option);
+    });
+
+    $("status").textContent = list.length + " modèles gratuits disponibles";
+  } catch(error) {
+    $("model").innerHTML = "<option value=''>Modèles indisponibles</option>";
+    $("status").textContent = "Erreur modèles : " + error.message;
+  }
+}
+
+async function sendMessage(text) {
+  if(!text.trim() || busy) return;
+
+  const selectedModel = $("model").value;
+  if(!selectedModel) {
+    $("status").textContent = "Aucun modèle disponible. Réessaie dans un instant.";
+    return;
+  }
+
+  if(!threadId) threadId = String(Date.now());
+
+  const userText = text.trim();
+  messages.push({role:"user",content:userText});
+
+  $("welcome")?.remove();
+  addMessage("user",userText);
+
+  $("input").value = "";
+  $("input").style.height = "";
+
+  busy = true;
+  $("send").disabled = true;
+  $("status").textContent = "NOVA réfléchit…";
+
+  const answer = addMessage("assistant","NOVA réfléchit…");
+
+  try {
+    const response = await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:selectedModel,
+        messages
+      })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok) {
+      throw Error(data.error?.message || data.error || data.message || "Erreur API");
+    }
+
+    let content = data.choices?.[0]?.message?.content;
+
+    if(Array.isArray(content)) {
+      content = content.map(part => part.text || "").join("");
+    }
+
+    if(typeof content !== "string" || !content.trim()) {
+      throw Error("Réponse vide du modèle");
+    }
+
+    answer.innerHTML = renderMarkdown(content);
+
+    const actions = document.createElement("div");
+    actions.className = "msg-actions";
+    const copy = document.createElement("button");
+    copy.textContent = "Copier la réponse";
+    copy.onclick = () => copyText(content,copy);
+    actions.append(copy);
+    answer.parentElement.append(actions);
+
+    messages.push({role:"assistant",content});
+    saveThread();
+
+    $("status").textContent = data.nova_fallback
+      ? "Modèle de secours utilisé : " + (data.nova_model_used || "autre modèle")
+      : "Réponse générée par " + (data.nova_model_used || selectedModel);
+
+  } catch(error) {
+    answer.textContent = "Erreur : " + error.message;
+    messages.pop();
+    $("status").textContent = "La réponse n'a pas pu être générée.";
+  } finally {
+    busy = false;
+    $("send").disabled = false;
+    $("messages").scrollTop = $("messages").scrollHeight;
+  }
+}
+
+$("form").addEventListener("submit",event => {
+  event.preventDefault();
+  sendMessage($("input").value);
 });
-$("input").addEventListener("input",e=>{
- e.target.style.height="auto";
- e.target.style.height=Math.min(e.target.scrollHeight,160)+"px";
+
+$("input").addEventListener("input",event => {
+  event.target.style.height = "auto";
+  event.target.style.height = Math.min(event.target.scrollHeight,160) + "px";
 });
-$("input").addEventListener("keydown",e=>{
- if(e.key==="Enter"&&!e.shiftKey){
-  e.preventDefault();
-  $("form").requestSubmit();
- }
+
+$("input").addEventListener("keydown",event => {
+  if(event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    $("form").requestSubmit();
+  }
 });
-$("new").onclick=newThread;
-$("clear").onclick=newThread;
-$("messages").addEventListener("click",e=>{
- const b=e.target.closest("[data-prompt]");
- if(b){
-  $("input").value=b.dataset.prompt;
-  $("form").requestSubmit();
- }
+
+$("new").onclick = newThread;
+$("clear").onclick = newThread;
+$("menu").onclick = openSidebar;
+$("overlay").onclick = closeSidebar;
+
+$("messages").addEventListener("click",event => {
+  const prompt = event.target.closest("[data-prompt]");
+  if(prompt) {
+    $("input").value = prompt.dataset.prompt;
+    $("form").requestSubmit();
+  }
+
+  const codeButton = event.target.closest("[data-copy-code]");
+  if(codeButton) {
+    const code = codeButton.closest(".code-wrap")?.querySelector("code")?.textContent;
+    if(code) copyText(code,codeButton);
+  }
 });
-try{
- threads=JSON.parse(localStorage.getItem("nova_threads")||"[]");
- if(!Array.isArray(threads))threads=[];
-}catch(e){threads=[]}
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if(Array.isArray(saved)) threads = saved;
+} catch(error) {
+  threads = [];
+}
+
 renderHistory();
 loadModels();
 </script>
