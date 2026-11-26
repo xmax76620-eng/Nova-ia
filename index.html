@@ -301,76 +301,151 @@ document.querySelectorAll("[data-view]").forEach(b=>{
 function setVideoStatus(text){$("#videoStatus").textContent=text}
 function setProgress(value){$("#progress").style.width=Math.max(0,Math.min(100,value))+"%"}
 
-async function generateVideo(){
-  const prompt=$("#prompt").value.trim();
-  if(!prompt){setVideoStatus("Décris d'abord la vidéo que tu souhaites créer.");return}
-  if(videoBusy)return;
 
-  videoBusy=true;
-  $("#generate").disabled=true;
+function extractVideoUrl(data) {
+  const candidates = [
+    data?.video_url,
+    data?.url,
+    data?.metadata?.url,
+    data?.output?.url,
+    data?.result?.url
+  ];
+
+  for (const candidate of candidates) {
+    if (typeof candidate !== "string") continue;
+
+    try {
+      const parsed = new URL(candidate);
+      if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+        return parsed.href;
+      }
+    } catch {}
+  }
+
+  return null;
+}
+
+async function generateVideo() {
+  const prompt = $("#prompt").value.trim();
+
+  if (!prompt) {
+    setVideoStatus("Décris d'abord ta vidéo.");
+    return;
+  }
+
+  if (videoBusy) return;
+
+  videoBusy = true;
+  $("#generate").disabled = true;
   $("#result").replaceChildren();
   setProgress(5);
-  setVideoStatus("Envoi de ta demande au moteur vidéo IA...");
+  setVideoStatus("Envoi de la demande à Agnes...");
 
-  try{
-    const response=await fetch("/api/video",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
+  try {
+    const response = await fetch("/api/video", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         prompt,
-        duration:Number($("#duration").value),
-        aspect_ratio:$("#ratio").value,
-        model:"agnes-video-2.5-flash"
+        duration: Number($("#duration").value),
+        aspect_ratio: $("#ratio").value,
+        model: "agnes-video-2.5-flash"
       })
     });
 
-    const data=await response.json();
-    if(!response.ok)throw Error(data.error||data.message||"Erreur vidéo HTTP "+response.status);
+    const data = await response.json();
 
-    let videoUrl=data.video_url||data.url||data.output?.url||data.result?.url;
-    const videoId=data.video_id||data.id||data.job_id;
+    if (!response.ok) {
+      throw new Error(data.error || data.message || "Erreur Agnes : " + response.status);
+    }
 
-    if(videoUrl){
+    let videoUrl = extractVideoUrl(data);
+    const videoId = data.video_id || data.id || data.job_id || data.task_id;
+
+    if (videoUrl) {
       displayVideo(videoUrl);
       setProgress(100);
       setVideoStatus("Vidéo terminée !");
       return;
     }
 
-    if(!videoId)throw Error("Le serveur n'a retourné ni vidéo ni identifiant de génération.");
+    if (!videoId) {
+      throw new Error("Agnes n'a pas retourné d'identifiant vidéo. Réponse : " + JSON.stringify(data));
+    }
 
-    setVideoStatus("Génération en cours... cela peut prendre plusieurs minutes.");
-    for(let attempt=0;attempt<90;attempt++){
-      await new Promise(resolve=>setTimeout(resolve,5000));
-      const check=await fetch("/api/video?video_id="+encodeURIComponent(videoId));
-      const result=await check.json();
-      if(!check.ok)throw Error(result.error||"Erreur de suivi de génération.");
+    setVideoStatus("Agnes crée ta vidéo. Patiente quelques instants...");
 
-      videoUrl=result.video_url||result.url||result.output?.url||result.result?.url;
-      const state=String(result.status||result.state||"").toLowerCase();
+    for (let attempt = 0; attempt < 90; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
 
-      setProgress(Math.min(95,10+attempt));
+      const check = await fetch(
+        "/api/video?video_id=" + encodeURIComponent(videoId)
+      );
 
-      if(videoUrl){
+      const result = await check.json();
+
+      if (!check.ok) {
+        throw new Error(result.error || result.message || "Erreur de suivi : " + check.status);
+      }
+
+      videoUrl = extractVideoUrl(result);
+
+      const state = String(result.status || result.state || "").toLowerCase();
+
+      if (videoUrl && (state === "completed" || !state)) {
         displayVideo(videoUrl);
         setProgress(100);
         setVideoStatus("Vidéo terminée !");
         return;
       }
-      if(["failed","error","cancelled"].includes(state)){
-        throw Error(result.error||result.message||"La génération vidéo a échoué.");
+
+      if (state === "failed" || state === "error" || state === "cancelled") {
+        throw new Error(
+          result.error?.message ||
+          result.error ||
+          result.message ||
+          "La génération a échoué."
+        );
       }
-      setVideoStatus("NOVA crée ta vidéo... ("+(attempt+1)+"/90)");
+
+      setProgress(Math.min(95, 10 + attempt));
+      setVideoStatus("Création de ta vidéo... " + (attempt + 1) + "/90");
     }
-    throw Error("La génération prend trop de temps. Réessaie plus tard.");
-  }catch(e){
-    setVideoStatus("Impossible de générer la vidéo : "+e.message);
+
+    throw new Error("La génération prend trop de temps. Réessaie plus tard.");
+
+  } catch (error) {
+    setVideoStatus("Erreur vidéo : " + error.message);
     setProgress(0);
-  }finally{
-    videoBusy=false;
-    $("#generate").disabled=false;
+  } finally {
+    videoBusy = false;
+    $("#generate").disabled = false;
   }
 }
+
+function displayVideo(url) {
+  const parsed = new URL(url);
+
+  if (!["https:", "http:"].includes(parsed.protocol)) {
+    throw new Error("Le lien vidéo reçu n'est pas valide.");
+  }
+
+  const video = document.createElement("video");
+  video.controls = true;
+  video.playsInline = true;
+  video.src = parsed.href;
+
+  const link = document.createElement("a");
+  link.href = parsed.href;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = "Ouvrir ou enregistrer la vidéo";
+  link.style.display = "block";
+  link.style.marginTop = "12px";
+
+  $("#result").replaceChildren(video, link);
+}
+
 function displayVideo(url){
   const video=document.createElement("video");
   video.controls=true;
