@@ -355,9 +355,12 @@ async function generateVideo() {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || data.message || "Erreur Agnes : " + response.status);
-    }
+ if (!response.ok) {
+  throw Error(
+    "HTTP " + response.status + " — " +
+    JSON.stringify(data)
+  );
+}
 
     let videoUrl = extractVideoUrl(data);
     const videoId = data.video_id || data.id || data.job_id || data.task_id;
