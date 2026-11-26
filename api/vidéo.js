@@ -1,12 +1,12 @@
 
 export default async function handler(req, res) {
   const API_KEY = process.env.AGNES_API_KEY;
-  const BASE_URL = "https://apihub.agnes-ai.com";
+  const BASE = "https://apihub.agnes-ai.com";
   const MODEL = "agnes-video-2.5-flash";
 
   if (!API_KEY) {
     return res.status(500).json({
-      error: "Clé Agnes manquante. Configure AGNES_API_KEY dans Vercel."
+      error: "Clé AGNES_API_KEY absente dans Vercel."
     });
   }
 
@@ -15,34 +15,58 @@ export default async function handler(req, res) {
     "Content-Type": "application/json"
   };
 
+  async function readResponse(response) {
+    const text = await response.text();
+
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch {
+      return { message: text || "Réponse vide du fournisseur vidéo." };
+    }
+  }
+
   try {
     if (req.method === "POST") {
-      const { prompt, duration, aspect_ratio } = req.body || {};
+      const body = typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : (req.body || {});
 
-      if (!prompt || !String(prompt).trim()) {
-        return res.status(400).json({ error: "Décris la vidéo à créer." });
+      const prompt = String(body.prompt || "").trim();
+
+      if (!prompt) {
+        return res.status(400).json({
+          error: "La description de la vidéo est obligatoire."
+        });
       }
 
-      const seconds = Math.min(12, Math.max(4, Number(duration) || 5));
+      const seconds = Math.min(
+        12,
+        Math.max(4, Number(body.duration) || 5)
+      );
 
-      const response = await fetch(`${BASE_URL}/v1/videos`, {
+      const payload = {
+        model: MODEL,
+        prompt,
+        mode: "text",
+        seconds: String(seconds),
+        size: "720P",
+        aspect_ratio: body.aspect_ratio || "16:9",
+        n: 1
+      };
+
+      const response = await fetch(BASE + "/v1/videos", {
         method: "POST",
         headers,
-        body: JSON.stringify({
-          model: MODEL,
-          prompt: String(prompt).trim(),
-          mode: "text",
-          seconds: String(seconds),
-          size: "720P",
-          aspect_ratio: aspect_ratio || "16:9"
-        })
+        body: JSON.stringify(payload)
       });
 
-      const data = await response.json();
+      const data = await readResponse(response);
 
       if (!response.ok) {
+        console.error("Agnes creation error:", response.status, data);
+
         return res.status(response.status).json({
-          error: data.error || data.message || "Erreur Agnes",
+          error: data.message || data.error || "Agnes refuse la génération.",
           details: data
         });
       }
@@ -51,27 +75,43 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "GET") {
-      const videoId = req.query.video_id;
+      const videoId = String(req.query?.video_id || "").trim();
 
       if (!videoId) {
-        return res.status(400).json({ error: "video_id manquant." });
+        return res.status(400).json({
+          error: "Identifiant vidéo manquant."
+        });
       }
 
-      const url = new URL(`${BASE_URL}/agnesapi`);
-      url.searchParams.set("video_id", videoId);
-      url.searchParams.set("model_name", MODEL);
+      const url =
+        BASE +
+        "/agnesapi?video_id=" + encodeURIComponent(videoId) +
+        "&model_name=" + encodeURIComponent(MODEL);
 
       const response = await fetch(url, { headers });
-      const data = await response.json();
+      const data = await readResponse(response);
 
-      return res.status(response.status).json(data);
+      if (!response.ok) {
+        console.error("Agnes polling error:", response.status, data);
+
+        return res.status(response.status).json({
+          error: data.message || data.error || "Erreur de suivi vidéo.",
+          details: data
+        });
+      }
+
+      return res.status(200).json(data);
     }
 
-    return res.status(405).json({ error: "Méthode non autorisée." });
+    return res.status(405).json({
+      error: "Méthode non autorisée."
+    });
 
   } catch (error) {
+    console.error("NOVA video error:", error);
+
     return res.status(500).json({
-      error: "Erreur du serveur vidéo.",
+      error: "Erreur serveur vidéo.",
       details: error.message
     });
   }
